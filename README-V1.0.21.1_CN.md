@@ -653,4 +653,4 @@ build.ps1 -IncrementVersion
 
 ---
 
-*© 2026 AURORA VelociRaptor-GR Dev PRJ. | Version 0.21.1 | Build 2026.05.09*
+*© 2026 AURORA VelociRaptor-GR Dev PRJ. | Version 1.0.21.1 | Build 2026.05.09*
