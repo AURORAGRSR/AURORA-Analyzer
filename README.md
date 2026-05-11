@@ -582,10 +582,10 @@ In Phase 3, Smart Engine performs three operations on the graph:
 
 ## Project Structure
 
-### Release Version Directory Structure (v0.21.1+)
+### Release Version Directory Structure (V1.0.21.1+)
 
 ```
-ExportSystemEvent - Factory/
+AURORA-AnalyzerV1.0.21.1Release/
 ├──  Scripts/                          # Core script directory
 │   ├── ExportSystemEventLauncherGUI.ps1       # WinForms GUI main controller (~40K lines)
 │   ├── ExportSystemEventLogsCHSPro.ps1        # PRO Chinese export engine
@@ -603,8 +603,6 @@ ExportSystemEvent - Factory/
 ├── AURORA.Launcher-双击启动.exe          # C# Windowless EXE launcher
 ├── GAURORA.CHK.ENC                        # AES-256 encrypted check file
 ├── desktop.ini                            # Folder customization config
-├── build.ps1                              # Build script (6-step build pipeline)
-├── AURORA-build.bat                       # Build batch entry point
 ├── SessionCache/                          # Session cache directory (auto-created at runtime)
 │   ├── active/
 │   ├── checkpoints/
