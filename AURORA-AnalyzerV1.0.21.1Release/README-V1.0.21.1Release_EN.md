@@ -1,4 +1,4 @@
-# AURORA Analyzer v0.21.1 Release Notes
+# AURORA Analyzer V1.0.21.1 Release Notes
 
 > **Making Windows Event Logs No Longer Obscure — One-Click Export, Intelligent Diagnostics, Autonomous Repair**
 
