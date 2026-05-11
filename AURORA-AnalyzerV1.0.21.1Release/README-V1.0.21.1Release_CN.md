@@ -1,4 +1,4 @@
-# AURORA Analyzer v0.21.1 发行说明
+# AURORA Analyzer V1.0.21.1 发行说明
 
 > **让 Windows 系统事件日志不再晦涩难懂 —— 一键导出、智能诊断、自主修复**
 
