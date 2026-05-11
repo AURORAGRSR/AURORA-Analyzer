@@ -1,4 +1,4 @@
-# AURORA Analyzer v0.21.1
+# AURORA Analyzer V1.0.21.1
 
 > **Windows 系统事件日志导出 · 智能诊断 · 自主修复引擎**
 >
