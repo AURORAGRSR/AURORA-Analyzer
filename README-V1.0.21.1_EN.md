@@ -1,4 +1,4 @@
-# AURORA Analyzer v0.21.1
+# AURORA Analyzer V1.0.21.1
 
 > **Windows Event Log Export · Intelligent Diagnostics · Autonomous Repair Engine**
 >
