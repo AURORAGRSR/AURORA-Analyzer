@@ -26,7 +26,7 @@ AURORA Analyzer 是一套面向 Windows 系统的全方位事件日志分析、�
                       ▼
 ┌──────────────────────────────────────────────────────────┐
 │          ExportSystemEventLauncherGUI.ps1                 │
-│          (WinForms GUI 主控制器, ~40K 行)                 │
+│          (WinForms GUI 主控制器, ~10K 行)                 │
 │  · 硬件性能分级探针 (AuroraPerfTier)                     │
 │  · 密码验证入口 (GAURORA.CHK.ENC AES-256解密)            │
 │  · C# 内联编译自定义控件 (AuroraProgressBar/TechButton)  │
