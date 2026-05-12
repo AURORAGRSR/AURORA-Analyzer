@@ -60,7 +60,7 @@ AURORA Analyzer 是一套面向 Windows 系统的全方位事件日志分析、�
 
 ### 1. ExportSystemEventLauncherGUI.ps1（GUI 主控制器）
 
-**版本**: V19.1Release | **行数**: ~40,000
+**版本**: V19.1Release | **行数**: ~10,000
 
 #### 启动流程
 
