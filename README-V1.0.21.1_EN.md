@@ -26,7 +26,7 @@ The project uses a **PowerShell 5.1 + C# Inline Compilation** hybrid architectur
                       ▼
 ┌──────────────────────────────────────────────────────────┐
 │          ExportSystemEventLauncherGUI.ps1                 │
-│          (WinForms GUI Main Controller, ~40K Lines)       │
+│          (WinForms GUI Main Controller, ~10K Lines)       │
 │  · Hardware Performance Tier Probe (AuroraPerfTier)       │
 │  · Password Verification Entry (GAURORA.CHK.ENC AES)     │
 │  · C# Inline Compiled Custom Controls                    │
@@ -60,7 +60,7 @@ The project uses a **PowerShell 5.1 + C# Inline Compilation** hybrid architectur
 
 ### 1. ExportSystemEventLauncherGUI.ps1 (GUI Main Controller)
 
-**Version**: V19.1Release | **Lines**: ~40,000
+**Version**: V19.1Release | **Lines**: ~10,000
 
 #### Startup Flow
 
