@@ -451,7 +451,7 @@
                                                               {
                                                                   "name":  "检查磁盘状态",
                                                                   "name_en":  "Check Disk Status",
-                                                                  "command":  "Get-WmiObject Win32_LogicalDisk | Select-Object DeviceID, VolumeName, @{Name=\u0027FreeSpace(GB)\u0027;Expression={[math]::Round($_.FreeSpace/1GB,2)}}, @{Name=\u0027Size(GB)\u0027;Expression={[math]::Round($_.Size/1GB,2)}}",
+                                                                  "command":  "Get-CimInstance Win32_LogicalDisk | Select-Object DeviceID, VolumeName, @{Name=\u0027FreeSpace(GB)\u0027;Expression={[math]::Round($_.FreeSpace/1GB,2)}}, @{Name=\u0027Size(GB)\u0027;Expression={[math]::Round($_.Size/1GB,2)}}",
                                                                   "type":  "powershell",
                                                                   "elevation_required":  false,
                                                                   "risk_level":  "Low",
@@ -819,7 +819,7 @@
                                                               {
                                                                   "name":  "查看显示适配器信息",
                                                                   "name_en":  "View Display Adapter Information",
-                                                                  "command":  "Get-WmiObject Win32_VideoController | Select-Object Name, DriverVersion, DriverDate",
+                                                                  "command":  "Get-CimInstance Win32_VideoController | Select-Object Name, DriverVersion, DriverDate",
                                                                   "type":  "powershell",
                                                                   "elevation_required":  false,
                                                                   "risk_level":  "Low",
@@ -1070,7 +1070,7 @@
                                                               {
                                                                   "name":  "查看BIOS信息",
                                                                   "name_en":  "View BIOS Information",
-                                                                  "command":  "Get-WmiObject Win32_BIOS | Select-Object Manufacturer, SMBIOSBIOSVersion, ReleaseDate, SerialNumber",
+                                                                  "command":  "Get-CimInstance Win32_BIOS | Select-Object Manufacturer, SMBIOSBIOSVersion, ReleaseDate, SerialNumber",
                                                                   "type":  "powershell",
                                                                   "elevation_required":  false,
                                                                   "risk_level":  "Low",
@@ -1146,7 +1146,7 @@
                                                               {
                                                                   "name":  "释放并续订IP地址",
                                                                   "name_en":  "Release and Renew IP Address",
-                                                                  "command":  "ipconfig /release \u0026\u0026 ipconfig /renew",
+                                                                  "command":  "ipconfig /release \u0026 ipconfig /renew",
                                                                   "type":  "cmd",
                                                                   "elevation_required":  true,
                                                                   "risk_level":  "High",
@@ -2449,7 +2449,7 @@
                                                               {
                                                                   "name":  "查看服务详细信息",
                                                                   "name_en":  "View Service Details",
-                                                                  "command":  "Get-WmiObject Win32_Service | Where-Object {$_.State -ne \u0027Running\u0027} | Select-Object Name, DisplayName, State, StartMode, PathName | Format-Table -AutoSize",
+                                                                  "command":  "Get-CimInstance Win32_Service | Where-Object {$_.State -ne \u0027Running\u0027} | Select-Object Name, DisplayName, State, StartMode, PathName | Format-Table -AutoSize",
                                                                   "type":  "powershell",
                                                                   "elevation_required":  true,
                                                                   "risk_level":  "Low",
