@@ -392,7 +392,7 @@ if (-not $restoreMode) {
         ExportScope = $ExportScope
     }
     # 保存初始化进度
-    Save-ProgressSafe -Checkpoint "Initialized" -AdditionalData @{
+    Save-CHSProgress -SessionId $sessionId -Checkpoint "Initialized" -AdditionalData @{
         LogType = $LogType
         ExportMode = $ExportMode
         ExportScope = $ExportScope
@@ -6898,13 +6898,13 @@ try {
         }
         
         # 保存进度：日志类型和日期范围已配置（保存第一个 scope）
-        Save-ProgressSafe -Checkpoint "LogTypeSelected" -AdditionalData @{
+        Save-CHSProgress -SessionId $sessionId -Checkpoint "LogTypeSelected" -AdditionalData @{
             LogType = $scopes[0].LogType
             StartTime = $scopes[0].StartTime
             EndTime = $scopes[0].EndTime
             Scopes = $scopes  # 保存完整的 scopes 数组到会话数据中
         }
-        Save-ProgressSafe -Checkpoint "DateRangeConfigured"
+        Save-CHSProgress -SessionId $sessionId -Checkpoint "DateRangeConfigured"
         
         # 按需提权检查：检查所有选择的日志类型是否需要管理员权限
         $needAdmin = $false
@@ -7033,7 +7033,7 @@ try {
     }
     
     # 保存进度：性能评估完成
-    Save-ProgressSafe -Checkpoint "PerformanceAssessed" -AdditionalData @{
+    Save-CHSProgress -SessionId $sessionId -Checkpoint "PerformanceAssessed" -AdditionalData @{
         PerformanceScore = $performanceScore
         ChunkSize = $optimalChunkSize
     }
@@ -7144,7 +7144,7 @@ try {
             $targetProgress = 70
             $singleStep = ($targetProgress - $baseProgress) / $scopes.Count
             $currentProgress = [Math]::Round($baseProgress + ($singleStep * $scopeIndex))
-            Save-ProgressSafe -Checkpoint "ProcessingStarted" -CustomProgress $currentProgress -CustomStage "正在处理 $($scope.LogType) ($($scopeIndex + 1)/$($scopes.Count))"
+            Save-CHSProgress -SessionId $sessionId -Checkpoint "ProcessingStarted" -CustomProgress $currentProgress -CustomStage "正在处理 $($scope.LogType) ($($scopeIndex + 1)/$($scopes.Count))"
         }
         
         if (-not $Silent) {
@@ -7242,7 +7242,7 @@ try {
 
         # 保存进度：高危事件扫描完成
         $scanProgress = 60
-        Save-ProgressSafe -Checkpoint "HighRiskScanComplete" -CustomProgress $scanProgress -CustomStage "高危事件扫描完成，发现 $totalHigh 条高危事件" -AdditionalData @{
+        Save-CHSProgress -SessionId $sessionId -Checkpoint "HighRiskScanComplete" -CustomProgress $scanProgress -CustomStage "高危事件扫描完成，发现 $totalHigh 条高危事件" -AdditionalData @{
             HighRiskEventCount = $totalHigh
             TotalEventCount = $totalEventCount
             CriticalEvents = $critical
@@ -7329,7 +7329,7 @@ try {
         
         # 保存进度：系统健康评估完成
         $healthProgress = 70
-        Save-ProgressSafe -Checkpoint "HealthAssessmentComplete" -CustomProgress $healthProgress -CustomStage "系统健康评估完成" -AdditionalData @{
+        Save-CHSProgress -SessionId $sessionId -Checkpoint "HealthAssessmentComplete" -CustomProgress $healthProgress -CustomStage "系统健康评估完成" -AdditionalData @{
             HealthScore = $healthScore
             HealthLevel = $healthLevel
             HealthStatus = $healthStatus
@@ -7438,13 +7438,13 @@ try {
                 $reportMode = "仅高危事件"
                 
                 # 保存进度：已选择导出模式
-                Save-ProgressSafe -Checkpoint "ExportModeSelected" -CustomProgress 75 -CustomStage "已选择导出模式：$reportMode" -AdditionalData @{
+                Save-CHSProgress -SessionId $sessionId -Checkpoint "ExportModeSelected" -CustomProgress 75 -CustomStage "已选择导出模式：$reportMode" -AdditionalData @{
                     ExportChoice = $exportChoice
                     ReportMode = $reportMode
                 }
             } else {
                 # 保存进度：正在获取完整日志
-                Save-ProgressSafe -Checkpoint "FetchingFullLog" -CustomProgress 75 -CustomStage "正在获取完整 $($scope.LogType) 日志" -AdditionalData @{
+                Save-CHSProgress -SessionId $sessionId -Checkpoint "FetchingFullLog" -CustomProgress 75 -CustomStage "正在获取完整 $($scope.LogType) 日志" -AdditionalData @{
                     ExportChoice = $exportChoice
                     ReportMode = "完整 $($scope.LogType) 日志"
                 }
@@ -7462,7 +7462,7 @@ try {
                 $reportMode = "完整 $($scope.LogType) 日志"
                 
                 # 保存进度：已获取完整日志
-                Save-ProgressSafe -Checkpoint "FullLogFetched" -CustomProgress 80 -CustomStage "已获取完整 $($scope.LogType) 日志，共 $($events.Count) 条事件" -AdditionalData @{
+                Save-CHSProgress -SessionId $sessionId -Checkpoint "FullLogFetched" -CustomProgress 80 -CustomStage "已获取完整 $($scope.LogType) 日志，共 $($events.Count) 条事件" -AdditionalData @{
                     ExportChoice = $exportChoice
                     ReportMode = $reportMode
                     FullLogEventCount = $events.Count
@@ -7486,14 +7486,14 @@ try {
         }
 
         # 保存进度：开始导出
-        Save-ProgressSafe -Checkpoint "ExportStarted" -CustomProgress 85 -CustomStage "正在导出：$reportMode"
+        Save-CHSProgress -SessionId $sessionId -Checkpoint "ExportStarted" -CustomProgress 85 -CustomStage "正在导出：$reportMode"
 
         # --- 生成报告 ---
         New-LogReport -Events $events -ReportTitle $scope.ReportTitle -DatePart $scope.DatePart -ExportPath $outDir -LogType $scope.LogType
         
         # 保存进度：日志导出完成（最后一个 scope 保存进度）
         if ($scopeIndex -eq $scopes.Count - 1) {
-            Save-ProgressSafe -Checkpoint "ExportComplete" -AdditionalData @{
+            Save-CHSProgress -SessionId $sessionId -Checkpoint "ExportComplete" -AdditionalData @{
                 ExportPath = $outDir
                 EventCount = $events.Count
                 ExportMode = $ExportMode
@@ -7552,7 +7552,7 @@ try {
                 
                 # 保存进度：趋势分析完成（最后一个 scope 保存进度）
                 if ($scopeIndex -eq $scopes.Count - 1) {
-                    Save-ProgressSafe -Checkpoint "TrendAnalysisComplete"
+                    Save-CHSProgress -SessionId $sessionId -Checkpoint "TrendAnalysisComplete"
                 }
             }
         }
@@ -7561,9 +7561,9 @@ try {
     }
     
     # 保存进度：等待智能分析（所有 scope 处理完后保存）
-    # 只有在非恢复模式，或者恢复模式且进度<95时才保存
+    # 只有在非恢复模式，或者恢复模式且进度<95 时才保存
     if ((-not $restoreMode) -or ($restoredSession.Progress -lt 95)) {
-        Save-ProgressSafe -Checkpoint "SmartAnalysisPending" -AdditionalData @{
+        Save-CHSProgress -SessionId $sessionId -Checkpoint "SmartAnalysisPending" -AdditionalData @{
             ExportPath = $outDir
         }
     }
@@ -7712,7 +7712,7 @@ try {
                     Write-Host "`n✅ 智能诊断分析完成！" -ForegroundColor Green
                     
                     # 保存进度：智能分析完成
-                    Save-ProgressSafe -Checkpoint "SmartAnalysisComplete"
+                    Save-CHSProgress -SessionId $sessionId -Checkpoint "SmartAnalysisComplete"
                 } else {
                     Write-Host "⚠️ 未找到智能引擎文件，跳过智能分析。" -ForegroundColor Yellow
                     Write-Host "   预期路径：$smartEnginePath" -ForegroundColor Gray
@@ -7735,7 +7735,7 @@ try {
         Write-Host "`n✅ 操作完成！感谢使用本工具。" -ForegroundColor Green
         
         # 保存最终进度
-        Save-ProgressSafe -Checkpoint "Completed"
+        Save-CHSProgress -SessionId $sessionId -Checkpoint "Completed"
         
         # 标记会话完成并归档
         if ($sessionId) {

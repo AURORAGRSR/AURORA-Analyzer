@@ -1,4 +1,4 @@
-﻿#AURORA-AnalyzerENGPRO.ps1
+#AURORA-AnalyzerENGPRO.ps1
 #Requires -Version 5.1
 # WARNING: This tool is intended for personal learning purposes only.
 # PowerShell Version: 5.1
@@ -393,7 +393,7 @@ if (-not $restoreMode) {
         ExportScope = $ExportScope
     }
     # Save initialization progress
-    Save-ProgressSafe -Checkpoint "Initialized" -AdditionalData @{
+    Save-CHSProgress -SessionId $sessionId -Checkpoint "Initialized" -AdditionalData @{
         LogType = $LogType
         ExportMode = $ExportMode
         ExportScope = $ExportScope
@@ -6379,13 +6379,13 @@ try {
         }
         
         # Save progress: Log type and date range configured (save first scope)
-        Save-ProgressSafe -Checkpoint "LogTypeSelected" -AdditionalData @{
+        Save-CHSProgress -SessionId $sessionId -Checkpoint "LogTypeSelected" -AdditionalData @{
             LogType = $scopes[0].LogType
             StartTime = $scopes[0].StartTime
             EndTime = $scopes[0].EndTime
             Scopes = $scopes  # Save complete scopes array to session data
         }
-        Save-ProgressSafe -Checkpoint "DateRangeConfigured"
+        Save-CHSProgress -SessionId $sessionId -Checkpoint "DateRangeConfigured"
         
         # On-demand elevation check: Check if any selected log type requires admin privileges
         $needAdmin = $false
@@ -6514,7 +6514,7 @@ try {
     }
     
     # Save progress: Performance assessment complete
-    Save-ProgressSafe -Checkpoint "PerformanceAssessed" -AdditionalData @{
+    Save-CHSProgress -SessionId $sessionId -Checkpoint "PerformanceAssessed" -AdditionalData @{
         PerformanceScore = $performanceScore
         ChunkSize = $optimalChunkSize
     }
@@ -6543,7 +6543,7 @@ try {
             $targetProgress = 70
             $singleStep = ($targetProgress - $baseProgress) / $scopes.Count
             $currentProgress = [Math]::Round($baseProgress + ($singleStep * $scopeIndex))
-            Save-ProgressSafe -Checkpoint "ProcessingStarted" -CustomProgress $currentProgress -CustomStage "Processing $($scope.LogType) ($($scopeIndex + 1)/$($scopes.Count))"
+            Save-CHSProgress -SessionId $sessionId -Checkpoint "ProcessingStarted" -CustomProgress $currentProgress -CustomStage "Processing $($scope.LogType) ($($scopeIndex + 1)/$($scopes.Count))"
         }
         
         if (-not $Silent) {
@@ -6641,7 +6641,7 @@ try {
 
     # Save progress: High-risk event scan complete
     $scanProgress = 60
-    Save-ProgressSafe -Checkpoint "HighRiskScanComplete" -CustomProgress $scanProgress -CustomStage "High-risk event scan complete, found $totalHigh high-risk events" -AdditionalData @{
+    Save-CHSProgress -SessionId $sessionId -Checkpoint "HighRiskScanComplete" -CustomProgress $scanProgress -CustomStage "High-risk event scan complete, found $totalHigh high-risk events" -AdditionalData @{
         HighRiskEventCount = $totalHigh
         TotalEventCount = $totalEventCount
         CriticalEvents = $critical
@@ -6691,7 +6691,7 @@ try {
     
     # Save progress: System health assessment complete
     $healthProgress = 70
-    Save-ProgressSafe -Checkpoint "HealthAssessmentComplete" -CustomProgress $healthProgress -CustomStage "System health assessment complete" -AdditionalData @{
+    Save-CHSProgress -SessionId $sessionId -Checkpoint "HealthAssessmentComplete" -CustomProgress $healthProgress -CustomStage "System health assessment complete" -AdditionalData @{
         HealthScore = $healthScore
         HealthLevel = $healthLevel
         HealthStatus = $healthStatus
@@ -6832,13 +6832,13 @@ try {
             $reportMode = "High-Risk Events Only"
             
             # Save progress: Export mode selected
-            Save-ProgressSafe -Checkpoint "ExportModeSelected" -CustomProgress 75 -CustomStage "Export mode selected: $reportMode" -AdditionalData @{
+            Save-CHSProgress -SessionId $sessionId -Checkpoint "ExportModeSelected" -CustomProgress 75 -CustomStage "Export mode selected: $reportMode" -AdditionalData @{
                 ExportChoice = $exportChoice
                 ReportMode = $reportMode
             }
         } else {
             # Save progress: Fetching full log
-            Save-ProgressSafe -Checkpoint "FetchingFullLog" -CustomProgress 75 -CustomStage "Fetching full $($scope.LogType) log" -AdditionalData @{
+            Save-CHSProgress -SessionId $sessionId -Checkpoint "FetchingFullLog" -CustomProgress 75 -CustomStage "Fetching full $($scope.LogType) log" -AdditionalData @{
                 ExportChoice = $exportChoice
                 ReportMode = "Full $($scope.LogType) Log"
             }
@@ -6856,7 +6856,7 @@ try {
             $reportMode = "Full $($scope.LogType) Log"
             
             # Save progress: Full log fetched
-            Save-ProgressSafe -Checkpoint "FullLogFetched" -CustomProgress 80 -CustomStage "Full $($scope.LogType) log fetched, $($events.Count) events" -AdditionalData @{
+            Save-CHSProgress -SessionId $sessionId -Checkpoint "FullLogFetched" -CustomProgress 80 -CustomStage "Full $($scope.LogType) log fetched, $($events.Count) events" -AdditionalData @{
                 ExportChoice = $exportChoice
                 ReportMode = $reportMode
                 FullLogEventCount = $events.Count
@@ -6869,14 +6869,14 @@ try {
     }
 
     # Save progress: Export started
-    Save-ProgressSafe -Checkpoint "ExportStarted" -CustomProgress 85 -CustomStage "Exporting: $reportMode"
+    Save-CHSProgress -SessionId $sessionId -Checkpoint "ExportStarted" -CustomProgress 85 -CustomStage "Exporting: $reportMode"
 
     # --- Generate Report ---
     New-LogReport -Events $events -ReportTitle $scope.ReportTitle -DatePart $scope.DatePart -ExportPath $outDir -LogType $scope.LogType
     
         # Save progress: Log export complete (save only after last scope)
         if ($scopeIndex -eq $scopes.Count - 1) {
-            Save-ProgressSafe -Checkpoint "ExportComplete" -AdditionalData @{
+            Save-CHSProgress -SessionId $sessionId -Checkpoint "ExportComplete" -AdditionalData @{
                 ExportPath = $outDir
                 EventCount = $events.Count
                 ExportMode = $ExportMode
@@ -6932,7 +6932,7 @@ try {
             
             # Save progress: Trend analysis complete (save only after last scope)
             if ($scopeIndex -eq $scopes.Count - 1) {
-                Save-ProgressSafe -Checkpoint "TrendAnalysisComplete"
+                Save-CHSProgress -SessionId $sessionId -Checkpoint "TrendAnalysisComplete"
             }
         }
         }
@@ -6941,7 +6941,7 @@ try {
     # Save progress: Waiting for smart analysis (save only after all scopes processed)
     # Only save if not in restore mode, or in restore mode with progress <95
     if ((-not $restoreMode) -or ($restoredSession.Progress -lt 95)) {
-        Save-ProgressSafe -Checkpoint "SmartAnalysisPending" -AdditionalData @{
+        Save-CHSProgress -SessionId $sessionId -Checkpoint "SmartAnalysisPending" -AdditionalData @{
             ExportPath = $outDir
         }
     }
@@ -7090,7 +7090,7 @@ try {
                     Write-Host "`n✅ Smart diagnostic analysis completed!" -ForegroundColor Green
                     
                     # Save progress: Smart analysis complete
-                    Save-ProgressSafe -Checkpoint "SmartAnalysisComplete"
+                    Save-CHSProgress -SessionId $sessionId -Checkpoint "SmartAnalysisComplete"
                 } else {
                     Write-Host "⚠️ Smart Engine file not found, skipping smart analysis." -ForegroundColor Yellow
                     Write-Host "   Expected path: $smartEnginePath" -ForegroundColor Gray
@@ -7113,7 +7113,7 @@ try {
         Write-Host "`n✅ Operation completed! Thank you for using this tool." -ForegroundColor Green
         
         # Save final progress
-        Save-ProgressSafe -Checkpoint "Completed"
+        Save-CHSProgress -SessionId $sessionId -Checkpoint "Completed"
         
         # Mark session as complete and archive
         if ($sessionId) {
