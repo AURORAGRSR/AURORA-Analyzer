@@ -1,8 +1,8 @@
-# AURORA Analyzer V1.0.21.1 Release
+# AURORA Analyzer v1.1.22.0 Developer Documentation
 
 > **Windows Event Log Export · Intelligent Diagnostics · Autonomous Repair Engine**
 >
-> *AURORA VelociRaptor-GR Dev PRJ.*
+> **Version**: 1.1.22.0 | **Build Date**: 2026.05.14 | **Author**: AURORA VelociRaptor-GR Dev PRJ.
 
 ***
 
@@ -25,7 +25,7 @@ The project uses a **PowerShell 5.1 + C# Inline Compilation** hybrid architectur
                       │ Environment Variable AURORA_LAUNCHED_BY_EXE=1
                       ▼
 ┌──────────────────────────────────────────────────────────┐
-│          ExportSystemEventLauncherGUI.ps1                 │
+│          AURORA-AnalyzerLauncherGUI.ps1                   │
 │          (WinForms GUI Main Controller, ~40K Lines)       │
 │  · Hardware Performance Tier Probe (AuroraPerfTier)       │
 │  · Password Verification Entry (GAURORA.CHK.ENC AES)     │
@@ -39,7 +39,7 @@ The project uses a **PowerShell 5.1 + C# Inline Compilation** hybrid architectur
    ▼              ▼                  ▼
 ┌──────────┐ ┌──────────┐ ┌────────────────────────┐
 │ CHSPro   │ │ ENGPro   │ │  AURORA-SmartEngine    │
-│ .ps1     │ │ .ps1     │ │  .ps1 (V3.1)           │
+│ .ps1     │ │ .ps1     │ │  .ps1 (V1.1.31Release) │
 │ ~=CN Ver │ │ ~=EN Ver │ │  4-Phase Diagnostic    │
 └────┬─────┘ └────┬─────┘ └───────────┬────────────┘
      │            │                   │
@@ -49,8 +49,7 @@ The project uses a **PowerShell 5.1 + C# Inline Compilation** hybrid architectur
      ▼            ▼            ▼
 ┌──────────┐ ┌──────────┐ ┌──────────────────┐
 │Progress  │ │Integr    │ │AURORA-TechData   │
-│Manager   │ │-CHS/ENG  │ │.json (V3.0)      │
-│.ps1      │ │.ps1      │ │6 Diagnostic Rules│
+│Manager   │ │-CHS/ENG  │ │.json (V3.1)      │
 └──────────┘ └──────────┘ └──────────────────┘
 ```
 
@@ -58,9 +57,9 @@ The project uses a **PowerShell 5.1 + C# Inline Compilation** hybrid architectur
 
 ## Module Details
 
-### 1. ExportSystemEventLauncherGUI.ps1 (GUI Main Controller)
+### 1. AURORA-AnalyzerLauncherGUI.ps1 (GUI Main Controller)
 
-**Version**: V19.1Release | **Lines**: \~40,000
+**Version**: V1.1.19.5Release | **Lines**: \~40,000
 
 #### Startup Flow
 
@@ -109,130 +108,94 @@ $perfScore = ($logicalCores × 15) + ($ramGB × 5) + max(0, (baseClock - 2000) /
 
 ***
 
-### 2. ExportSystemEventLogsCHSPro.ps1 / ExportSystemEventLogsENGPro.ps1 (PRO Export Engine)
+### 2. AURORA-AnalyzerPRO.ps1 (Unified PRO Mode Entry Point)
 
-**Version**: V12.1Release | **Language**: Chinese / English (fully symmetric architecture)
+**Version**: V1.1.13Release
+
+#### Features
+
+- Unified PRO mode entry point with bilingual support
+- Language control via `$Language` parameter (CHS or ENG)
+- Built-in startup detection, prohibits direct execution
+- Automatic loading of language resources, core engine, and progress manager
 
 #### Parameter System
 
 ```powershell
 Param(
-    [string]$OutputPath,        # Output directory (default: .\UserLogs)
-    [switch]$AutoOpen,          # Auto-open folder after export
-    [ValidateSet("System","Application","Security","Setup",
-                 "DNS Server","DHCP Server","Directory Service",
+    [ValidateSet("CHS", "ENG")]
+    [string]$Language = "CHS",
+    
+    [string]$OutputPath,
+    [switch]$AutoOpen,
+    
+    [ValidateSet("System", "Application", "Security", "Setup", 
+                 "DNS Server", "DHCP Server", "Directory Service", 
                  "IIS Admin Service")]
-    [string]$LogType = "System",# Log type
-    [switch]$Silent,            # Silent mode
-    [string]$EventId,           # Event ID filter
-    [string]$ProviderName,      # Event source filter
-    [ValidateSet("Critical","Error","Warning","Information","Verbose")]
-    [string]$Level,             # Level filter
-    [datetime]$StartTime,       # Start time
-    [datetime]$EndTime,         # End time
-    [switch]$ForceRescan,       # Force rescan
-    [ValidateSet("SingleDay","DateRange")]
-    [string]$ExportMode,        # Export mode (single day/date range)
-    [ValidateSet("HighRiskOnly","Full")]
-    [string]$ExportScope,       # Export scope (high risk only/full)
-    [switch]$TrendAnalysis,     # Trend analysis
-    [switch]$GUI_Mode           # GUI mode flag
+    [string]$LogType = "System",
+    
+    [switch]$GUI_Mode,
+    # ... other parameters
 )
 ```
 
-#### Function Catalog (39 Key Functions)
+#### Execution Flow
+
+```powershell
+# 1. Startup detection (prohibit direct execution)
+# 2. Load language resources (AURORA-Language.psd1)
+# 3. Import core engine (AURORA-CoreEngine.ps1)
+# 4. Import progress manager (AURORA-ProgressManager.ps1)
+# 5. Based on Language parameter:
+#    - CHS → Load AURORA-AnalyzerCHSPRO.ps1
+#    - ENG → Load AURORA-AnalyzerENGPRO.ps1
+```
+
+***
+
+### 3. AURORA-AnalyzerCHSPRO.ps1 / AURORA-AnalyzerENGPRO.ps1 (PRO Export Engine)
+
+**Version**: V1.1.13Release | **Language**: Chinese / English (fully symmetric architecture)
+
+#### Core Function Modules
 
 **Session & State Management**
 
-| Function                | Function                                               |
-| ----------------------- | ------------------------------------------------------ |
-| `Save-ProgressSafe`     | Safe progress save (GUI sync + session persistence)    |
-| `Write-AuroraLog`       | Log writing (dual channel: console + GUI syncHash)     |
-| `Get-AuroraInteraction` | GUI interactive input (suspend waiting for user input) |
+- `Save-ProgressSafe`: Safe progress save (GUI sync + session persistence)
+- `Write-AuroraLog`: Log writing (dual channel: console + GUI syncHash)
+- `Get-AuroraInteraction`: GUI interactive input (suspend waiting for user input)
 
 **Privilege Management**
 
-| Function                | Function                                                      |
-| ----------------------- | ------------------------------------------------------------- |
-| `Test-AdminRequired`    | Determine if log type requires admin privileges               |
-| `Invoke-ElevationCheck` | On-demand UAC elevation (GUI mode requests auth via syncHash) |
+- `Test-AdminRequired`: Determine if log type requires admin privileges
+- `Invoke-ElevationCheck`: On-demand UAC elevation (GUI mode requests auth via syncHash)
 
 **File & I/O**
 
-| Function                    | Function                                             |
-| --------------------------- | ---------------------------------------------------- |
-| `New-StreamWriterOperation` | Thread-safe file writing (with retry mechanism)      |
-| `Get-SafeFilePath`          | Path safety handling (illegal character replacement) |
-| `Optimize-FileOperations`   | Parallel file operation optimization                 |
+- `New-StreamWriterOperation`: Thread-safe file writing (with retry mechanism)
+- `Get-SafeFilePath`: Path safety handling (illegal character replacement)
 
 **Performance Assessment & Resource Scheduling**
 
-| Function                        | Function                                                      |
-| ------------------------------- | ------------------------------------------------------------- |
-| `Get-ResourceOptimizedStrategy` | Adaptive strategy calculation based on system resources       |
-| `Get-IntelligentCacheStrategy`  | Intelligent cache strategy (freshness + hit rate calculation) |
-| `Get-DiskPerformance`           | Disk I/O performance assessment                               |
-| `Get-SystemPerformanceScore`    | Comprehensive performance score (CPU + RAM + Disk I/O)        |
-| `Get-OptimalChunkSize`          | Dynamic chunk size calculation                                |
-| `Get-OptimalParallelism`        | Dynamic parallelism calculation                               |
-| `Get-SystemLoad`                | CPU/RAM current load monitoring                               |
-| `Get-MemoryUsage`               | Process memory usage statistics                               |
+- `Get-ResourceOptimizedStrategy`: Adaptive strategy calculation based on system resources
+- `Get-IntelligentCacheStrategy`: Intelligent cache strategy (freshness + hit rate calculation)
+- `Get-DiskPerformance`: Disk I/O performance assessment
+- `Get-SystemPerformanceScore`: Comprehensive performance score (CPU + RAM + Disk I/O)
 
 **Cache System**
 
-| Function               | Function                                        |
-| ---------------------- | ----------------------------------------------- |
-| `Test-CacheMatch`      | Cache hit test (log type + time range + filter) |
-| `Show-CacheInfo`       | Cache file info display                         |
-| `Get-CacheUsageChoice` | User cache usage decision interaction           |
-| `Test-CacheIntegrity`  | Cache integrity verification                    |
-| `Initialize-Cache`     | Cache directory initialization                  |
-| `Get-CacheKey`         | Cache key generation                            |
-| `Get-CachedLogData`    | Cache data read                                 |
-| `Set-CachedLogData`    | Cache data write                                |
-| `Clear-LogCache`       | Cache cleanup                                   |
-| `Get-OptimalCacheSize` | Dynamic cache size based on system resources    |
-
-**Data Compression**
-
-| Function                | Function                         |
-| ----------------------- | -------------------------------- |
-| `Compress-Data`         | Data compression (memory stream) |
-| `Expand-CompressedData` | Compressed data decompression    |
+- `Test-CacheMatch`: Cache hit test (log type + time range + filter)
+- `Get-CacheKey`: Cache key generation
+- `Get-CachedLogData`: Cache data read
+- `Set-CachedLogData`: Cache data write
+- `Clear-LogCache`: Cache cleanup
 
 **Knowledge Graph Engine**
 
-| Function                              | Function                                              |
-| ------------------------------------- | ----------------------------------------------------- |
-| `Load-KnowledgeBase`                  | Load AURORA-TechData.json                             |
-| `New-KnowledgeBaseIndex`              | Build precompiled index (EventID/Source/Keyword 3D)   |
-| `Get-KnowledgeBaseSolution`           | Single event→solution mapping (with SHA256 cache key) |
-| `Get-LocalizedKnowledgeBaseSolution`  | Localized solution query                              |
-| `Get-LocalizedKnowledgeBaseSolutions` | Batch localized query                                 |
-| `Get-KnowledgeBasePriority`           | Get event fix priority                                |
-| `Get-BatchKnowledgeBaseSolutions`     | Batch Runspace concurrent knowledge graph matching    |
-| `Get-BatchKnowledgeBasePriorities`    | Batch priority calculation                            |
-
-**Log Analysis & Reporting**
-
-| Function                         | Function                                                         |
-| -------------------------------- | ---------------------------------------------------------------- |
-| `Get-HighRiskEvents`             | High-risk event scanning (with Runspace multi-threaded chunking) |
-| `Get-FullSystemLog`              | Full system log retrieval                                        |
-| `New-LogReport`                  | Summary/trend analysis report generation                         |
-| `New-AdvancedLogPatternAnalysis` | Advanced log pattern recognition                                 |
-| `New-LogTrendAnalysis`           | Log trend analysis (event frequency time series)                 |
-| `Write-CustomProgress`           | Custom progress display                                          |
-
-**Object Pool (Memory Optimization)**
-
-| Function               | Function                 |
-| ---------------------- | ------------------------ |
-| `New-ObjectPool`       | Create typed object pool |
-| `Get-ObjectFromPool`   | Get object from pool     |
-| `Return-ObjectToPool`  | Return object to pool    |
-| `Clear-ObjectPool`     | Clear object pool        |
-| `Get-ObjectPoolStatus` | Object pool status query |
+- `Load-KnowledgeBase`: Load AURORA-TechData.json
+- `New-KnowledgeBaseIndex`: Build precompiled index (EventID/Source/Keyword 3D)
+- `Get-KnowledgeBaseSolution`: Single event→solution mapping (with SHA256 cache key)
+- `Get-BatchKnowledgeBaseSolutions`: Batch Runspace concurrent knowledge graph matching
 
 #### Output Artifacts (per Log Type)
 
@@ -247,9 +210,54 @@ Param(
 
 ***
 
-### 3. AURORA-SmartEngine.ps1 (Intelligent Diagnostic Engine)
+### 4. AURORA-CoreEngine.ps1 (Shared Core Engine)
 
-**Version**: V3.1 Smart Release | **Language**: Bilingual (CHS/ENG) | **Lines**: \~1,035
+**Version**: V1.1.0Release
+
+#### Function Modules
+
+**Privilege Management Functions**
+
+- `Test-AdminRequired`: Check if specified log type requires administrator privileges
+- `Invoke-ElevationCheck`: Execute elevation check and request user authorization when needed
+
+**Log Processing Functions**
+
+- `Write-AuroraLog`: Unified log writing function
+- `Read-AuroraInput`: Communicate with GUI via syncHash to get user input
+
+**File Operation Functions**
+
+- `New-StreamWriterOperation`: Thread-safe file write operation
+- `Get-SafeFilePath`: Get safe file path
+
+**Progress Management Functions**
+
+- `Save-ProgressSafe`: Safe progress save
+- `Get-ProgressInfo`: Get progress information
+
+**Session Management Functions**
+
+- `Manage-Session`: Session management
+
+**System Information Functions**
+
+- `Get-SystemInfo`: Get system information
+
+#### Prevent Repeated Import Mechanism
+
+```powershell
+if ($global:AURORA_CoreEngine_Loaded -eq $true) {
+    return
+}
+$global:AURORA_CoreEngine_Loaded = $true
+```
+
+***
+
+### 5. AURORA-SmartEngine.ps1 (Intelligent Diagnostic Engine)
+
+**Version**: V1.1.31Release | **Language**: Bilingual (CHS/ENG) | **Lines**: \~1,035
 
 #### 4-Phase Diagnostic Pipeline
 
@@ -265,7 +273,7 @@ Phase 1: Detect System Vital Signs
   └── Minidump blue screen dump detection
 
 Phase 2: Concurrent Anomaly Log Extraction
-  ├── PRO mode CSV import (deprecated time window filter)
+  ├── PRO mode CSV import (prioritize using exported CSV files)
   ├── Real-time Get-WinEvent extraction (Level 1/2/3)
   ├── Log type detection report
   ├── Missing log warnings
@@ -296,58 +304,31 @@ Phase 4: Intelligent Autonomous Repair & Interactive Terminal
 
 ```
 Execution Flow:
-  ┌──────────────────────────────────────┐
-  │ 0. Clear authorization status         │
-  └──────────────────────────────────────┘
-              │
-              ▼
-  ┌──────────────────────────────────────┐
-  │ 1. Pre-check (pre_check)             │
-  │    · Admin privilege detection        │
-  │    · Custom pre-condition script exec │
-  │    · If not provided → pass directly  │
-  └──────────────────────────────────────┘
-              │
-              ▼
-  ┌──────────────────────────────────────┐
-  │ 2. Risk Assessment & Authorization   │
-  │    · auto_execute=true → skip        │
-  │    · auto_execute=false → set        │
-  │      syncHash.RequiresAuthorization  │
-  │      wait GUI user confirm (30s TO)  │
-  └──────────────────────────────────────┘
-              │
-              ▼
-  ┌──────────────────────────────────────┐
-  │ 3. Command Execution                 │
-  │    · type="powershell" → Invoke-Expr │
-  │    · type="cmd" → Process Start      │
-  │    · Capture stdout/stderr + ExitCode│
-  │    · Privilege error special (740)   │
-  │    · Output truncation (≤10 lines)   │
-  └──────────────────────────────────────┘
-              │
-              ▼
-  ┌──────────────────────────────────────┐
-  │ 4. Rollback (Command.rollback)       │
-  │    · Execute rollback script          │
-  │    · Rollback timeout + output display│
-  └──────────────────────────────────────┘
+  1. Clear authorization status
+  2. Pre-check (pre_check)
+     · Admin privilege detection
+     · Custom pre-condition script execution
+     · If not provided → pass directly
+  3. Risk Assessment & Authorization
+     · auto_execute=true → skip
+     · auto_execute=false → set syncHash.RequiresAuthorization
+       wait GUI user confirm (30s TO)
+  4. Command Execution
+     · type="powershell" → Invoke-Expression
+     · type="cmd" → Process Start
+     · Capture stdout/stderr + ExitCode
+     · Privilege error special handling (740)
+     · Output truncation display (≤10 lines)
+  5. Rollback (Command.rollback)
+     · Execute rollback script
+     · Rollback timeout + output display
 ```
-
-#### PRO Mode Data Transfer
-
-Smart Engine supports receiving exported log paths directly from PRO engine, prioritizing CSV file loading in Phase 2 to avoid redundant `Get-WinEvent` calls. Key parameters:
-
-- `-FromPRO`: Flag for PRO mode invocation
-- `-ExportedLogPath`: PRO exported `UserLogs` directory path
-- CSV field mapping: `TimeCreated` → event time, `LevelDisplayName` → level number (CHS/ENG support)
 
 ***
 
-### 4. AURORA-ProgressManager.ps1 (Session Persistence System)
+### 6. AURORA-ProgressManager.ps1 (Session Persistence System)
 
-**Version**: V3.1 Smart Release | **Language**: Bilingual Support
+**Version**: V1.1.31Release | **Language**: Bilingual Support
 
 #### Cache Directory Structure
 
@@ -391,7 +372,7 @@ Tool directory writable?
 
 ***
 
-### 5. AURORA-ProgressManager-Integration-CHS.ps1 / -ENG.ps1 (Integration Layer)
+### 7. AURORA-ProgressManager-Integration-CHS.ps1 / -ENG.ps1 (Integration Layer)
 
 Defines 16 key checkpoints covering all PRO engine phases from initialization to task completion:
 
@@ -416,9 +397,9 @@ Defines 16 key checkpoints covering all PRO engine phases from initialization to
 
 ***
 
-### 6. AURORA-TechData.json (Knowledge Graph)
+### 8. AURORA-TechData.json (Knowledge Graph)
 
-**Version**: V3.0 | **Rules**: 6 categories × N rules
+**Version**: V3.1 | **Rules**: 6 categories × N rules
 
 #### Classification System
 
@@ -478,7 +459,7 @@ In Phase 3, Smart Engine performs three operations on the graph:
 
 ***
 
-### 7. build.ps1 + AURORA-build.bat (Secure Distribution Build System)
+### 9. build.ps1 + AURORA-build.bat (Secure Distribution Build System)
 
 #### Build Pipeline
 
@@ -509,18 +490,77 @@ In Phase 3, Smart Engine performs three operations on the graph:
 
 #### Distribution File List
 
-| File                                         | Description                          |
-| -------------------------------------------- | ------------------------------------ |
-| `AURORA.Launcher-双击启动.exe`                   | Main executable (C# Windowless EXE)  |
-| `ExportSystemEventLauncherGUI.ps1`           | GUI main controller                  |
-| `ExportSystemEventLogsCHSPro.ps1`            | PRO Chinese export engine            |
-| `ExportSystemEventLogsENGPro.ps1`            | PRO English export engine            |
-| `AURORA-SmartEngine.ps1`                     | Intelligent diagnostic repair engine |
-| `AURORA-TechData.json`                       | Diagnostic knowledge graph           |
-| `AURORA-ProgressManager.ps1`                 | Session persistence system           |
-| `AURORA-ProgressManager-Integration-CHS.ps1` | Chinese integration layer            |
-| `AURORA-ProgressManager-Integration-ENG.ps1` | English integration layer            |
-| `GAURORA.CHK.ENC`                            | Encrypted integrity check file       |
+**Core Files**:
+
+| File                       | Description                         |
+| -------------------------- | ----------------------------------- |
+| `AURORA.Launcher-双击启动.exe` | Main executable (C# Windowless EXE) |
+| `GAURORA.CHK.ENC`          | Encrypted integrity check file      |
+| `version.txt`              | Version info file (1.1.22.0)        |
+
+**Scripts**:
+
+| File                                                 | Description                                             |
+| ---------------------------------------------------- | ------------------------------------------------------- |
+| `Scripts\AURORA-AnalyzerLauncherGUI.ps1`             | GUI main controller (\~40K lines)                       |
+| `Scripts\AURORA-AnalyzerPRO.ps1`                     | PRO mode unified entry point                            |
+| `Scripts\AURORA-AnalyzerCHSPRO.ps1`                  | PRO Chinese export engine                               |
+| `Scripts\AURORA-AnalyzerENGPRO.ps1`                  | PRO English export engine                               |
+| `Scripts\AURORA-CoreEngine.ps1`                      | Shared core engine                                      |
+| `Scripts\AURORA-SmartEngine.ps1`                     | Intelligent diagnostic & repair engine (V1.1.31Release) |
+| `Scripts\AURORA-ProgressManager.ps1`                 | Session persistence system (V1.1.31Release)             |
+| `Scripts\AURORA-ProgressManager-Integration.ps1`     | Unified integration layer                               |
+| `Scripts\AURORA-ProgressManager-Integration-CHS.ps1` | Chinese integration layer                               |
+| `Scripts\AURORA-ProgressManager-Integration-ENG.ps1` | English integration layer                               |
+| `Scripts\AURORA-Language.psd1`                       | Bilingual resource file                                 |
+| `Scripts\AURORA-GUI-Functions.ps1`                   | GUI auxiliary functions                                 |
+| `Scripts\AURORA-RestoreManager.ps1`                  | System restore manager                                  |
+| `Scripts\AURORA-RepairLogger.ps1`                    | Repair logger                                           |
+| `Scripts\AURORA-RepairTools.ps1`                     | Repair tools                                            |
+| `Scripts\AURORA-UndoManager.ps1`                     | Undo manager                                            |
+| `Scripts\AURORA-UndoViewer.ps1`                      | Undo viewer                                             |
+
+**Data Files**:
+
+| File                                | Description                       |
+| ----------------------------------- | --------------------------------- |
+| `Data\AURORA-TechData.json`         | Diagnostic knowledge graph (V3.1) |
+| `Data\AURORA-TechData.cache.clixml` | Technical data cache              |
+
+**Resources**:
+
+| File                         | Description      |
+| ---------------------------- | ---------------- |
+| `Resources\AURORAICON.ico`   | Application icon |
+| `Resources\CascadiaMono.ttf` | UI font          |
+
+**UserLogs Directory** (Generated at Runtime):
+
+| File                           | Description                  |
+| ------------------------------ | ---------------------------- |
+| `UserLogs\*.csv`               | CSV format log export files  |
+| `UserLogs\*.json`              | JSON format log export files |
+| `UserLogs\*.xml`               | XML format log export files  |
+| `UserLogs\*_Summary.txt`       | Structured summary reports   |
+| `UserLogs\*_TrendAnalysis.txt` | Trend analysis reports       |
+| `UserLogs\*_TrendData.csv`     | Trend raw data               |
+
+**Other Files**:
+
+| File               | Description                        |
+| ------------------ | ---------------------------------- |
+| `build.ps1`        | Build script (for developers)      |
+| `AURORA-build.bat` | Build batch entry (for developers) |
+| `Remove-BOM.ps1`   | UTF-8 BOM removal tool             |
+
+**test Directory** (For development/debugging):
+
+| File                             | Description                         |
+| -------------------------------- | ----------------------------------- |
+| `test\AURORA-UndoTest.ps1`       | Undo functionality test script      |
+| `test\Remove-BOM.ps1`            | BOM removal test script             |
+| `test\Test-Bilingual.ps1`        | Bilingual functionality test script |
+| `test\Test-ProgressManager*.ps1` | Progress manager test script series |
 
 ***
 
@@ -543,7 +583,7 @@ In Phase 3, Smart Engine performs three operations on the graph:
 | File Integrity Check              | C# EXE SHA256 verifies all required files at startup               |
 | Password Protection               | AES-256-CBC encrypted check file, SHA256 key derivation            |
 | Admin Privilege On-Demand         | GUI requests via syncHash → user decision → restart with elevation |
-| High-Risk Operation Authorization | `AuroraDecisionModal` holographic popup, user逐项 confirms           |
+| High-Risk Operation Authorization | `AuroraDecisionModal` holographic popup, user 逐项 confirms          |
 | Risk Level Labeling               | Each command labeled `risk_level`: Low / Medium / High             |
 
 ### GUI Rendering
@@ -582,56 +622,56 @@ In Phase 3, Smart Engine performs three operations on the graph:
 
 ## Project Structure
 
-### Release Version Directory Structure (V1.0.21.1+)
+### Release Version Directory Structure (v1.1.22.0+)
 
 ```
-AURORA-AnalyzerV1.0.21.1Release/
+AURORA-Analyzer-Factory/
 ├──  Scripts/                          # Core script directory
-│   ├── ExportSystemEventLauncherGUI.ps1       # WinForms GUI main controller (~40K lines)
-│   ├── ExportSystemEventLogsCHSPro.ps1        # PRO Chinese export engine
-│   ├── ExportSystemEventLogsENGPro.ps1        # PRO English export engine
+│   ├── AURORA-AnalyzerLauncherGUI.ps1         # WinForms GUI main controller (~40K lines)
+│   ├── AURORA-AnalyzerPRO.ps1                 # PRO mode unified entry point
+│   ├── AURORA-AnalyzerCHSPRO.ps1              # PRO Chinese export engine
+│   ├── AURORA-AnalyzerENGPRO.ps1              # PRO English export engine
+│   ├── AURORA-CoreEngine.ps1                  # Shared core engine
 │   ├── AURORA-SmartEngine.ps1                 # Intelligent diagnostic & repair engine
 │   ├── AURORA-ProgressManager.ps1             # Session persistence & checkpoint resume
+│   ├── AURORA-ProgressManager-Integration.ps1        # Unified integration layer
 │   ├── AURORA-ProgressManager-Integration-CHS.ps1  # Chinese progress integration
-│   └── AURORA-ProgressManager-Integration-ENG.ps1  # English progress integration
+│   ├── AURORA-ProgressManager-Integration-ENG.ps1  # English progress integration
+│   ├── AURORA-Language.psd1                   # Bilingual resource file
+│   ├── AURORA-RestoreManager.ps1              # System restore manager
+│   ├── AURORA-RepairLogger.ps1                # Repair logger
+│   ├── AURORA-RepairTools.ps1                 # Repair tools
+│   ├── AURORA-UndoManager.ps1                 # Undo manager
+│   ├── AURORA-UndoViewer.ps1                  # Undo viewer
+│   └── AURORA-GUI-Functions.ps1               # GUI auxiliary functions
 ├──  Data/                             # Data file directory
 │   ├── AURORA-TechData.json                   # Diagnostic knowledge graph (6 major rule categories)
-│   └── version.txt                            # Version file
-├── 📁 Resources/                        # Resource file directory
+│   └── AURORA-TechData.cache.clixml           # Technical data cache
+├──  Resources/                        # Resource file directory
 │   ├── AURORAICON.ico                         # Application icon
 │   └── CascadiaMono.ttf                       # UI font
-├── AURORA.Launcher-双击启动.exe          # C# Windowless EXE launcher
-├── GAURORA.CHK.ENC                        # AES-256 encrypted check file
-├── desktop.ini                            # Folder customization config
-├── SessionCache/                          # Session cache directory (auto-created at runtime)
+├──  UserLogs/                         # Log output directory (generated at runtime)
+├──  SessionCache/                     # Session cache directory (auto-created at runtime)
 │   ├── active/
 │   ├── checkpoints/
 │   └── archive/
-└── Releases/                              # Build artifacts (ZIP release packages)
-```
-
-### Development Directory (Development Environment Only)
-
-```
-ExportSystemEvent - Factory/
-├── ... (above release files)
-├── test/                                  # Test scripts
-│   ├── Remove-BOM.ps1
-│   ├── Test-Bilingual.ps1
-│   ├── Test-ProgressManager*.ps1
-│   └── Test-ProgressManager-Integration.ps1
-├── Remove-BOM.ps1                         # UTF-8 BOM management tool
-├── build.log                              # Build log
-└── Task.txt                               # Development memo
+├── AURORA.Launcher-双击启动.exe          # C# Windowless EXE launcher
+├── GAURORA.CHK.ENC                        # AES-256 encrypted check file
+├── version.txt                            # Version file (1.1.22.0)
+├── build.ps1                              # Build script
+└── AURORA-build.bat                       # Build batch entry point
 ```
 
 ***
 
 ## Startup Methods
 
-```
-Method 1 (Recommended): Double-click AURORA.Launcher-双击启动.exe
-Method 2: powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File Scripts\ExportSystemEventLauncherGUI.ps1
+```powershell
+# Method 1 (Recommended): Double-click AURORA.Launcher-双击启动.exe
+
+# Method 2: PowerShell command
+powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden `
+  -File Scripts\AURORA-AnalyzerLauncherGUI.ps1
 ```
 
 > All scripts have built-in startup protection, prohibiting direct double-click `.ps1` execution, enforcing GUI startup.
@@ -656,10 +696,33 @@ Build artifacts:
 
 ***
 
+## Communication Protocol
+
+### GUI ↔ Backend syncHash Global Synchronized Hash Table
+
+```powershell
+$global:syncHash = [hashtable]::Synchronized(@{
+    IsHostAlive         = $true       # GUI alive flag
+    IsRunning           = $true       # Running status
+    LogOutput           = ""          # Log output buffer
+    Progress            = 0           # Progress percentage
+    CurrentStatus       = ""          # Current status text
+    CurrentActivity     = ""          # Current activity description
+    UserInput           = $null       # User input
+    RequestElevation    = $false      # Request elevation flag
+    ElevationAuthorized = $null       # Elevation authorization result
+    ShowSessionRecoveryHUD = $false   # Show recovery HUD
+    SessionRestored     = $false      # User chose to restore
+    SessionRestarted    = $false      # User chose to restart
+})
+```
+
+***
+
 ## License
 
 This tool is for personal learning use only.
 
 ***
 
-*© 2026 AURORA VelociRaptor-GR Dev PRJ. | Version 1.0.21.1 | Build 2026.05.09*
+*© 2026 AURORA VelociRaptor-GR Dev PRJ. | Version 1.1.22.0 | Build 2026.05.14*
