@@ -1,0 +1,18 @@
+{
+    "CreatedAt":  "2026-05-20T18:15:48.3519800+08:00",
+    "CurrentStage":  "Initialized",
+    "SessionId":  "SESSION_20260520_181548_9321",
+    "LastUpdated":  "2026-05-20T18:15:48.3704011+08:00",
+    "Progress":  0,
+    "Metadata":  {
+                     "ExportMode":  "",
+                     "LogType":  "System",
+                     "ExportScope":  ""
+                 },
+    "Checkpoints":  [
+
+                    ],
+    "SessionType":  "ExportTask",
+    "Status":  "Active",
+    "LogType":  "System"
+}
