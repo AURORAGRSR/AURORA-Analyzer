@@ -11,10 +11,10 @@ Param(
 # 🔐 RSA 公钥验证模块（构建时注入）
 # ==========================================
 $global:AURORA_PublicKeyXml = @'
-<RSAKeyValue><Modulus>wVZa3W6QQUBYSEjvVzpAo2qaIwK+yBevtyLM7QVpkn+3znLyYr1fAx9OScYzLwKJoWxtOKF2YFHkW5ro+IIOEcFdiUMAoJ0ce0nMOMzjquUEHc+GGBfQWKbAZgfQNdgGoJO5LD5SgSY5SpA+7VLswX+wJVMvBH8iXsInHiaWIdIlnKSbJK7q+ppFLEbfrvF7Wvs8rV/Gfi2AqM+vqy2FeGZfaZsoNtxkjTkDXL597Xl28n6kPseXe5anw62AikU/Llyst/EIhIROa2H/kBcDwkTq/xhBoRHn5nqysrlzi8ZYzYwKgNnhfjFE5+vCRc+p4WBpUfVelswFtkc9gcRoUQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>
+<RSAKeyValue><Modulus>3wtyHHkSHciuH9n3cMizaFBauxR6SU7ESdwCmoHpbzRY47LMuoR6GXJnF6kCL36XECFMDbfjILvtDYOHuSPaEECZ6X6rAhG9o9dq0psi29YNojA6HNHT8zmZyD/z35Icmo3QEJLdUPoWS7laioUbfd9Kj6ORnwEkFrEgeQMh0qcJwB6msQYszgWG3UzIYKRli3kR40w2LHhPV7BuOqzLozG0j+j3R2/QYOwRDIlAy57ZWnHE3R9rxY7TpM4pdOdVDal0Fu9NYUzzDep1tujmFgcmtBdzhKSStTOdwSQrDoFJQDen4Zpylr37YJVJi1uVOaIT5RaAv4iu1+MOSzdczQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>
 '@
 
-$global:AURORA_SessionSalt = [Convert]::FromBase64String('UeXpEH5N2djPMnSGnfkCgE8As275qOMo7/XSWuRK0nk=')
+$global:AURORA_SessionSalt = [Convert]::FromBase64String('mRRc3PPmTOapYmOf47D+NBuNgTJm1bA0zEfd7PqaLLo=')
 
 $global:AURORA_AesSalt = [System.Text.Encoding]::UTF8.GetBytes('AU_SESSION_2026_SALT_V1')
 
@@ -192,10 +192,10 @@ using System.Drawing;
 using System.Windows.Forms;
 
 public class AuroraExitCountdown {
-    public static void Show(string title, string message, int seconds, bool forceExit) {
+    public static void Show(string titleCN, string titleEN, string messageCN, string messageEN, int seconds, bool forceExit, bool useChinese) {
         var form = new Form();
-        form.Text = "AURORA 安全警报";
-        form.Size = new Size(500, 300);
+        form.Text = useChinese ? "AURORA 安全警报" : "AURORA Security Alert";
+        form.Size = new Size(550, 350);
         form.FormBorderStyle = FormBorderStyle.FixedDialog;
         form.StartPosition = FormStartPosition.CenterScreen;
         form.MaximizeBox = false;
@@ -204,30 +204,40 @@ public class AuroraExitCountdown {
         form.BackColor = Color.FromArgb(30, 20, 20);
 
         var titleLabel = new Label();
-        titleLabel.Text = title;
-        titleLabel.Location = new Point(20, 20);
-        titleLabel.Size = new Size(440, 40);
+        titleLabel.Text = useChinese ? titleCN : titleEN;
+        titleLabel.Location = new Point(25, 20);
+        titleLabel.Size = new Size(480, 50);
         titleLabel.Font = new Font("Microsoft YaHei UI", 12, FontStyle.Bold);
         titleLabel.ForeColor = Color.FromArgb(255, 100, 100);
+        titleLabel.AutoSize = false;
 
         var messageLabel = new Label();
-        messageLabel.Text = message;
-        messageLabel.Location = new Point(20, 70);
-        messageLabel.Size = new Size(440, 120);
+        messageLabel.Text = useChinese ? messageCN : messageEN;
+        messageLabel.Location = new Point(25, 80);
+        messageLabel.Size = new Size(480, 150);
         messageLabel.Font = new Font("Microsoft YaHei UI", 9);
         messageLabel.ForeColor = Color.White;
         messageLabel.AutoSize = false;
 
         var countdownLabel = new Label();
-        countdownLabel.Text = "\u5012\u8ba1\u65f6\uff1a" + seconds + " \u79d2";
-        countdownLabel.Location = new Point(20, 200);
-        countdownLabel.Size = new Size(440, 30);
+        countdownLabel.Text = (useChinese ? "\u5012\u8ba1\u65f6\uff1a" : "Countdown: ") + seconds + " " + (useChinese ? "\u79d2" : "s");
+        countdownLabel.Location = new Point(25, 240);
+        countdownLabel.Size = new Size(480, 30);
         countdownLabel.Font = new Font("Microsoft YaHei UI", 10, FontStyle.Bold);
         countdownLabel.ForeColor = Color.FromArgb(255, 150, 100);
+
+        var warningIcon = new Label();
+        warningIcon.Text = "\u26a0";
+        warningIcon.Location = new Point(25, 200);
+        warningIcon.Size = new Size(480, 30);
+        warningIcon.Font = new Font("Segoe UI Symbol", 14, FontStyle.Bold);
+        warningIcon.ForeColor = Color.FromArgb(255, 100, 100);
+        warningIcon.TextAlign = ContentAlignment.MiddleCenter;
 
         form.Controls.Add(titleLabel);
         form.Controls.Add(messageLabel);
         form.Controls.Add(countdownLabel);
+        form.Controls.Add(warningIcon);
 
         var timer = new System.Windows.Forms.Timer();
         timer.Interval = 1000;
@@ -236,9 +246,11 @@ public class AuroraExitCountdown {
         timer.Tick += (sender, e) => {
             if (remaining > 0) {
                 remaining--;
-                Console.WriteLine("[\u5012\u8ba1\u65f6] \u5269\u4f59\u65f6\u95f4\uff1a" + remaining + " \u79d2");
+                string countdownText = useChinese ? "[\u5012\u8ba1\u65f6] \u5269\u4f59\u65f6\u95f4\uff1a" : "[Countdown] Remaining: ";
+                string secondsText = useChinese ? "\u79d2" : "s";
+                Console.WriteLine(countdownText + remaining + " " + secondsText);
                 if (!form.IsDisposed) {
-                    countdownLabel.Text = "\u5012\u8ba1\u65f6\uff1a" + remaining + " \u79d2";
+                    countdownLabel.Text = (useChinese ? "\u5012\u8ba1\u65f6\uff1a" : "Countdown: ") + remaining + " " + (useChinese ? "\u79d2" : "s");
                     if (remaining <= 5) {
                         countdownLabel.ForeColor = Color.FromArgb(255, 50, 50);
                     }
@@ -614,12 +626,15 @@ function Initialize-RuntimeIntegrityCheck {
             if ($script:ExitCountdownStarted) { return }
             $script:ExitCountdownStarted = $true
             
-            Write-Host "[安全警报] 程序将在 15 秒后自动退出..." -ForegroundColor Red
+            Write-Host "[Security Alert] Program will exit in 15 seconds..." -ForegroundColor Red
             [AuroraExitCountdown]::Show(
                 " 安全警报：检测到文件篡改！",
+                " Security Alert: File Tampering Detected!",
                 "程序完整性已被破坏，检测到以下问题：$missingInfo$modifiedInfo`n`n程序将在 15 秒后自动退出。",
+                "Program integrity compromised. Detected issues:$missingInfo$modifiedInfo`n`nProgram will exit in 15 seconds.",
                 15,
-                $false
+                $false,
+                $UseChinese
             )
         } else {
             # 正常检查，写入调试日志
@@ -671,12 +686,15 @@ function Initialize-RuntimeIntegrityCheck {
                 } catch {}
             }
             
-            Write-Host "[安全警报] 检测到未授权文件，程序将在 15 秒后自动退出..." -ForegroundColor Red
+            Write-Host "[Security Alert] Unauthorized file detected, program will exit in 15 seconds..." -ForegroundColor Red
             [AuroraExitCountdown]::Show(
                 " 安全警报：检测到未授权文件！",
+                " Security Alert: Unauthorized File Detected!",
                 "检测到未授权文件：$relativePath`n程序可能已被注入恶意代码。`n`n程序将在 15 秒后自动退出。",
+                "Unauthorized file detected: $relativePath`nProgram may have been injected with malicious code.`n`nProgram will exit in 15 seconds.",
                 15,
-                $false
+                $false,
+                $UseChinese
             )
         }
     })
@@ -760,12 +778,15 @@ if ($null -ne $global:PassedHashListFromExe -and $global:PassedHashListFromExe.L
             } catch {}
         }
         
-        Write-Host "[安全警报] 启动时完整性检查失败，程序将在 15 秒后自动退出..." -ForegroundColor Red
+        Write-Host "[Security Alert] Startup integrity check failed, program will exit in 15 seconds..." -ForegroundColor Red
         [AuroraExitCountdown]::Show(
             " 安全警报：启动时完整性检查失败！",
+            " Security Alert: Startup Integrity Check Failed!",
             "启动时文件完整性验证失败！`n 篡改文件：`n$failedList`n`n程序将在 15 秒后自动退出。",
+            "File integrity verification failed at startup!`nTampered files:`n$failedList`n`nProgram will exit in 15 seconds.",
             15,
-            $true
+            $true,
+            $UseChinese
         )
     }
 
@@ -783,12 +804,15 @@ if ($null -ne $global:PassedHashListFromExe -and $global:PassedHashListFromExe.L
         } catch {}
     }
     
-    Write-Host "[安全警报] 无法获取完整性校验数据，程序将在 15 秒后自动退出..." -ForegroundColor Red
+    Write-Host "[Security Alert] Cannot retrieve integrity data, program will exit in 15 seconds..." -ForegroundColor Red
     [AuroraExitCountdown]::Show(
         " 无法获取完整性校验数据",
+        " Cannot Retrieve Integrity Data",
         "安全验证失败：无法获取文件完整性校验数据。`n`n程序将在 15 秒后自动退出。",
+        "Security verification failed: Cannot retrieve file integrity data.`n`nProgram will exit in 15 seconds.",
         15,
-        $true
+        $true,
+        $UseChinese
     )
 }
 
@@ -9955,3 +9979,4 @@ try {
     [System.Windows.Forms.MessageBox]::Show("发生错误: $($_.Exception.Message)", "错误", "OK", "Error")
     exit 1
 }
+
