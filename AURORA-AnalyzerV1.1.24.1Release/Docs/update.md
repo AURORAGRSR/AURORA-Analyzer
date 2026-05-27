@@ -1,279 +1,206 @@
 # AURORA Analyzer V1.1.24.1 — 更新日志 / Changelog
 
-**发布日期 / Release Date:** 2026.05.27  
-**当前版本 / Current Version:** V1.1.24.1  
-**上一版本 / Previous Version:** V1.1.24.0  
-**作者 / Author:** AURORA VelociRaptor-GR Dev PRJ.  
-**更新类型 / Update Type:** 安全性与用户体验增强 (Security and UX Enhancement Release)
+**发布日期 / Release Date:** 2026.05.27
+**当前版本 / Current Version:** V1.1.24.1
+**上一版本 / Previous Version:** V1.1.24.0
+**作者 / Author:** AURORA VelociRaptor-GR Dev PRJ.
+**更新类型 / Update Type:** 安全加固与纵深防御增强 (Security Hardening & Defense-in-Depth Enhancement)
 
 ---
 
-## 🔐 安全性增强 / Security Enhancements
+## 🛡️ 新增安全功能 / New Security Features
 
-### 1. 全链路完整性监控覆盖 / Full-Link Integrity Monitoring Coverage
+### 1. 命名管道看门狗守护 / Named Pipe Watchdog Guardian
 
-**问题描述 / Issue Description:**
-> 在 V1.1.24.0 中，当用户进入专业图形模式（二级窗口）时，运行时完整性检查会被暂停。这导致在二级窗口运行期间（通常为 5-30 分钟），程序文件若被篡改无法被及时发现，形成安全监控盲区。
+> **概述 / Overview:** 在原有的 RSA 握手协议之上，新增了 EXE ↔ PS1 双向 HMAC-SHA256 挑战-响应心跳监测机制。即使所有 PS1 层面的验证被注释或绕过，EXE 看门狗仍能检测到异常并终止进程。这是纵深防御模型中的**第五层独立防护**。
 >
-> In V1.1.24.0, runtime integrity checks were paused when entering Professional Graphics Mode (secondary window). This created a security monitoring blind spot where file tampering could not be detected in real-time during secondary window operation (typically 5-30 minutes).
+> On top of the existing RSA handshake protocol, a bidirectional HMAC-SHA256 challenge-response heartbeat mechanism between the EXE and PS1 has been added. Even if all PS1-level verifications are commented out or bypassed, the EXE watchdog can still detect anomalies and terminate the process. This forms an **independent fifth defense layer** in the defense-in-depth model.
 
-**修复方案 / Resolution:**
-- ✅ **移除完整性检查暂停逻辑** - 二级窗口运行期间完整性检查持续进行
-- ✅ **注册二级窗口到全局变量** - `$global:proForm` 供完整性检查系统识别
-- ✅ **增强篡改响应机制** - 检测到篡改时按顺序关闭：二级窗口 → Splash 屏 → 主窗口
-- ✅ **非致命验证模式** - `AuroraGuard.VerifyOrDie()` 从 `Environment.FailFast` 改为返回布尔值
+**核心机制 / Core Mechanism:**
 
-**技术实现 / Technical Implementation:**
-```powershell
-# 修复 1: AuroraGuard 基础路径修正 (Line 440)
-[AuroraGuard]::Initialize((Split-Path -Parent $PSScriptRoot))  # 使用根目录
+| 组件 / Component | 描述 / Description |
+|---|---|
+| **HMAC 密钥派生 / HMAC Key Derivation** | PBKDF2-SHA256(MasterPassword, WatchdogSalt, 10,000 iterations) → 32 字节 HMAC 密钥。每次构建独立生成。PBKDF2-SHA256(MasterPassword, WatchdogSalt, 10,000 iterations) → 32-byte HMAC key. Independently generated per build. |
+| **Named Pipe 通信 / Named Pipe Communication** | `AURORA_WD_{8位随机ID}` 命名管道，PipeDirection.InOut，Byte 传输模式。`AURORA_WD_{8-char random ID}` named pipe, PipeDirection.InOut, Byte transmission mode. |
+| **握手协议 / Handshake Protocol** | EXE → PS1: `[0x10] [32B HMAC Key] [16B SessionID]`；PS1 → EXE: `[0x11]` ACK 确认。EXE → PS1: `[0x10] [32B HMAC Key] [16B SessionID]`; PS1 → EXE: `[0x11]` ACK confirm. |
+| **挑战-响应 / Challenge-Response** | EXE: `[0x03] [16B Nonce] [8B Timestamp]` → PS1: `[0x04] [32B HMAC(Nonce,Key)] [8B SystemUptime] [32B SelfSHA256]` |
+| **双定时器 / Dual Timer** | 5 秒固定间隔 + 2-7 秒随机间隔。5-second fixed interval + 2-7 second random interval. |
+| **失败阈值 / Failure Threshold** | 连续 3 次失败 → EXE 立即 Kill PS1 进程。3 consecutive failures → EXE immediately kills the PS1 process. |
+| **超时保护 / Timeout Protection** | 连接超时 15 秒，响应超时 3 秒。Connect timeout 15 seconds, response timeout 3 seconds. |
 
-# 修复 2: VerifyOrDie 非致命化 (Lines 429-434)
-public static bool VerifyOrDie() {
-    if (!CheckIntegrity()) return false;  // 不再杀死进程
-    return true;
-}
+**攻击模型覆盖 / Attack Model Coverage:**
 
-# 修复 3: ShowProMode 安全性增强 (Lines 9776-9777)
-$global:proForm = $proForm  # 注册二级窗口供完整性检查识别
-
-# 修复 4: 篡改检测处理器增强 (Lines 870-900)
-# 先隐藏所有窗口，再弹出警告
-if ($global:proForm) { $global:proForm.Hide() }
-if ($splash) { $splash.Hide() }
-if ($global:mainForm) { $global:mainForm.Hide() }
-```
-
-**安全收益 / Security Benefits:**
-- ✅ 实现从启动到退出的**全链路完整性监控**，无时间窗口盲区
-- ✅ 二级窗口运行期间的篡改检测响应时间 < 3 秒
-- ✅ 防止攻击者利用二级窗口运行期间进行文件替换攻击
+- 攻击者注释所有 PS1 验证代码 → EXE 看门狗独立检测 → Kill 进程
+- 攻击者替换 PS1 脚本 → 自哈希不匹配 → 挑战失败 → Kill 进程
+- 攻击者注入 Hook → 心跳丢失 → 3 次失败 → Kill 进程
 
 ---
 
-### 2. AuroraGuard 路径错误修复 / AuroraGuard Path Resolution Fix
+### 2. C# 嵌入式完整性守卫 / Embedded C# Integrity Guard (AuroraGuard)
 
-**问题描述 / Issue Description:**
-> AuroraGuard 初始化时使用 `$PSScriptRoot`（指向 `Scripts` 目录），但 `_expected` 字典中的文件路径（如 `Scripts\AURORA-SmartEngine.ps1`）是相对于根目录的。合并后路径变成 `...\Scripts\Scripts\...`，导致所有文件查找失败，完整性检查全部报错。
+> **概述 / Overview:** 在 LauncherGUI.ps1 中新增了运行时编译的 C# IL 代码块 `AuroraGuard`，对 16 个核心子模块进行独立的 SHA256 完整性验证。由于编译为本地 IL 指令，比纯 PowerShell 代码更难分析和修改。哈希值在构建时由 `build.ps1` 安全注入。
 >
-> AuroraGuard initialization used `$PSScriptRoot` (pointing to `Scripts` directory), but file paths in `_expected` dictionary (e.g., `Scripts\AURORA-SmartEngine.ps1`) were relative to root. After concatenation, paths became `...\Scripts\Scripts\...`, causing all file lookups to fail and integrity checks to report errors.
+> Added a runtime-compiled C# IL code block `AuroraGuard` in LauncherGUI.ps1 that performs independent SHA256 integrity verification of 16 sub-module core files. Being compiled to native IL instructions, it is significantly harder to analyze and modify than pure PowerShell code. Hash values are securely injected by `build.ps1` at build time.
 
-**影响范围 / Impact:**
-- ❌ 所有完整性检查失败（19 个文件全部报哈希不匹配）
-- ❌ `VerifyOrDie()` 调用 `Environment.FailFast` 直接杀死进程
-- ❌ 用户点击"专业图形模式"按钮后无任何响应（进程被静默杀死）
+**验证覆盖范围 / Verification Coverage:**
 
-**修复方案 / Resolution:**
-```powershell
-# Line 440: 修正基础路径为根目录
-[AuroraGuard]::Initialize((Split-Path -Parent $PSScriptRoot))
+| 序号 | 保护文件 / Protected File | 说明 |
+|:--:|---|
+| 1 | `Scripts\AURORA-SmartEngine.ps1` | 智能诊断引擎 |
+| 2 | `Scripts\AURORA-CoreEngine.ps1` | 共享核心引擎 |
+| 3 | `Scripts\AURORA-AnalyzerCHSPRO.ps1` | 中文 PRO 导出 |
+| 4 | `Scripts\AURORA-ProgressManager.ps1` | 进度持久化管理 |
+| 5 | `Scripts\AURORA-GUI-Functions.ps1` | GUI 辅助函数 |
+| 6 | `Scripts\AURORA-RepairTools.ps1` | 修复工具集 |
+| 7 | `Scripts\AURORA-UndoManager.ps1` | 撤销管理 |
+| 8 | `Scripts\AURORA-RestoreManager.ps1` | 系统还原 |
+| 9 | `Scripts\AURORA-RepairLogger.ps1` | 修复日志审计 |
+| 10 | `Scripts\AURORA-UndoViewer.ps1` | 修复历史查看 |
+| 11 | `Scripts\AURORA-AnalyzerPRO.ps1` | PRO 模式入口 |
+| 12 | `Scripts\AURORA-ProgressManager-Integration.ps1` | 进度集成桥梁 |
+| 13 | `Scripts\AURORA-ProgressManager-Integration-CHS.ps1` | 中文进度集成 |
+| 14 | `Scripts\AURORA-ProgressManager-Integration-ENG.ps1` | 英文进度集成 |
+| 15 | `Scripts\Core\AURORA-AnimationCoreEngine.ps1` | 动画引擎 |
+| 16 | `Data\AURORA-TechData.json` | 诊断知识库 |
 
-# Lines 9681-9688: 增强错误处理
-try { 
-    $guardOk = [AuroraGuard]::VerifyOrDie()
-    if (-not $guardOk) {
-        Write-Host "[ShowProMode] 完整性验证警告：部分文件哈希不匹配（开发环境正常）" -ForegroundColor Yellow
-    }
-} catch { 
-    Write-Host "[ShowProMode] 完整性守卫未初始化（降级模式）" -ForegroundColor DarkGray
-}
-```
-
-**验证结果 / Verification:**
-- ✅ 完整性检查正常通过（19 个文件全部验证成功）
-- ✅ 专业图形模式二级窗口可正常打开
-- ✅ 运行时监控持续工作，无进程崩溃
+**技术特性 / Technical Characteristics:**
+- `Add-Type` 运行时编译为 IL，跨 Runspace 可见
+- `VerifyOrDie()` 方法返回 `bool`，子模块可主动调用
+- 构建时自动注入哈希值（build.ps1 `[2.5/6]` 步骤）
+- 加载失败时降级运行（不影响正常功能）
 
 ---
 
-### 3. 安全警告窗口一致性升级 / Security Alert Window Consistency Upgrade
+## 🔧 运行时完整性监控增强 / Runtime Integrity Monitoring Enhancements
 
-**问题描述 / Issue Description:**
-> 在 V1.1.24.0 中，检测到篡改时会直接关闭所有窗口（`Close()` + `Dispose()`），用户体验突兀且缺乏缓冲时间。
+### 3. 提权安全令牌 (AURORA-SEC-2026-001) / Elevation Security Token
+
+> **概述 / Overview:** P0级安全修复。当用户执行需要管理员权限的操作（如导出安全日志）时，PowerShell 进程通过 UAC 提权重启。原版 RSA 令牌文件会被旧进程清理，导致提权后的进程无法验证 EXE 身份（信任链断裂）。
 >
-> In V1.1.24.0, tamper detection would directly close all windows (`Close()` + `Dispose()`), resulting in abrupt user experience without buffer time.
+> P0-level security fix. When users perform operations requiring admin privileges (e.g., exporting security logs), the PowerShell process restarts with UAC elevation. The original RSA token file gets cleaned up by the old process, causing the elevated process to be unable to verify the EXE identity (trust chain break).
 
-**修复方案 / Resolution:**
-- ✅ **先隐藏所有窗口** - 使用 `WindowState = Minimized` + `Hide()` 而非直接关闭
-- ✅ **弹出 15 秒倒计时警告窗口** - 显示详细信息（缺失/篡改文件列表）
-- ✅ **倒计时结束后自动退出** - 使用 `Application.Exit()` 优雅退出
+**实现方案 / Implementation:**
 
-**技术实现 / Technical Implementation:**
-```powershell
-# Lines 870-900: 篡改检测处理流程
-# 1. 停止所有监控
-$script:runtimeIntegrityTimer.Stop()
-$script:randomIntegrityTimer.Stop()
-$script:fileWatcher.EnableRaisingEvents = $false
+| 步骤 / Step | 描述 / Description |
+|---|---|
+| **1. 令牌生成** | EXE 启动前生成独立的提权令牌文件，包含 Nonce + Timestamp + AES-256-CBC 加密的哈希列表。Before launching, EXE generates a separate elevation token file with Nonce + Timestamp + AES-256-CBC encrypted hash list. |
+| **2. 参数传递** | 通过 `-ElevationTokenPath` 命令行参数传递令牌路径，绕过 UAC 环境变量清空。Paths are passed via `-ElevationTokenPath` command-line argument, bypassing UAC environment variable clearing. |
+| **3. 独立解密** | 提权的 PS1 进程使用令牌中的 Nonce 独立派生 AES 密钥解密哈希列表，不依赖已删除的 RSA 令牌。The elevated PS1 process independently derives the AES key using the Nonce in the token to decrypt the hash list, without depending on the now-deleted RSA token. |
+| **4. 时效控制** | 120 秒独立过期窗口（比标准 60 秒更长，补偿提权延迟）。120-second independent expiration window (longer than the standard 60 seconds, compensating for elevation delay). |
 
-# 2. 隐藏所有窗口（而非关闭）
-if ($global:proForm) {
-    $global:proForm.WindowState = [FormWindowState]::Minimized
-    $global:proForm.Hide()
-}
-if ($splash) { $splash.Hide() }
-if ($global:mainForm) {
-    $global:mainForm.WindowState = [FormWindowState]::Minimized
-    $global:mainForm.Hide()
-}
-
-# 3. 弹出 15 秒倒计时警告窗口
-[AuroraExitCountdown]::Show(
-    "安全警报：检测到文件篡改！",
-    "Security Alert: File Tampering Detected!",
-    "程序完整性已被破坏，检测到以下问题：$missingInfo$modifiedInfo`n`n程序将在 15 秒后自动退出。",
-    "Program integrity compromised. Detected issues:$missingInfo$modifiedInfo`n`nProgram will exit in 15 seconds.",
-    15,  # 倒计时秒数
-    $false,  # 使用 Application.Exit() 而非 Environment.Exit()
-    $UseChinese
-)
-```
-
-**用户体验提升 / UX Improvements:**
-- ✅ 用户有 15 秒时间查看问题详情
-- ✅ 警告窗口置顶显示（`TopMost = true`），确保可见性
-- ✅ 倒计时最后 5 秒变红警告，增强紧迫感
-- ✅ 支持中英文双语自动切换
+**安全性 / Security:**
+- 令牌仅包含加密的哈希列表，不包含密码或私钥
+- 验证通过后立即删除令牌文件
+- 解密失败（密钥不匹配/过期）→ 回退到密码验证路径
 
 ---
 
-## 🎨 用户体验优化 / User Experience Enhancements
+### 4. 反伪造启动参数保护 / Anti-Spoofing Launch Parameter Protection
 
-### 1. 完整性检查日志原地刷新 / Integrity Check Log In-Place Refresh
-
-**问题描述 / Issue Description:**
-> 完整性检查每 3-10 秒输出一次日志，每次换行导致控制台快速刷屏，影响日志可读性。
+> **概述 / Overview:** 修复了一个安全漏洞：攻击者可通过伪造 `-LaunchedByExe` 命令行参数，绕过所有 RSA/AES 安全验证。现在如果该参数为真但没有有效令牌验证通过，系统将强制重置安全状态。
 >
-> Integrity checks output logs every 3-10 seconds, with each check creating a new line, causing rapid console scrolling and reducing log readability.
+> Fixed a security vulnerability where an attacker could forge the `-LaunchedByExe` command-line parameter to bypass all RSA/AES security verification. Now, if this parameter is true but no valid token has passed validation, the system forces a security state reset.
 
-**修复方案 / Resolution:**
-- ✅ **添加检查计数器** - `$script:IntegrityCheckCount` 记录累计检查次数
-- ✅ **原地刷新日志** - 使用 `\r` 回车符覆盖上一行
-- ✅ **增强日志格式** - 包含检查次数和时间戳
-
-**技术实现 / Technical Implementation:**
-```powershell
-# Lines 758-759: 添加计数器
-$script:IntegrityCheckCount = 0
-
-# Lines 937-945: 原地刷新日志
-$script:IntegrityCheckCount++
-$timestamp = Get-Date -Format "HH:mm:ss"
-$logLine = "[完整性检查] 通过 - 共 $($script:ExpectedFileHashes.Count) 个文件 - 第 $($script:IntegrityCheckCount) 次 - $timestamp"
-
-# 使用空白字符串清除当前行
-$clearLine = New-Object String(' ', $Host.UI.RawUI.WindowSize.BufferWidth)
-Write-Host "`r$clearLine" -NoNewline
-Write-Host "`r$logLine" -ForegroundColor DarkGray -NoNewline
 ```
-
-**效果对比 / Before & After:**
-```
-修改前（刷屏）:                    修改后（原地刷新）:
-[完整性检查] 检查通过 - 共检查 19 个文件  [完整性检查] 通过 - 共 19 个文件 - 第 42 次 - 14:23:15
-[完整性检查] 检查通过 - 共检查 19 个文件
-[完整性检查] 检查通过 - 共检查 19 个文件
-[完整性检查] 检查通过 - 共检查 19 个文件
-...（持续刷屏）
+检测逻辑 / Detection Logic:
+  if (IsLaunchedByExe == true AND PassedHashListFromExe == null)
+      → 重置 IsLaunchedByExe = false
+      → 清除所有环境变量标记
+      → 强制走密码验证路径
 ```
 
 ---
 
-### 2. 调试日志清理 / Debug Log Cleanup
+### 5. LastWriteTime 快速筛选优化 / LastWriteTime Pre-Check Optimization
 
-**清理范围 / Cleanup Scope:**
-- ❌ **移除 ShowProMode 调试日志** - 15 行（`Form Shown`、`Animation started`、`EngineInit` 等）
-- ❌ **移除 DEBUG 前缀路径日志** - 11 行（`chsScript`、`engScript`、`Launching` 等）
-- ❌ **移除完整性检查详细日志** - 4 行（`隐藏二级窗口`、`隐藏主窗口` 等）
+> **概述 / Overview:** P2 级性能优化。在完整性检查循环中，先检查文件的 `LastWriteTime`，只有当修改时间发生变化时才执行完整的 SHA256 哈希计算。大幅减少 19 个文件每 3 秒的重复哈希开销。
+>
+> P2-level performance optimization. In the integrity check loop, the file's `LastWriteTime` is checked first, and the full SHA256 hash calculation is only performed when the modification time has changed. Significantly reduces the repeated hashing overhead of 19 files every 3 seconds.
 
-**总计清理 / Total Removed:** 30 行调试日志
-
-**效果对比 / Before & After:**
-```
-修改前（刷屏）:                    修改后（清爽）:
-[DEBUG] Main form hidden           [完整性检查] 通过 - 共 19 个文件 - 第 25 次 - 10:09:34
-[DEBUG] SelectedLanguage: CHS
-[DEBUG] chsScript: E:\...\xxx.ps1
-[DEBUG] Launching CHS: ...
-[ShowProMode] Setting form opacity...
-[ShowProMode.Shown] Form Shown event...
-[ShowProMode.Shown] Starting animation...
-...（约 30 行调试信息）
-```
+**效果 / Effect:**
+- 文件未修改时：跳过 SHA256，仅比较时间戳 → ~0ms
+- 文件修改时：完整 SHA256 验证 → 50-200ms/文件
+- 稳定运行时（无文件变化）：CPU 开销降至接近零
 
 ---
 
-## 🐛 Bug 修复 / Bug Fixes
+## 🎨 界面增强 / UI Enhancements
 
-| # | 问题 / Issue | 严重性 / Severity | 修复方案 / Resolution |
-|---|-------------|------------------|----------------------|
-| 1 | **AuroraGuard 路径重复** | 🔴 P0 (致命) | 修正为根目录初始化，路径合并逻辑修复 |
-| 2 | **VerifyOrDie 杀死进程** | 🔴 P0 (致命) | 改为返回布尔值，调用方处理异常 |
-| 3 | **二级窗口无法打开** | 🔴 P0 (致命) | 修复路径错误 + 非致命验证模式 |
-| 4 | **完整性检查暂停** | 🟡 P1 (高危) | 移除暂停逻辑，实现全链路监控 |
-| 5 | **日志刷屏** | 🟢 P2 (中危) | 原地刷新 + 计数器 + 时间戳 |
-| 6 | **调试日志过多** | 🟢 P3 (低危) | 清理 30 行调试日志，保留关键信息 |
+### 6. C# 内嵌倒计时告警窗口 / C# Embedded Countdown Alert Window
+
+> **概述 / Overview:** 将完整性检查的告警窗口从 PowerShell Timer 实现改为 C# 内嵌类 `AuroraExitCountdown`，避免 PowerShell Timer 作用域问题和倒计时不稳定。
+>
+> Changed the integrity check alert window from PowerShell Timer implementation to the C# embedded class `AuroraExitCountdown`, avoiding PowerShell Timer scope issues and countdown instability.
+
+**特性 / Features:**
+- 深色主题告警窗口（暗红背景 + 白色文字）
+- 最后 5 秒红色倒计时警告
+- 中英双语支持
+- TopMost 置顶确保用户可见
+- `Show()` 非模态显示 + 计时器驱动
+
+---
+
+## 🔨 构建系统增强 / Build System Enhancements
+
+### 7. AuroraGuard 哈希注入 / AuroraGuard Hash Injection
+
+> **概述 / Overview:** `build.ps1` 新增 `[2.5/6]` 步骤，将当前构建的 16 个子模块 SHA256 哈希自动注入 LauncherGUI.ps1 的 `AuroraGuard` C# 源代码中，替换占位符哈希值。
+>
+> `build.ps1` adds a `[2.5/6]` step that automatically injects the current build's 16 sub-module SHA256 hashes into the `AuroraGuard` C# source code in LauncherGUI.ps1, replacing placeholder hash values.
+
+### 8. 智能安全代码注入增强 / Enhanced Intelligent Security Code Injection
+
+> **概述 / Overview:** 增强了 build.ps1 的安全代码注入逻辑，现在能够自动检测并更新 AuroraGuard 的 `_expected` 字典中的哈希值，以及正确替换占位符函数。支持首次注入、密钥更新和哈希更新三种模式。
+>
+> Enhanced the security code injection logic in build.ps1, which now automatically detects and updates hash values in AuroraGuard's `_expected` dictionary, and correctly replaces placeholder functions. Supports three modes: first-time injection, key update, and hash update.
+
+---
+
+## 🐛 修复 / Bug Fixes
+
+| # | 问题 / Issue | 修复方案 / Resolution |
+|---|-------------|----------------------|
+| 1 | **UAC 提权信任链断裂 / UAC Elevation Trust Chain Break** | 独立提权安全令牌，120 秒过期窗口。Independent elevation security token with 120-second expiration window. |
+| 2 | **伪造 -LaunchedByExe 参数 / Forged -LaunchedByExe Parameter** | 令牌验证失败时强制重置安全状态。Force reset security state when token validation fails. |
+| 3 | **重复 Add-Type 加载 / Duplicate Add-Type Loading** | 检查 System.Windows.Forms 和 System.Drawing 是否已加载，避免重复加载报错。Check if assemblies are already loaded before calling Add-Type. |
+| 4 | **PowerShell Timer 倒计时不稳定 / PowerShell Timer Countdown Instability** | 改用 C# 内嵌类 `AuroraExitCountdown`。Switched to C# embedded class `AuroraExitCountdown`. |
+| 5 | **完整性检查 CPU 持续高占用 / Integrity Check Sustained High CPU** | LastWriteTime 快速筛选，跳过未修改文件的 SHA256 计算。LastWriteTime pre-check skips SHA256 for unmodified files. |
 
 ---
 
 ## 📊 变更统计 / Change Statistics
 
-| 指标 / Metric | V1.1.24.0 | V1.1.24.1 | 变化 / Change |
-|--------------|-----------|-----------|---------------|
-| **安全更新 / Security Updates** | 7 | 3 | 聚焦关键问题 |
-| **Bug 修复 / Bug Fixes** | 5 | 6 | +20% |
-| **UX 优化 / UX Enhancements** | 6 | 2 | 精简优化 |
-| **代码行数变更 / LOC Changes** | +2500 | -150 | 精简代码 |
-| **调试日志清理 / Debug Logs Removed** | 0 | 30 行 | 清爽日志 |
-| **总计变更项 / Total Changes** | 27 | 11 | 质量优先 |
+| 指标 / Metric | 数值 / Value |
+|--------------|-------------|
+| **新增安全功能 / New Security Features** | 3 |
+| **安全修复 / Security Fixes** | 3 |
+| **性能优化 / Performance Optimizations** | 1 |
+| **UI 增强 / UI Enhancements** | 1 |
+| **构建系统增强 / Build System Enhancements** | 2 |
+| **Bug 修复 / Bug Fixes** | 5 |
+| **总计变更项 / Total Changes** | 15 |
 
 ---
 
-## 🔍 已知问题 / Known Issues
+## 🔐 纵深防御升级总结 / Defense-in-Depth Upgrade Summary
 
-| ID | 问题描述 / Issue | 状态 / Status | 计划解决版本 / Target Version |
-|----|----------------|---------------|-------------------------------|
-| ISS-2026-001 | 直接运行 PowerShell 脚本时控制台窗口可见 | 🟡 已确认 | V1.1.25.0 |
-| ISS-2026-002 | 完整性检查计数器在二级窗口关闭后未重置 | 🟡 已确认 | V1.1.24.2 |
-| ISS-2026-003 | 警告窗口倒计时期间无法手动提前退出 | 🟡 已确认 | V1.1.24.2 |
+V1.1.24.0 的纵深防御模型从四层扩展为**五层**：
 
----
+```
+🛡️ 第一层：构建时安全 (Build-Time)         — RSA 密钥 + 密码混淆 + SHA256 签名
+🛡️ 第二层：启动安全 (Launch-Time)          — 反调试 + AES 解密 + RSA 握手
+🛡️ 第三层：运行时安全 (Runtime)            — 双定时器 + FileSystemWatcher + 完整性检查
+🛡️ 第四层：多模块启动检测 (Multi-Module)    — GUI_Mode + syncHash + RSA Token
+🛡️ 第五层：看门狗守护 (Watchdog) — 🆕     — Named Pipe HMAC 挑战-响应 + 独立进程 Kill
+```
 
-## 📋 升级建议 / Upgrade Recommendations
-
-### 面向企业用户 / For Enterprise Users
-- ✅ **强烈建议升级** - 全链路完整性监控是关键安全增强
-- ✅ **无需重新配置** - 所有设置向后兼容
-- ✅ **立即生效** - 无需重启或重新部署
-
-### 面向个人用户 / For Individual Users
-- ✅ **建议升级** - 修复了专业图形模式无法打开的问题
-- ✅ **体验提升** - 日志更清爽，警告更友好
-- ✅ **无缝升级** - 覆盖安装即可
+**新增第五层防御的特性 / Characteristics of the New Fifth Defense Layer:**
+- 完全独立于 PS1 脚本层面，由 C# EXE 原生控制
+- 即使 PS1 层所有验证被绕过，看门狗仍能独立检测
+- 挑战-响应携带 PS1 脚本自哈希，不可伪造
+- 连续失败阈值 + 超时机制，多层容错
 
 ---
 
-## 📄 配套文档 / Accompanying Documentation
-
-本版本配套生成以下技术文档：
-> This version is accompanied by the following technical documentation:
-
-| 文档名称 / Document | 目标读者 / Target Audience | 页数 / Pages |
-|--------------------|--------------------------|-------------|
-| **AURORA-安全链路完整评测报告.md** | 安全审计员、技术决策者 | ~15 |
-| **AURORA-工具运行流程完整解析报告.md** | 开发者、维护者 | ~12 |
-| **README_V1.1.24.1Release.md** | 最终用户 | ~5 |
-| **README_V1.1.24.1.md** | 开发者社区 | ~8 |
-
----
-
-## 🔗 相关链接 / Related Links
-
-- [AURORA Analyzer GitHub 仓库](https://github.com/aurora-analyzer)
-- [V1.1.24.0 安全审计报告](Docs/AURORA_Security_Audit_Report_v1.1.24.0.md)
-- [技术文档目录](Docs/)
-
----
-
-**版权声明 / Copyright:** &copy; 2026 AURORA VelociRaptor-GR Dev PRJ. All rights reserved.  
-**许可证 / License:** Proprietary (All Rights Reserved)
+**版权声明 / Copyright:** &copy; 2026 AURORA VelociRaptor-GR Dev PRJ. All rights reserved.

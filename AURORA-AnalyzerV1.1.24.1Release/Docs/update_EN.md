@@ -1,271 +1,190 @@
-# AURORA Analyzer V1.1.24.1 — Update Log
+# AURORA Analyzer V1.1.24.1 — Changelog
 
-**Release Date:** 2026.05.27  
-**Current Version:** V1.1.24.1  
-**Previous Version:** V1.1.24.0  
-**Author:** AURORA VelociRaptor-GR Dev PRJ.  
-**Update Type:** Security and User Experience Enhancement Release
-
----
-
-## 🔐 Security Enhancements
-
-### 1. Full-Link Integrity Monitoring Coverage
-
-**Issue Description:**
-> In V1.1.24.0, runtime integrity checks were paused when entering Professional Graphics Mode (secondary window). This created a security monitoring blind spot where file tampering could not be detected in real-time during secondary window operation (typically 5-30 minutes).
-
-**Resolution:**
-- ✅ **Removed integrity check pause logic** - Integrity checks continue during secondary window operation
-- ✅ **Registered secondary window to global variable** - `$global:proForm` for integrity check system recognition
-- ✅ **Enhanced tamper response mechanism** - Sequential closure on tamper detection: Secondary Window → Splash Screen → Main Window
-- ✅ **Non-lethal verification mode** - `AuroraGuard.VerifyOrDie()` changed from `Environment.FailFast` to return boolean value
-
-**Technical Implementation:**
-```powershell
-# Fix 1: AuroraGuard base path correction (Line 440)
-[AuroraGuard]::Initialize((Split-Path -Parent $PSScriptRoot))  # Use root directory
-
-# Fix 2: VerifyOrDie non-lethalization (Lines 429-434)
-public static bool VerifyOrDie() {
-    if (!CheckIntegrity()) return false;  // No longer kills process
-    return true;
-}
-
-# Fix 3: ShowProMode security enhancement (Lines 9776-9777)
-$global:proForm = $proForm  # Register secondary window for integrity check recognition
-
-# Fix 4: Tamper detection processor enhancement (Lines 870-900)
-# Hide all windows first, then show warning
-if ($global:proForm) { $global:proForm.Hide() }
-if ($splash) { $splash.Hide() }
-if ($global:mainForm) { $global:mainForm.Hide() }
-```
-
-**Security Benefits:**
-- ✅ Achieved **full-link integrity monitoring** from launch to exit, no time window blind spots
-- ✅ Tamper detection response time < 3 seconds during secondary window operation
-- ✅ Prevented attackers from exploiting file replacement attacks during secondary window operation
+**Release Date:** 2026.05.27
+**Current Version:** V1.1.24.1
+**Previous Version:** V1.1.24.0
+**Author:** AURORA VelociRaptor-GR Dev PRJ.
+**Update Type:** Security Hardening & Defense-in-Depth Enhancement
 
 ---
 
-### 2. AuroraGuard Path Resolution Fix
+## 🛡️ New Security Features
 
-**Issue Description:**
-> AuroraGuard initialization used `$PSScriptRoot` (pointing to `Scripts` directory), but file paths in `_expected` dictionary (e.g., `Scripts\AURORA-SmartEngine.ps1`) were relative to root. After concatenation, paths became `...\Scripts\Scripts\...`, causing all file lookups to fail and integrity checks to report errors.
+### 1. Named Pipe Watchdog Guardian
 
-**Impact:**
-- ❌ All integrity checks failed (19 files reported hash mismatch)
-- ❌ `VerifyOrDie()` called `Environment.FailFast` to directly kill process
-- ❌ User clicked "Professional Graphics Mode" button with no response (process silently killed)
+> **Overview:** On top of the existing RSA handshake protocol, a bidirectional HMAC-SHA256 challenge-response heartbeat mechanism between the EXE and PS1 has been added. Even if all PS1-level verifications are commented out or bypassed, the EXE watchdog can still detect anomalies and terminate the process. This forms an **independent fifth defense layer** in the defense-in-depth model.
 
-**Resolution:**
-```powershell
-# Line 440: Correct base path to root directory
-[AuroraGuard]::Initialize((Split-Path -Parent $PSScriptRoot))
+**Core Mechanism:**
 
-# Lines 9681-9688: Enhanced error handling
-try { 
-    $guardOk = [AuroraGuard]::VerifyOrDie()
-    if (-not $guardOk) {
-        Write-Host "[ShowProMode] Integrity verification warning: Some file hashes mismatch (normal in dev environment)" -ForegroundColor Yellow
-    }
-} catch { 
-    Write-Host "[ShowProMode] Integrity guard uninitialized (degraded mode)" -ForegroundColor DarkGray
-}
-```
+| Component | Description |
+|---|---|
+| **HMAC Key Derivation** | PBKDF2-SHA256(MasterPassword, WatchdogSalt, 10,000 iterations) → 32-byte HMAC key. Independently generated per build. |
+| **Named Pipe Communication** | `AURORA_WD_{8-char random ID}` named pipe, PipeDirection.InOut, Byte transmission mode. |
+| **Handshake Protocol** | EXE → PS1: `[0x10] [32B HMAC Key] [16B SessionID]`; PS1 → EXE: `[0x11]` ACK confirmation. |
+| **Challenge-Response** | EXE: `[0x03] [16B Nonce] [8B Timestamp]` → PS1: `[0x04] [32B HMAC(Nonce,Key)] [8B SystemUptime] [32B SelfSHA256]` |
+| **Dual Timer** | 5-second fixed interval + 2-7 second random interval. |
+| **Failure Threshold** | 3 consecutive failures → EXE immediately kills the PS1 process. |
+| **Timeout Protection** | Connect timeout 15 seconds, response timeout 3 seconds. |
 
-**Verification:**
-- ✅ Integrity checks pass normally (19 files successfully verified)
-- ✅ Professional Graphics Mode secondary window opens normally
-- ✅ Runtime monitoring continues working, no process crashes
+**Attack Model Coverage:**
+
+- Attacker comments out all PS1 verification code → EXE watchdog independently detects → Kill process
+- Attacker replaces PS1 script → Self-hash mismatch → Challenge failure → Kill process
+- Attacker injects hooks → Heartbeat lost → 3 failures → Kill process
 
 ---
 
-### 3. Security Alert Window Consistency Upgrade
+### 2. Embedded C# Integrity Guard (AuroraGuard)
 
-**Issue Description:**
-> In V1.1.24.0, tamper detection would directly close all windows (`Close()` + `Dispose()`), resulting in abrupt user experience without buffer time.
+> **Overview:** Added a runtime-compiled C# IL code block `AuroraGuard` in LauncherGUI.ps1 that performs independent SHA256 integrity verification of 16 sub-module core files. Being compiled to native IL instructions, it is significantly harder to analyze and modify than pure PowerShell code. Hash values are securely injected by `build.ps1` at build time.
 
-**Resolution:**
-- ✅ **Hide all windows first** - Use `WindowState = Minimized` + `Hide()` instead of direct close
-- ✅ **Display 15-second countdown warning window** - Show detailed information (missing/tampered file list)
-- ✅ **Auto-exit after countdown** - Use `Application.Exit()` for graceful exit
+**Verification Coverage:**
 
-**Technical Implementation:**
-```powershell
-# Lines 870-900: Tamper detection handling flow
-# 1. Stop all monitoring
-$script:runtimeIntegrityTimer.Stop()
-$script:randomIntegrityTimer.Stop()
-$script:fileWatcher.EnableRaisingEvents = $false
+| # | Protected File | Description |
+|:--:|---|---|
+| 1 | `Scripts\AURORA-SmartEngine.ps1` | Intelligent diagnostic engine |
+| 2 | `Scripts\AURORA-CoreEngine.ps1` | Shared core engine |
+| 3 | `Scripts\AURORA-AnalyzerCHSPRO.ps1` | Chinese PRO export |
+| 4 | `Scripts\AURORA-ProgressManager.ps1` | Progress persistence management |
+| 5 | `Scripts\AURORA-GUI-Functions.ps1` | GUI helper functions |
+| 6 | `Scripts\AURORA-RepairTools.ps1` | Repair tools |
+| 7 | `Scripts\AURORA-UndoManager.ps1` | Undo management |
+| 8 | `Scripts\AURORA-RestoreManager.ps1` | System restore |
+| 9 | `Scripts\AURORA-RepairLogger.ps1` | Repair log audit |
+| 10 | `Scripts\AURORA-UndoViewer.ps1` | Repair history viewer |
+| 11 | `Scripts\AURORA-AnalyzerPRO.ps1` | PRO mode entry |
+| 12 | `Scripts\AURORA-ProgressManager-Integration.ps1` | Progress integration bridge |
+| 13 | `Scripts\AURORA-ProgressManager-Integration-CHS.ps1` | Chinese progress integration |
+| 14 | `Scripts\AURORA-ProgressManager-Integration-ENG.ps1` | English progress integration |
+| 15 | `Scripts\Core\AURORA-AnimationCoreEngine.ps1` | Animation engine |
+| 16 | `Data\AURORA-TechData.json` | Diagnostic knowledge base |
 
-# 2. Hide all windows (not close)
-if ($global:proForm) {
-    $global:proForm.WindowState = [FormWindowState]::Minimized
-    $global:proForm.Hide()
-}
-if ($splash) { $splash.Hide() }
-if ($global:mainForm) {
-    $global:mainForm.WindowState = [FormWindowState]::Minimized
-    $global:mainForm.Hide()
-}
-
-# 3. Display 15-second countdown warning window
-[AuroraExitCountdown]::Show(
-    "Security Alert: File Tampering Detected!",
-    "Security Alert: File Tampering Detected!",
-    "Program integrity compromised. Detected issues:$missingInfo$modifiedInfo`n`nProgram will exit in 15 seconds.",
-    "Program integrity compromised. Detected issues:$missingInfo$modifiedInfo`n`nProgram will exit in 15 seconds.",
-    15,  # Countdown seconds
-    $false,  # Use Application.Exit() instead of Environment.Exit()
-    $UseChinese
-)
-```
-
-**User Experience Improvements:**
-- ✅ Users have 15 seconds to view problem details
-- ✅ Warning window displayed on top (`TopMost = true`), ensuring visibility
-- ✅ Countdown turns red in last 5 seconds, enhancing urgency
-- ✅ Supports automatic Chinese/English bilingual switching
+**Technical Characteristics:**
+- `Add-Type` runtime compilation to IL, visible across Runspaces
+- `VerifyOrDie()` method returns `bool`, can be actively called by sub-modules
+- Hash values automatically injected at build time (build.ps1 `[2.5/6]` step)
+- Graceful degradation on load failure (does not affect normal functionality)
 
 ---
 
-## 🎨 User Experience Enhancements
+## 🔧 Runtime Integrity Monitoring Enhancements
 
-### 1. Integrity Check Log In-Place Refresh
+### 3. Elevation Security Token (AURORA-SEC-2026-001)
 
-**Issue Description:**
-> Integrity checks output logs every 3-10 seconds, with each check creating a new line, causing rapid console scrolling and reducing log readability.
+> **Overview:** P0-level security fix. When users perform operations requiring admin privileges (e.g., exporting security logs), the PowerShell process restarts with UAC elevation. The original RSA token file gets cleaned up by the old process, causing the elevated process to be unable to verify the EXE identity (trust chain break).
 
-**Resolution:**
-- ✅ **Added check counter** - `$script:IntegrityCheckCount` records cumulative check count
-- ✅ **In-place log refresh** - Use `\r` carriage return to overwrite previous line
-- ✅ **Enhanced log format** - Includes check count and timestamp
+**Implementation:**
 
-**Technical Implementation:**
-```powershell
-# Lines 758-759: Add counter
-$script:IntegrityCheckCount = 0
+| Step | Description |
+|---|---|
+| **1. Token Generation** | Before launching, EXE generates a separate elevation token file with Nonce + Timestamp + AES-256-CBC encrypted hash list. |
+| **2. Parameter Passing** | Token path is passed via `-ElevationTokenPath` command-line argument, bypassing UAC environment variable clearing. |
+| **3. Independent Decryption** | The elevated PS1 process independently derives the AES key using the Nonce in the token to decrypt the hash list, without depending on the now-deleted RSA token. |
+| **4. Time-Based Control** | 120-second independent expiration window (longer than the standard 60 seconds, compensating for elevation delay). |
 
-# Lines 937-945: In-place log refresh
-$script:IntegrityCheckCount++
-$timestamp = Get-Date -Format "HH:mm:ss"
-$logLine = "[Integrity Check] Pass - Total $($script:ExpectedFileHashes.Count) files - Check #$($script:IntegrityCheckCount) - $timestamp"
+**Security:**
+- Token contains only encrypted hash list, no passwords or private keys
+- Token file is immediately deleted after successful verification
+- Decryption failure (key mismatch/expired) → falls back to password verification path
 
-# Use blank string to clear current line
-$clearLine = New-Object String(' ', $Host.UI.RawUI.WindowSize.BufferWidth)
-Write-Host "`r$clearLine" -NoNewline
-Write-Host "`r$logLine" -ForegroundColor DarkGray -NoNewline
+---
+
+### 4. Anti-Spoofing Launch Parameter Protection
+
+> **Overview:** Fixed a security vulnerability where an attacker could forge the `-LaunchedByExe` command-line parameter to bypass all RSA/AES security verification. Now, if this parameter is true but no valid token has passed validation, the system forces a security state reset.
+
 ```
-
-**Before & After:**
-```
-Before (scrolling):                    After (in-place refresh):
-[Integrity Check] Pass - 19 files      [Integrity Check] Pass - 19 files - Check #42 - 14:23:15
-[Integrity Check] Pass - 19 files
-[Integrity Check] Pass - 19 files
-[Integrity Check] Pass - 19 files
-... (continuous scrolling)
+Detection Logic:
+  if (IsLaunchedByExe == true AND PassedHashListFromExe == null)
+      → Reset IsLaunchedByExe = false
+      → Clear all environment variable markers
+      → Force password verification path
 ```
 
 ---
 
-### 2. Debug Log Cleanup
+### 5. LastWriteTime Pre-Check Optimization
 
-**Cleanup Scope:**
-- ❌ **Removed ShowProMode debug logs** - 15 lines (`Form Shown`, `Animation started`, `EngineInit`, etc.)
-- ❌ **Removed DEBUG prefix path logs** - 11 lines (`chsScript`, `engScript`, `Launching`, etc.)
-- ❌ **Removed integrity check detailed logs** - 4 lines (`Hide secondary window`, `Hide main window`, etc.)
+> **Overview:** P2-level performance optimization. In the integrity check loop, the file's `LastWriteTime` is checked first, and the full SHA256 hash calculation is only performed when the modification time has changed. Significantly reduces the repeated hashing overhead of 19 files every 3 seconds.
 
-**Total Removed:** 30 lines of debug logs
+**Effect:**
+- Files unchanged: Skip SHA256, compare timestamp only → ~0ms
+- Files modified: Full SHA256 verification → 50-200ms/file
+- Stable runtime (no file changes): CPU overhead drops to near zero
 
-**Before & After:**
-```
-Before (cluttered):                    After (clean):
-[DEBUG] Main form hidden               [Integrity Check] Pass - 19 files - Check #25 - 10:09:34
-[DEBUG] SelectedLanguage: CHS
-[DEBUG] chsScript: E:\...\xxx.ps1
-[DEBUG] Launching CHS: ...
-[ShowProMode] Setting form opacity...
-[ShowProMode.Shown] Form Shown event...
-[ShowProMode.Shown] Starting animation...
-... (about 30 lines of debug info)
-```
+---
+
+## 🎨 UI Enhancements
+
+### 6. C# Embedded Countdown Alert Window
+
+> **Overview:** Changed the integrity check alert window from PowerShell Timer implementation to the C# embedded class `AuroraExitCountdown`, avoiding PowerShell Timer scope issues and countdown instability.
+
+**Features:**
+- Dark-themed alert window (dark red background + white text)
+- Final 5-second red countdown warning
+- Bilingual support (Chinese and English)
+- TopMost ensures user visibility
+- `Show()` non-modal display + timer-driven
+
+---
+
+## 🔨 Build System Enhancements
+
+### 7. AuroraGuard Hash Injection
+
+> **Overview:** `build.ps1` adds a `[2.5/6]` step that automatically injects the current build's 16 sub-module SHA256 hashes into the `AuroraGuard` C# source code in LauncherGUI.ps1, replacing placeholder hash values.
+
+### 8. Enhanced Intelligent Security Code Injection
+
+> **Overview:** Enhanced the security code injection logic in build.ps1, which now automatically detects and updates hash values in AuroraGuard's `_expected` dictionary, and correctly replaces placeholder functions. Supports three modes: first-time injection, key update, and hash update.
 
 ---
 
 ## 🐛 Bug Fixes
 
-| # | Issue | Severity | Resolution |
-|---|-------|----------|------------|
-| 1 | **AuroraGuard path duplication** | 🔴 P0 (Critical) | Corrected to root directory initialization, path merge logic fixed |
-| 2 | **VerifyOrDie kills process** | 🔴 P0 (Critical) | Changed to return boolean, caller handles exceptions |
-| 3 | **Secondary window won't open** | 🔴 P0 (Critical) | Fixed path error + non-lethal verification mode |
-| 4 | **Integrity check paused** | 🟡 P1 (High) | Removed pause logic, achieved full-link monitoring |
-| 5 | **Log scrolling** | 🟢 P2 (Medium) | In-place refresh + counter + timestamp |
-| 6 | **Excessive debug logs** | 🟢 P3 (Low) | Cleaned 30 lines of debug logs, kept key information |
+| # | Issue | Resolution |
+|---|-------|------------|
+| 1 | **UAC Elevation Trust Chain Break** | Independent elevation security token with 120-second expiration window. |
+| 2 | **Forged -LaunchedByExe Parameter** | Force reset security state when token validation fails. |
+| 3 | **Duplicate Add-Type Loading** | Check if System.Windows.Forms and System.Drawing are already loaded before calling Add-Type. |
+| 4 | **PowerShell Timer Countdown Instability** | Switched to C# embedded class `AuroraExitCountdown`. |
+| 5 | **Integrity Check Sustained High CPU** | LastWriteTime pre-check skips SHA256 for unmodified files. |
 
 ---
 
 ## 📊 Change Statistics
 
-| Metric | V1.1.24.0 | V1.1.24.1 | Change |
-|--------|-----------|-----------|--------|
-| **Security Updates** | 7 | 3 | Focused on key issues |
-| **Bug Fixes** | 5 | 6 | +20% |
-| **UX Enhancements** | 6 | 2 | Streamlined optimization |
-| **LOC Changes** | +2500 | -150 | Code simplification |
-| **Debug Logs Removed** | 0 | 30 lines | Clean logs |
-| **Total Changes** | 27 | 11 | Quality over quantity |
+| Metric | Value |
+|--------|-------|
+| **New Security Features** | 3 |
+| **Security Fixes** | 3 |
+| **Performance Optimizations** | 1 |
+| **UI Enhancements** | 1 |
+| **Build System Enhancements** | 2 |
+| **Bug Fixes** | 5 |
+| **Total Changes** | 15 |
 
 ---
 
-## 🔍 Known Issues
+## 🔐 Defense-in-Depth Upgrade Summary
 
-| ID | Issue | Status | Target Version |
-|----|-------|--------|----------------|
-| ISS-2026-001 | Console window visible when running PowerShell script directly | 🟡 Confirmed | V1.1.25.0 |
-| ISS-2026-002 | Integrity check counter not reset after secondary window closes | 🟡 Confirmed | V1.1.24.2 |
-| ISS-2026-003 | Cannot manually exit early during warning window countdown | 🟡 Confirmed | V1.1.24.2 |
+V1.1.24.0's defense-in-depth model expands from four layers to **five layers**:
 
----
+```
+🛡️ Layer 1: Build-Time Security        — RSA keys + password obfuscation + SHA256 signing
+🛡️ Layer 2: Launch-Time Security       — Anti-debug + AES decryption + RSA handshake
+🛡️ Layer 3: Runtime Security           — Dual timers + FileSystemWatcher + integrity checks
+🛡️ Layer 4: Multi-Module Detection     — GUI_Mode + syncHash + RSA Token
+🛡️ Layer 5: Watchdog Guardian — 🆕    — Named Pipe HMAC challenge-response + independent process kill
+```
 
-## 📋 Upgrade Recommendations
-
-### For Enterprise Users
-- ✅ **Strongly recommended to upgrade** - Full-link integrity monitoring is a key security enhancement
-- ✅ **No reconfiguration needed** - All settings are backward compatible
-- ✅ **Effective immediately** - No restart or redeployment required
-
-### For Individual Users
-- ✅ **Recommended to upgrade** - Fixed the issue where Professional Graphics Mode couldn't open
-- ✅ **Improved experience** - Cleaner logs, friendlier warnings
-- ✅ **Seamless upgrade** - Just overwrite installation
+**Characteristics of the New Fifth Defense Layer:**
+- Completely independent of PS1 script layer, natively controlled by C# EXE
+- Even if all PS1-layer verifications are bypassed, the watchdog still detects independently
+- Challenge-response carries PS1 script self-hash, unforgeable
+- Consecutive failure threshold + timeout mechanism, multi-layer fault tolerance
 
 ---
 
-## 📄 Accompanying Documentation
-
-This version is accompanied by the following technical documentation:
-
-| Document | Target Audience | Pages |
-|----------|----------------|-------|
-| **AURORA-Security-Chain-Evaluation-Report.md** | Security auditors, technical decision-makers | ~15 |
-| **AURORA-Tool-Workflow-Analysis-Report.md** | Developers, maintainers | ~12 |
-| **README_V1.1.24.1Release.md** | End users | ~5 |
-| **README_V1.1.24.1.md** | Developer community | ~8 |
-| **update_EN.md** | Technical users | ~10 |
-
----
-
-## 🔗 Related Links
-
-- [AURORA Analyzer GitHub Repository](https://github.com/aurora-analyzer)
-- [V1.1.24.0 Security Audit Report](Docs/AURORA_Security_Audit_Report_v1.1.24.0.md)
-- [Technical Documentation Directory](Docs/)
-
----
-
-**Copyright:** &copy; 2026 AURORA VelociRaptor-GR Dev PRJ. All rights reserved.  
-**License:** Proprietary (All Rights Reserved)
+**Copyright:** &copy; 2026 AURORA VelociRaptor-GR Dev PRJ. All rights reserved.
