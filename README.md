@@ -1,754 +1,612 @@
-# AURORA Analyzer V1.1.24.1 — 用户手册
+# AURORA Analyzer V1.1.24.1 — User Manual
 
-> **面向读者**: 普通用户 / 系统管理员 / IT 运维人员
-> **文档定位**: 超详细功能介绍，易读易懂，重点阐述功能使用与实际价值
-
-***
-
-## 目录
-
-- [1. 欢迎使用 AURORA Analyzer](#1-欢迎使用-aurora-analyzer)
-- [2. 快速入门](#2-快速入门)
-  - [2.1 系统要求](#21-系统要求)
-  - [2.2 安装与启动](#22-安装与启动)
-  - [2.3 界面概览](#23-界面概览)
-- [3. 日志导出功能](#3-日志导出功能)
-  - [3.1 支持的日志类型](#31-支持的日志类型)
-  - [3.2 选择导出范围](#32-选择导出范围)
-  - [3.3 高级筛选](#33-高级筛选)
-  - [3.4 导出格式说明](#34-导出格式说明)
-  - [3.5 查看导出结果](#35-查看导出结果)
-- [4. 智能诊断功能](#4-智能诊断功能)
-  - [4.1 什么是智能诊断](#41-什么是智能诊断)
-  - [4.2 五大诊断类别详解](#42-五大诊断类别详解)
-  - [4.3 蓝屏问题分析](#43-蓝屏问题分析)
-  - [4.4 解读诊断报告](#44-解读诊断报告)
-- [5. 系统修复功能](#5-系统修复功能)
-  - [5.1 支持的修复类型](#51-支持的修复类型)
-  - [5.2 修复前保护机制](#52-修复前保护机制)
-  - [5.3 如何执行修复](#53-如何执行修复)
-- [6. 撤销与还原功能](#6-撤销与还原功能)
-  - [6.1 撤销修复操作](#61-撤销修复操作)
-  - [6.2 查看修复历史](#62-查看修复历史)
-  - [6.3 系统还原点](#63-系统还原点)
-- [7. 进度管理与断点续传](#7-进度管理与断点续传)
-  - [7.1 会话自动保存](#71-会话自动保存)
-  - [7.2 恢复中断的任务](#72-恢复中断的任务)
-- [8. v1.1.24.1 新功能](#8-v11241-新功能)
-  - [8.1 安全防护再升级：五层纵深防御](#81-安全防护再升级五层纵深防御)
-  - [8.2 性能优化](#82-性能优化)
-  - [8.3 稳定性修复](#83-稳定性修复)
-- [9. 常见问题与场景](#9-常见问题与场景)
-  - [9.1 电脑频繁蓝屏怎么排查](#91-电脑频繁蓝屏怎么排查)
-  - [9.2 系统变慢如何诊断](#92-系统变慢如何诊断)
-  - [9.3 怀疑电脑被入侵怎么检查](#93-怀疑电脑被入侵怎么检查)
-  - [9.4 导出日志给技术支持](#94-导出日志给技术支持)
-- [10. 性能分级说明](#10-性能分级说明)
-- [11. 界面语言切换](#11-界面语言切换)
-- [12. 安全与隐私](#12-安全与隐私)
-- [13. 技术支持与反馈](#13-技术支持与反馈)
+> **Target Audience**: General Users / System Administrators / IT Operations
+> **Document Purpose**: Ultra-detailed feature guide, easy to read and understand, focusing on functionality and practical value
 
 ***
 
-## 1. 欢迎使用 AURORA Analyzer
+## Table of Contents
 
-**AURORA Analyzer** 是一款功能强大的 Windows 系统诊断与日志分析工具。它的核心使命是帮助您：
-
-| 需求            | AURORA Analyzer 为您做什么                        |
-| ------------- | -------------------------------------------- |
-| 🔍 **排查系统问题** | 自动扫描系统日志，定位蓝屏、崩溃、卡顿的根本原因                     |
-| 📊 **导出系统日志** | 将 Windows 事件日志导出为 CSV / JSON / XML 格式，方便分析   |
-| 🔧 **一键修复**   | 自动修复 Windows Update 卡死、Defender 误报、网络异常等常见问题 |
-| 📋 **健康报告**   | 生成详细的系统健康评估报告，包含趋势分析和建议                      |
-| ↩️ **安全回滚**   | 修复前自动创建备份和系统还原点，确保随时可以撤销                     |
-| 🛡️ **安全审计**  | 检查安全日志，发现暴力登录、权限提升等安全事件                      |
-
-### 核心价值
-
-- **不用打开事件查看器翻几千条日志了** — AURORA Analyzer 帮你自动筛选和分析
-- **不用百度搜蓝屏代码了** — 自动解析 Minidump 文件，告诉你是哪个驱动导致的
-- **修错了能反悔** — 每次修复都自动备份，一键撤销
-- **导出进度不丢失** — 即使关闭程序，下次打开也能从中断处继续
-- **五层纵深防御** — 从构建到运行全程防篡改，银行级安全保护
+- [1. Welcome to AURORA Analyzer](#1-welcome-to-aurora-analyzer)
+- [2. Quick Start](#2-quick-start)
+  - [2.1 System Requirements](#21-system-requirements)
+  - [2.2 Installation & Launch](#22-installation--launch)
+  - [2.3 Interface Overview](#23-interface-overview)
+- [3. Log Export](#3-log-export)
+  - [3.1 Supported Log Types](#31-supported-log-types)
+  - [3.2 Export Range Selection](#32-export-range-selection)
+  - [3.3 Advanced Filtering](#33-advanced-filtering)
+  - [3.4 Export Formats](#34-export-formats)
+  - [3.5 Viewing Export Results](#35-viewing-export-results)
+- [4. Smart Diagnosis](#4-smart-diagnosis)
+  - [4.1 What Is Smart Diagnosis](#41-what-is-smart-diagnosis)
+  - [4.2 Five Diagnostic Categories Explained](#42-five-diagnostic-categories-explained)
+  - [4.3 BSOD Analysis](#43-bsod-analysis)
+  - [4.4 Reading Diagnostic Reports](#44-reading-diagnostic-reports)
+- [5. System Repair](#5-system-repair)
+  - [5.1 Supported Repair Types](#51-supported-repair-types)
+  - [5.2 Pre-Repair Protection](#52-pre-repair-protection)
+  - [5.3 How to Execute Repairs](#53-how-to-execute-repairs)
+- [6. Undo & Restore](#6-undo--restore)
+  - [6.1 Undoing Repair Operations](#61-undoing-repair-operations)
+  - [6.2 Viewing Repair History](#62-viewing-repair-history)
+  - [6.3 System Restore Points](#63-system-restore-points)
+- [7. Progress Management & Resume](#7-progress-management--resume)
+  - [7.1 Auto-Save Sessions](#71-auto-save-sessions)
+  - [7.2 Resuming Interrupted Tasks](#72-resuming-interrupted-tasks)
+- [8. What's New in v1.1.24.1](#8-whats-new-in-v11241)
+  - [8.1 Security Upgrade: Five-Layer Defense-in-Depth](#81-security-upgrade-five-layer-defense-in-depth)
+  - [8.2 Performance Optimizations](#82-performance-optimizations)
+  - [8.3 Stability Fixes](#83-stability-fixes)
+- [9. FAQ & Common Scenarios](#9-faq--common-scenarios)
+  - [9.1 How to Diagnose Frequent BSODs](#91-how-to-diagnose-frequent-bsods)
+  - [9.2 How to Diagnose a Slow System](#92-how-to-diagnose-a-slow-system)
+  - [9.3 How to Check for Intrusions](#93-how-to-check-for-intrusions)
+  - [9.4 Exporting Logs for Technical Support](#94-exporting-logs-for-technical-support)
+- [10. Performance Tiers](#10-performance-tiers)
+- [11. Language Switching](#11-language-switching)
+- [12. Security & Privacy](#12-security--privacy)
+- [13. Support & Feedback](#13-support--feedback)
 
 ***
 
-## 2. 快速入门
+## 1. Welcome to AURORA Analyzer
 
-### 2.1 系统要求
+**AURORA Analyzer** is a powerful Windows system diagnostics and log analysis tool. Its core mission is to help you:
 
-| 项目                 | 最低要求               | 推荐配置             |
-| ------------------ | ------------------ | ---------------- |
-| **操作系统**           | Windows 10 (1809+) | Windows 11 22H2+ |
-| **.NET Framework** | 4.7.2              | 4.8+             |
-| **PowerShell**     | 5.1 (内置)           | PowerShell 7+    |
-| **内存**             | 4 GB               | 8 GB+            |
-| **磁盘空间**           | 100 MB             | 500 MB+ (用于日志导出) |
-| **权限**             | 标准用户               | 管理员权限（完整功能）      |
+| Need                          | What AURORA Analyzer Does For You                                                               |
+| ----------------------------- | ----------------------------------------------------------------------------------------------- |
+| 🔍 **Diagnose System Issues** | Automatically scan system logs to identify root causes of BSODs, crashes, and slowdowns         |
+| 📊 **Export System Logs**     | Export Windows event logs to CSV / JSON / XML format for easy analysis                          |
+| 🔧 **One-Click Repair**       | Automatically fix Windows Update issues, Defender misconfigurations, network anomalies and more |
+| 📋 **Health Reports**         | Generate detailed system health assessment reports with trend analysis and recommendations      |
+| ↩️ **Safe Rollback**          | Auto-create backups and system restore points before each repair, ensuring you can always undo  |
+| 🛡️ **Security Auditing**     | Check security logs for brute-force login attempts, privilege escalation, and more              |
 
-> 💡 **提示**: 大部分功能在标准用户权限下即可使用。只有导出安全日志、系统修复等操作需要管理员权限，程序会自动提示您提权。
+### Core Value
 
-### 2.2 安装与启动
+- **No more digging through thousands of log entries in Event Viewer** — AURORA Analyzer filters and analyzes for you
+- **No more Googling BSOD codes** — Automatically parses Minidump files and tells you which driver caused the crash
+- **Mistakes are reversible** — Every repair is automatically backed up, one-click undo
+- **Export progress is never lost** — Even if you close the program, resume from where you left off next time
+- **Five-layer defense-in-depth** — Tamper-proof from build to runtime, with bank-grade security protection
 
-**只需两步：**
+***
 
-1. **解压** `AURORA-AnalyzerV1.1.24.1Release.zip` 到任意目录
-2. **双击** `AURORA.Launcher-双击启动.exe` 即可启动
+## 2. Quick Start
 
-> ⚠️ **注意**:
+### 2.1 System Requirements
+
+| Item               | Minimum            | Recommended                   |
+| ------------------ | ------------------ | ----------------------------- |
+| **OS**             | Windows 10 (1809+) | Windows 11 22H2+              |
+| **.NET Framework** | 4.7.2              | 4.8+                          |
+| **PowerShell**     | 5.1 (built-in)     | PowerShell 7+                 |
+| **RAM**            | 4 GB               | 8 GB+                         |
+| **Disk Space**     | 100 MB             | 500 MB+ (for log export)      |
+| **Permissions**    | Standard user      | Administrator (full features) |
+
+> 💡 **Tip**: Most features work with standard user permissions. Only exporting security logs and system repairs require admin rights — the program will prompt you for elevation automatically.
+
+### 2.2 Installation & Launch
+
+**Just two steps:**
+
+1. **Extract** `AURORA-AnalyzerV1.1.24.1Release.zip` to any directory
+2. **Double-click** `AURORA.Launcher-双击启动.exe` to launch
+
+> ⚠️ **Note**:
 >
-> - 请勿修改或删除程序目录中的任何文件，否则程序将拒绝启动
-> - 首次运行如果被杀毒软件拦截，请添加信任（本工具不包含任何恶意代码）
-> - 请勿在压缩包内直接运行，务必先解压
+> - Do not modify or delete any files in the program directory, or the program will refuse to launch
+> - If your antivirus blocks it on first run, add an exception (this tool contains no malicious code)
+> - Do not run directly from within the archive — always extract first
 
-**启动后你会看到：**
+**After launching you will see:**
 
-- 带有星空动画背景的主界面
-- 顶部菜单栏可以切换功能模块
-- 底部状态栏显示当前系统信息和性能等级
+- A main interface with a starfield animation background
+- A top menu bar for switching between function modules
+- A bottom status bar showing current system info and performance tier
 
-### 2.3 界面概览
+### 2.3 Interface Overview
 
 ```
 ┌─────────────────────────────────────────────────┐
 │  AURORA Analyzer V1.1.24.1          [— □ ✕]     │
 ├─────────────────────────────────────────────────┤
-│  [日志导出] [智能诊断] [系统修复] [修复历史] [设置] │
+│  [Log Export] [Diagnosis] [Repair] [History] [Settings] │
 ├─────────────────────────────────────────────────┤
 │                                                 │
-│         主内容区域（根据选择的功能模块变化）         │
-│         · 日志类型选择                            │
-│         · 日期范围选择                            │
-│         · 进度条                                  │
-│         · 操作按钮                                │
+│         Main content area (changes based on selected module) │
+│         · Log type selection                    │
+│         · Date range selection                  │
+│         · Progress bar                          │
+│         · Action buttons                        │
 │                                                 │
 ├─────────────────────────────────────────────────┤
-│  状态栏: 就绪  |  管理员: 是/否  |  语言: 中文   │
+│  Status: Ready  |  Admin: Yes/No  |  Language: English  │
 └─────────────────────────────────────────────────┘
 ```
 
 ***
 
-## 3. 日志导出功能
+## 3. Log Export
 
-这是 AURORA Analyzer 最核心的功能，帮助您导出 Windows 系统中的事件日志进行分析。
+This is AURORA Analyzer's most core function — helping you export Windows system event logs for analysis.
 
-### 3.1 支持的日志类型
+### 3.1 Supported Log Types
 
-AURORA Analyzer 支持导出 **8 种** Windows 事件日志：
+AURORA Analyzer supports exporting **8 types** of Windows event logs:
 
-| 日志类型                   | 包含内容                  | 典型使用场景               |
-| ---------------------- | --------------------- | -------------------- |
-| **系统** (System)        | 系统服务启动/停止、驱动加载、内核事件   | 排查蓝屏、系统崩溃、驱动问题       |
-| **应用程序** (Application) | 应用崩溃、错误、安装事件          | 排查软件闪退、安装失败          |
-| **安全** (Security)      | 登录审计、权限变更、账户管理        | 安全审计、检查是否被入侵         |
-| **安装** (Setup)         | Windows 更新安装、组件安装     | 排查 Windows Update 失败 |
-| **DNS 服务器**            | DNS 查询与解析记录           | DNS 故障排查             |
-| **DHCP 服务器**           | DHCP IP 地址分配记录        | 网络地址分配问题             |
-| **目录服务**               | Active Directory 域控事件 | 企业域环境管理              |
-| **IIS 管理**             | IIS Web 服务器管理事件       | Web 服务器运维            |
+| Log Type              | Contents                                            | Typical Use                                       |
+| --------------------- | --------------------------------------------------- | ------------------------------------------------- |
+| **System**            | Service start/stop, driver loading, kernel events   | Troubleshoot BSODs, system crashes, driver issues |
+| **Application**       | App crashes, errors, installation events            | Troubleshoot app crashes, installation failures   |
+| **Security**          | Login audit, privilege changes, account management  | Security auditing, intrusion detection            |
+| **Setup**             | Windows update installation, component installation | Troubleshoot Windows Update failures              |
+| **DNS Server**        | DNS query and resolution records                    | DNS troubleshooting                               |
+| **DHCP Server**       | DHCP IP address assignment records                  | Network address allocation issues                 |
+| **Directory Service** | Active Directory domain controller events           | Enterprise domain management                      |
+| **IIS Admin**         | IIS Web server management events                    | Web server operations                             |
 
-> 💡 **最常用的选择**: 如果您不确定，先选择「系统」日志，这包含了90%的日常问题信息。
+> 💡 **Most common choice**: If you're unsure, start with "System" logs — they contain 90% of everyday problem information.
 
-### 3.2 选择导出范围
+### 3.2 Export Range Selection
 
-导出范围有三种选择：
+Three export range options:
 
-**① 单日导出**
+**① Single Day Export** — Export all logs for a specific day. Best for "what went wrong today".
 
-- 只导出指定某一天的所有日志
-- 适合排查"今天电脑出了什么问题"
+**② Date Range Export** — Export logs from a start date to an end date. Best for analyzing trends over a period.
 
-**② 日期范围导出**
+**③ Force Rescan** — Ignore previous cache and re-export from scratch. Use when you suspect the previous export was incomplete.
 
-- 导出起始日期到结束日期之间的所有日志
-- 适合分析一段时期内的趋势
-- 例如: 2026年1月1日 \~ 2026年3月1日
+### 3.3 Advanced Filtering
 
-**③ 强制重新扫描**
+If you only need specific types of events, use advanced filtering:
 
-- 忽略之前的缓存，从头开始重新导出
-- 适合怀疑之前的导出不完整时使用
+| Filter           | Purpose                                   | Example                                                      |
+| ---------------- | ----------------------------------------- | ------------------------------------------------------------ |
+| **EventID**      | Export only specific event IDs            | `1001, 41, 6008` (system diagnostics + unexpected shutdowns) |
+| **ProviderName** | Export only events from a specific source | `Microsoft-Windows-Kernel-Power`                             |
+| **Level**        | Export only events of a specific level    | `Critical`, `Error`                                          |
 
-### 3.3 高级筛选
+**Level Descriptions:**
 
-如果您只需要特定类型的事件，可以使用高级筛选缩小范围：
+| Level       | Meaning                     | Example                                        |
+| ----------- | --------------------------- | ---------------------------------------------- |
+| Critical    | System-level critical error | Kernel crash, unexpected shutdown              |
+| Error       | Component runtime error     | Service start failure, app crash               |
+| Warning     | Potential issue warning     | Low disk space, driver nearing expiration      |
+| Information | General operation record    | Service started successfully, update installed |
+| Verbose     | Debug-level detail          | Developer debugging logs                       |
 
-| 筛选项              | 作用         | 示例                               |
-| ---------------- | ---------- | -------------------------------- |
-| **EventID**      | 只导出指定事件ID  | `1001, 41, 6008`（系统诊断 + 意外关机）    |
-| **ProviderName** | 只导出指定来源的事件 | `Microsoft-Windows-Kernel-Power` |
-| **Level**        | 只导出指定级别的事件 | `Critical`（仅关键错误）、`Error`（错误）    |
+> 💡 **Tip**: When troubleshooting, start with `Critical + Error`. Expand to `Warning` if no cause is found.
 
-**Level 级别说明:**
+### 3.4 Export Formats
 
-| 级别          | 中文 | 含义      | 举例            |
-| ----------- | -- | ------- | ------------- |
-| Critical    | 关键 | 系统级严重错误 | 内核崩溃、意外关机     |
-| Error       | 错误 | 组件运行出错  | 服务启动失败、应用崩溃   |
-| Warning     | 警告 | 潜在问题提醒  | 磁盘空间不足、驱动即将过期 |
-| Information | 信息 | 一般操作记录  | 服务启动成功、更新安装完成 |
-| Verbose     | 详细 | 调试级详细信息 | 开发者调试用的详细日志   |
+Each export automatically generates multiple file formats:
 
-> 💡 **建议**: 排查问题时先选 `Critical + Error`，如果没有找到原因再扩大到 `Warning`。
+| File                   | Format               | Use                                              | Open With                              |
+| ---------------------- | -------------------- | ------------------------------------------------ | -------------------------------------- |
+| `*_Log_*.csv`          | CSV Table            | Data analysis and charting in Excel              | Excel / WPS / Google Sheets            |
+| `*_Log_*.json`         | JSON Structured Data | Programmatic processing, import into other tools | Any text editor / programming language |
+| `*_Log_*.xml`          | XML Structured Data  | Windows Event Viewer compatible                  | Event Viewer / Browser                 |
+| `*_Log_*_Summary.txt`  | Plain Text Summary   | Quick overview                                   | Notepad / any text editor              |
+| `*_Trend_Analysis.txt` | Plain Text Report    | View event trends and distribution               | Notepad / any text editor              |
+| `*_Trend_Data.csv`     | CSV Data             | Raw trend analysis data                          | Excel / WPS                            |
 
-### 3.4 导出格式说明
+**Output Location**: All files are saved in the `UserLogs\` folder within the program directory.
 
-每次导出会自动生成多种格式的文件：
+### 3.5 Viewing Export Results
 
-| 文件              | 格式         | 用途                 | 用什么打开                       |
-| --------------- | ---------- | ------------------ | --------------------------- |
-| `*_日志_*.csv`    | CSV 表格     | 用 Excel 做数据分析、绘制图表 | Excel / WPS / Google Sheets |
-| `*_日志_*.json`   | JSON 结构化数据 | 编程处理、导入其他工具        | 任意文本编辑器 / 编程语言              |
-| `*_日志_*.xml`    | XML 结构化数据  | Windows 事件查看器兼容格式  | 事件查看器 / 浏览器                 |
-| `*_日志_*_摘要.txt` | 纯文本摘要      | 快速浏览概览             | 记事本 / 任意文本编辑器               |
-| `*_趋势分析.txt`    | 纯文本报告      | 查看事件趋势和分布          | 记事本 / 任意文本编辑器               |
-| `*_趋势数据.csv`    | CSV 数据     | 趋势分析原始数据           | Excel / WPS                 |
+After export, you can:
 
-**输出位置**: 所有文件保存在程序目录下的 `UserLogs\` 文件夹中。
-
-**CSV 文件包含的列:**
-
-- 时间、事件ID、级别、来源、计算机名、用户、事件消息等
-
-### 3.5 查看导出结果
-
-导出完成后，您可以：
-
-1. **在程序中直接查看**: 导出完成后会弹出摘要窗口
-2. **打开文件夹**: 点击"打开输出文件夹"按钮
-3. **用 Excel 分析**: 双击 CSV 文件，您可以：
-   - 按事件ID排序找出最高频的错误
-   - 筛选特定时间段的事件
-   - 创建数据透视表分析趋势
+1. **View directly in the program**: A summary window pops up after completion
+2. **Open folder**: Click the "Open Output Folder" button
+3. **Analyze in Excel**: Double-click the CSV file to sort by EventID, filter by time range, or create pivot tables
 
 ***
 
-## 4. 智能诊断功能
+## 4. Smart Diagnosis
 
-### 4.1 什么是智能诊断
+### 4.1 What Is Smart Diagnosis
 
-智能诊断是 AURORA Analyzer 的"大脑"。它不像传统工具那样只罗列日志，而是**自动分析日志内容，找出问题并提供修复建议**。
+Smart Diagnosis is the "brain" of AURORA Analyzer. Unlike traditional tools that just list logs, it **automatically analyzes log content to find problems and provide fix recommendations**.
 
-**诊断流程:**
+**Diagnosis Flow:**
 
 ```
-① 扫描系统日志
+① Scan system logs
     ↓
-② 锁定异常时间窗口（崩溃前后、启动后）
+② Lock onto anomaly time windows (around crashes, after boots)
     ↓
-③ 100+ 条诊断规则匹配
+③ Match 100+ diagnostic rules
     ↓
-④ 分析蓝屏转储文件 (Minidump)
+④ Analyze BSOD dump files (Minidump)
     ↓
-⑤ 生成诊断报告
+⑤ Generate diagnostic report
     ↓
-⑥ 推荐修复方案
+⑥ Recommend repair actions
 ```
 
-**诊断报告包含:**
+**Diagnostic report includes:**
 
-- 发现的问题列表（按严重程度排序）
-- 每个问题的详细描述（发生时间、频率、影响）
-- 根本原因分析
-- 建议的修复操作
+- List of discovered issues (sorted by severity)
+- Detailed description of each issue (time, frequency, impact)
+- Root cause analysis
+- Recommended repair actions
 
-### 4.2 五大诊断类别详解
+### 4.2 Five Diagnostic Categories Explained
 
-#### 🅰️ 系统稳定性
+#### 🅰️ System Stability
 
-检测与系统基础运行相关的问题：
+| Diagnostic Item             | What It Detects                   | Common Causes                                      |
+| --------------------------- | --------------------------------- | -------------------------------------------------- |
+| **Unexpected Shutdowns**    | Frequent unexpected power loss    | Power issues, CPU overheating, motherboard failure |
+| **System Service Crashes**  | Core services stopping repeatedly | System file corruption, driver conflicts           |
+| **Kernel Power Anomalies**  | CPU power/frequency anomalies     | Improper power settings, insufficient cooling      |
+| **Windows Update Failures** | Repeated update failures          | Update component corruption, network issues        |
+| **Disk File System Errors** | Disk read/write errors            | Bad sectors, loose data cable                      |
+| **System Time Drift**       | Abnormal clock drift              | CMOS battery exhaustion, motherboard issue         |
 
-| 诊断项                   | 检测什么         | 常见原因            |
-| --------------------- | ------------ | --------------- |
-| **意外关机**              | 系统是否频繁意外断电   | 电源问题、CPU过热、主板故障 |
-| **系统服务崩溃**            | 核心服务是否反复停止   | 系统文件损坏、驱动冲突     |
-| **内核电源异常**            | CPU供电/频率是否异常 | 电源设置不当、散热不足     |
-| **Windows Update 失败** | 系统更新是否反复失败   | 更新组件损坏、网络问题     |
-| **磁盘文件系统错误**          | 硬盘是否出现读写错误   | 硬盘坏道、数据线松动      |
-| **系统时间跳变**            | 系统时钟是否异常跳变   | CMOS电池耗尽、主板问题   |
+#### 🅱️ Application Errors
 
-#### 🅱️ 应用程序错误
+| Diagnostic Item | What It Detects                             | Common Causes                              |
+| --------------- | ------------------------------------------- | ------------------------------------------ |
+| **App Crashes** | Frequent .NET app crashes                   | Missing runtimes, insufficient permissions |
+| **App Hangs**   | Frequent unresponsiveness                   | Low memory, deadlocks, resource conflicts  |
+| **WMI Errors**  | Windows Management Instrumentation failures | WMI repository corruption                  |
+| **COM Errors**  | COM component call failures                 | Registry corruption, missing DLLs          |
 
-检测软件运行层面问题：
+#### 🅲 Driver Issues
 
-| 诊断项          | 检测什么             | 常见原因         |
-| ------------ | ---------------- | ------------ |
-| **程序崩溃**     | .NET 程序是否频繁崩溃    | 运行库缺失、权限不足   |
-| **程序挂起**     | 应用是否频繁无响应        | 内存不足、死锁、资源冲突 |
-| **WMI 错误**   | Windows 管理组件是否正常 | WMI 存储库损坏    |
-| **COM 组件错误** | COM 组件调用是否失败     | 注册表损坏、DLL 缺失 |
+Driver issues are the most common cause of BSODs:
 
-#### 🅲 驱动程序问题
+| Diagnostic Item          | What It Detects                  | Common Causes                                                 |
+| ------------------------ | -------------------------------- | ------------------------------------------------------------- |
+| **Driver Load Failure**  | Drivers failing to load          | Driver signing issues, incompatibility                        |
+| **GPU Driver Timeout**   | GPU driver frequent resets       | GPU overheating, driver version incompatibility, overclocking |
+| **Network Driver Error** | NIC driver anomalies             | Driver version issues, NIC hardware failure                   |
+| **Storage Driver Error** | Storage controller driver errors | Driver conflicts, RAID configuration error                    |
 
-驱动问题是蓝屏的最常见原因：
+#### 🅳 Hardware Failure Warning
 
-| 诊断项        | 检测什么        | 常见原因             |
-| ---------- | ----------- | ---------------- |
-| **驱动加载失败** | 驱动是否加载成功    | 驱动签名问题、不兼容       |
-| **显卡驱动超时** | 显卡驱动是否频繁重置  | 显卡过热、驱动版本不兼容、超频  |
-| **网络驱动错误** | 网卡驱动是否正常    | 驱动版本问题、网卡硬件故障    |
-| **存储驱动错误** | 硬盘控制器驱动是否出错 | 存储驱动冲突、RAID 配置错误 |
+Detect issues before hardware fails completely:
 
-#### 🅳 硬件故障预警
+| Diagnostic Item            | What It Detects                        | Recommended Action                                       |
+| -------------------------- | -------------------------------------- | -------------------------------------------------------- |
+| **Disk SMART Warning**     | Disk self-reporting health issues      | ⚠️ **Backup data immediately**, prepare disk replacement |
+| **Disk Bad Sectors**       | Bad sectors appearing                  | Run chkdsk, backup important files                       |
+| **Memory ECC Corrections** | Frequent ECC corrections               | Check RAM sticks, may need replacement                   |
+| **CPU Thermal Throttling** | CPU throttling due to overheating      | Clean dust, check cooling fan                            |
+| **NIC Frequent Resets**    | NIC repeatedly disconnecting/resetting | Update NIC driver, check cable                           |
 
-在硬件彻底损坏前发现问题：
+#### 🅴 Security Event Audit
 
-| 诊断项             | 检测什么           | 应对建议                 |
-| --------------- | -------------- | -------------------- |
-| **磁盘 SMART 预警** | 硬盘是否报告健康问题     | ⚠️ **立即备份数据**，准备更换硬盘 |
-| **磁盘坏块**        | 硬盘是否出现坏道       | 运行 chkdsk，备份重要文件     |
-| **内存纠错**        | ECC 内存是否频繁纠错   | 检查内存条，可能需要更换         |
-| **CPU 过热降频**    | CPU 是否因过热而降频运行 | 清理灰尘、检查散热风扇          |
-| **网卡频繁重置**      | 网卡是否反复断连重置     | 更新网卡驱动、检查网线          |
+| Diagnostic Item               | What It Detects                  | Severity                                 |
+| ----------------------------- | -------------------------------- | ---------------------------------------- |
+| **Brute Force Logins**        | Repeated login attempts          | 🔴 Critical — potential ongoing attack   |
+| **Privilege Escalation**      | Unauthorized privilege elevation | 🟡 Warning — possible malware            |
+| **Audit Log Cleared**         | Security log has been cleared    | 🔴 Critical — typical intrusion evidence |
+| **Firewall Rule Changes**     | Firewall rules modified          | 🟡 Warning — verify legitimacy           |
+| **Account Creation/Deletion** | Unknown account changes          | 🟡 Warning — check account origin        |
 
-#### 🅴 安全事件审计
+### 4.3 BSOD Analysis
 
-检测系统安全状态：
+When your computer blue screens, AURORA Analyzer can:
 
-| 诊断项         | 检测什么          | 严重程度            |
-| ----------- | ------------- | --------------- |
-| **暴力登录**    | 是否有人在反复尝试登录   | 🔴 高危 — 可能正在被攻击 |
-| **权限提升**    | 是否有未授权的权限提升操作 | 🟡 注意 — 可能是恶意软件 |
-| **审计日志清除**  | 安全日志是否被清空过    | 🔴 高危 — 典型的入侵痕迹 |
-| **防火墙规则变更** | 防火墙规则是否被修改    | 🟡 注意 — 检查是否合法  |
-| **账户创建/删除** | 是否有未知账户变更     | 🟡 注意 — 检查账户来源  |
+1. **Automatically scan** `C:\Windows\Minidump\` folder for dump files
+2. **Parse** dump file headers to extract: crash time, BugCheck code, likely offending driver, running process at the time
+3. **Match** against the knowledge base of known BSOD causes
+4. **Recommend** updating/uninstalling the offending driver or performing system repairs
 
-### 4.3 蓝屏问题分析
+### 4.4 Reading Diagnostic Reports
 
-当您的电脑出现蓝屏时，AURORA Analyzer 可以：
+Diagnostic reports use colors and icons to indicate severity:
 
-1. **自动扫描** `C:\Windows\Minidump\` 文件夹中的蓝屏转储文件
-2. **解析** 转储文件头部信息，提取：
-   - 蓝屏时间
-   - 停止代码 (BugCheck Code)
-   - 可能导致蓝屏的驱动程序
-   - 当时正在运行的进程
-3. **匹配** 知识库中的已知蓝屏原因
-4. **建议** 更新/卸载问题驱动，或执行系统修复
-
-> 💡 **提示**: 如果 Minidump 文件夹为空，请确保系统开启了"写入调试信息"功能：
-> 控制面板 → 系统 → 高级系统设置 → 启动和故障恢复 → 设置 → 写入调试信息 = "小内存转储(256KB)"
-
-### 4.4 解读诊断报告
-
-诊断报告使用颜色和图标区分严重程度：
-
-| 图标 | 级别     | 含义     | 您应该怎么做     |
-| -- | ------ | ------ | ---------- |
-| 🔴 | **严重** | 需要立即处理 | 按照修复建议立即操作 |
-| 🟠 | **高**  | 存在明确问题 | 尽快处理，避免恶化  |
-| 🟡 | **中**  | 潜在风险   | 了解原因，择机处理  |
-| 🔵 | **低**  | 优化建议   | 可选操作，不影响使用 |
+| Icon | Level        | Meaning                   | What You Should Do                            |
+| ---- | ------------ | ------------------------- | --------------------------------------------- |
+| 🔴   | **Critical** | Needs immediate attention | Follow the repair recommendation immediately  |
+| 🟠   | **High**     | Clear issue exists        | Address soon to prevent escalation            |
+| 🟡   | **Medium**   | Potential risk            | Understand the cause, address when convenient |
+| 🔵   | **Low**      | Optimization suggestion   | Optional, does not affect usage               |
 
 ***
 
-## 5. 系统修复功能
+## 5. System Repair
 
-### 5.1 支持的修复类型
+### 5.1 Supported Repair Types
 
-AURORA Analyzer 可以帮您一键修复以下常见系统问题：
+AURORA Analyzer can help you one-click fix these common system problems:
 
-#### 🔧 禁用 Windows Update（暂停自动更新）
+#### 🔧 Disable Windows Update (temporarily pause auto-updates)
 
-**适用场景:**
+- Stops Windows Update service, disables auto-update scheduled tasks, modifies group policy settings
 
-- Windows 自动更新在工作时强制重启
-- 更新导致特定软件不兼容
-- 需要暂时冻结系统版本
+#### 🔧 Enable Windows Defender (restore antivirus)
 
-**修复内容:**
+- Restores Defender service to auto-start, removes third-party registry restrictions, restarts related security services
 
-- 停止 Windows Update 服务
-- 禁用自动更新计划任务
-- 修改组策略设置
+#### 🔧 Disable Telemetry & Data Collection
 
-#### 🔧 启用 Windows Defender（恢复杀毒）
+- Disables Connected User Experiences and Telemetry service, sets telemetry level to "Security" (minimum), disables related scheduled tasks
 
-**适用场景:**
+#### 🔧 Reset Network Settings
 
-- Defender 被第三方软件或病毒禁用
-- 使用优化软件后 Defender 无法正常启动
+- Resets Winsock catalog, resets TCP/IP stack, flushes DNS cache, resets Windows Firewall rules
 
-**修复内容:**
+#### 🔧 System Cleanup
 
-- 恢复 Defender 服务为自动启动
-- 移除第三方注册表限制
-- 重启相关安全服务
+- Clears temporary files, empties Recycle Bin, cleans Windows Update cache, cleans thumbnail cache
 
-#### 🔧 禁用遥测与数据收集
+### 5.2 Pre-Repair Protection
 
-**适用场景:**
-
-- 关注隐私保护
-- 减少系统后台资源占用
-
-**修复内容:**
-
-- 禁用 Connected User Experiences and Telemetry 服务
-- 修改遥测级别为"安全"（最低）
-- 关闭相关计划任务
-
-#### 🔧 重置网络设置
-
-**适用场景:**
-
-- 网络连接受限或无法上网
-- DNS 解析异常
-- VPN 连接后网络配置残留
-
-**修复内容:**
-
-- 重置 Winsock 目录
-- 重置 TCP/IP 协议栈
-- 刷新 DNS 缓存
-- 重置 Windows 防火墙规则
-
-#### 🔧 系统清理
-
-**适用场景:**
-
-- C 盘空间不足
-- 系统长时间未清理
-
-**修复内容:**
-
-- 清理临时文件
-- 清空回收站
-- 清理 Windows Update 缓存
-- 清理缩略图缓存
-
-### 5.2 修复前保护机制
-
-**您的安全是我们的首要考虑。** 每次执行修复前，AURORA Analyzer 会自动：
+**Your safety is our top priority.** Before each repair, AURORA Analyzer automatically:
 
 ```
-├─ ✅ 创建系统还原点 (System Restore Point)
-│     └── 可以在 Windows 恢复环境中回滚整个系统状态
+├─ ✅ Create System Restore Point
+│     └── Roll back the entire system state in Windows Recovery Environment
 │
-├─ ✅ 创建快速备份快照
-│     ├── 备份即将修改的注册表项
-│     ├── 备份即将修改的文件
-│     └── 记录服务的当前状态
+├─ ✅ Create Quick Backup Snapshot
+│     ├── Backup registry keys about to be modified
+│     ├── Backup files about to be modified
+│     └── Record current service states
 │
-├─ ✅ 记录审计日志
-│     └── 详细记录：谁、何时、做了什么、结果如何
+├─ ✅ Record Audit Log
+│     └── Detailed record: who, when, what, result
 │
-└─ ✅ 风险评估
-      └── 高风险操作需要额外确认
+└─ ✅ Risk Assessment
+      └── High-risk operations require additional confirmation
 ```
 
-> 🛡️ **双重保护**: 即使一种恢复方式失败，另一种还能帮您回滚。
+> 🛡️ **Dual protection**: Even if one recovery method fails, the other can still help you roll back.
 
-### 5.3 如何执行修复
+### 5.3 How to Execute Repairs
 
-1. 点击 **「系统修复」** 选项卡
-2. 从列表中选择要执行的修复类型
-3. 点击 **「执行修复」** 按钮
-4. 确认风险提示（如有）
-5. 等待修复完成
-6. 查看修复结果报告
-
-**修复完成后:**
-
-- 大部分修复立即生效
-- 部分修复（如网络重置）可能需要重启电脑
-- 如果修复后出现问题，可以立即使用 **「撤销」** 功能恢复
+1. Click the **"System Repair"** tab
+2. Select the repair type from the list
+3. Click **"Execute Repair"**
+4. Confirm risk warning (if any)
+5. Wait for repair to complete
+6. View the repair result report
 
 ***
 
-## 6. 撤销与还原功能
+## 6. Undo & Restore
 
-"修错了能反悔"是 AURORA Analyzer 的核心设计理念之一。
+"Being able to undo mistakes" is one of AURORA Analyzer's core design principles.
 
-### 6.1 撤销修复操作
+### 6.1 Undoing Repair Operations
 
-**操作步骤:**
+1. Click the **"Repair History"** tab
+2. Find the repair operation you want to undo
+3. Select the record, click **"Undo This Operation"**
+4. Confirm the undo
+5. The system restores all modified registry keys, files, and services in reverse order
 
-1. 点击 **「修复历史」** 选项卡
-2. 在历史记录列表中找到要撤销的修复操作
-3. 选中该条记录，点击 **「撤销此操作」**
-4. 确认撤销
-5. 系统自动逆序恢复所有被修改的注册表、文件和服务
+### 6.2 Viewing Repair History
 
-**撤销原理:**
+The repair history viewer shows:
 
-```
-修复前的备份快照
-    ├── registry\wuauserv_start.reg      → 恢复注册表
-    ├── files\hosts.backup               → 恢复文件
-    ├── services\services_state.json     → 恢复服务状态
-    └── tasks\scheduled_tasks.xml        → 恢复计划任务
-```
+| Column        | Content                                          |
+| ------------- | ------------------------------------------------ |
+| **Time**      | Precise time of repair execution                 |
+| **Operation** | Type of repair performed                         |
+| **Result**    | ✓ Success / ✗ Failed / ⚠ Partial / ↩ Reverted    |
+| **Details**   | What was repaired                                |
+| **SessionId** | Unique identifier (useful for technical support) |
 
-### 6.2 查看修复历史
+### 6.3 System Restore Points
 
-修复历史查看器显示以下信息：
+If you chose to use system restore points as protection:
 
-| 列             | 内容                           |
-| ------------- | ---------------------------- |
-| **时间**        | 修复执行的精确时间                    |
-| **操作**        | 执行的修复类型                      |
-| **结果**        | ✓ 成功 / ✗ 失败 / ⚠ 部分成功 / ↩ 已撤销 |
-| **详情**        | 修复了哪些项目                      |
-| **SessionId** | 唯一标识（技术支持可用）                 |
+- Search "Create a restore point" in Windows
+- Click "System Restore"
+- Select the restore point created by AURORA Analyzer
+- Follow the wizard to roll back
 
-**功能操作:**
-
-- 按时间/类型排序
-- 查看详细修复日志
-- 导出审计报告为 CSV
-
-### 6.3 系统还原点
-
-如果您选择了使用系统还原点作为保护：
-
-- 在 Windows 搜索框输入"创建还原点"
-- 点击"系统还原"
-- 选择 AURORA Analyzer 创建的还原点
-- 按向导操作即可回滚
-
-> ⚠️ **注意**: 系统还原点会回滚整个系统到创建时的状态，包括其他程序的安装和系统设置。
+> ⚠️ **Note**: System restore points roll back the entire system to the state when the point was created.
 
 ***
 
-## 7. 进度管理与断点续传
+## 7. Progress Management & Resume
 
-### 7.1 会话自动保存
+### 7.1 Auto-Save Sessions
 
-导出大量日志时（比如导出半年的系统日志），可能需要很长时间。AURORA Analyzer 会自动保存进度：
+When exporting large volumes of logs (e.g., 6 months of system logs), it can take a long time. AURORA Analyzer automatically saves progress:
 
-- **每处理完一个数据块**自动记录 checkpoint
-- 即使程序意外关闭，进度也不会丢失
-- 会话文件保存在 `Scripts\SessionCache\active\` 目录
+- Checkpoints are recorded after **each data chunk** is processed
+- Progress is never lost even if the program closes unexpectedly
+- Session files are saved in `Scripts\SessionCache\active\`
 
-### 7.2 恢复中断的任务
+### 7.2 Resuming Interrupted Tasks
 
-如果导出过程中程序关闭了（无论是因为崩溃、关机还是手动关闭），下次启动时会：
+If the program closes during an export (due to crash, shutdown, or manual closure), it will:
 
-1. 自动检测到未完成的会话
-2. 提示"发现未完成的任务，是否继续？"
-3. 选择"继续"后从中断处自动恢复
-4. 已导出的数据不会重复处理
+1. Auto-detect the unfinished session
+2. Prompt "Found unfinished task, continue?"
+3. Selecting "Continue" resumes from the interruption point
+4. Already exported data is not reprocessed
 
-> 💡 **实用场景**: 正在导出500万条日志时突然停电，来电后重新打开程序，点击"继续"即可从上次中断处接着导出。
-
-***
-
-## 8. v1.1.24.1 新功能
-
-v1.1.24.1 在 v1.1.24.0 的基础上进行了重大安全加固，核心变化包括：
-
-### 8.1 安全防护再升级：五层纵深防御
-
-v1.1.24.0 建立了四层纵深防御体系。v1.1.24.1 新增**第五层——看门狗守护**，实现了从构建到运行的全程防篡改保护。
-
-#### 🛡️ 新增第五层：独立看门狗守护
-
-- EXE 和 PowerShell 脚本之间建立了独立的"心跳"通信管道
-- 即使攻击者绕过了所有 PowerShell 层面的验证，EXE 端的看门狗仍能独立检测异常
-- 连续检测到3次异常心跳后，立即强制终止进程
-
-**这对您意味着什么:** 您的工具现在拥有了"保镖"级别的安全保护——即使有人试图在运行时篡改程序，看门狗会在几秒内发现并阻止。
-
-#### 🔍 C# 嵌入式完整性验证
-
-- 新增了编译为机器指令的 C# 代码块，对 16 个核心功能模块进行完整性验证
-- 编译后的代码比普通脚本代码更难被分析和修改
-- 每次构建时自动注入当前版本的哈希值，确保"此版本验证此文件"
-
-**这对您意味着什么:** 程序的核心功能模块受到编译级保护，攻击者无法通过简单修改脚本代码来绕过安全检查。
-
-#### 🔐 提权操作安全令牌
-
-- 修复了管理员权限操作时可能出现的安全验证漏洞
-- 当执行需要管理员权限的操作时，会生成独立的安全令牌
-- 120 秒的独立有效期，确保提权后的进程也能正确验证身份
-
-**这对您意味着什么:** 使用管理员权限导出安全日志时，程序的身份验证不会中断——全程保护您的安全。
-
-#### 🚫 反伪造启动参数
-
-- 修复了攻击者可能通过伪造启动参数绕过所有安全验证的漏洞
-- 如果检测到伪造的启动参数，程序会强制重置安全状态
-
-**这对您意味着什么:** 即使高级攻击者尝试通过命令行参数欺骗程序，也会被立刻识破并拒绝运行。
-
-### 8.2 性能优化
-
-- **完整性检查 CPU 占用降低最多 95%**: 新增文件修改时间快速筛选，只在文件实际发生变化时才计算完整哈希
-- **稳定运行时 CPU 开销接近零**: 对于未修改的文件，跳过耗时的 SHA256 计算
-- **Alarm 告警窗口更稳定**: 改用 C# 原生控件，解决倒计时不稳定的问题
-
-### 8.3 稳定性修复
-
-- 修复了管理员提权操作时安全验证可能中断的 P0 级问题
-- 修复了特定情况下重复加载组件导致的报错
-- 优化了异常情况下的安全清理逻辑
-- 改进了告警窗口的倒计时显示稳定性
+> 💡 **Practical scenario**: Power goes out while exporting 5 million log entries. After power returns, relaunch the program, click "Continue" — and it picks up right where it left off.
 
 ***
 
-## 9. 常见问题与场景
+## 8. What's New in v1.1.24.1
 
-### 9.1 电脑频繁蓝屏怎么排查
+v1.1.24.1 introduces significant security hardening on top of v1.1.24.0. Key changes include:
 
-**场景**: 电脑最近每天蓝屏 1-2 次，不知道是什么原因。
+### 8.1 Security Upgrade: Five-Layer Defense-in-Depth
 
-**使用 AURORA Analyzer 的排查步骤:**
+v1.1.24.0 established a four-layer defense-in-depth system. v1.1.24.1 adds a **fifth layer — Watchdog Guardian**, achieving full tamper-proof protection from build to runtime.
 
-1. 打开程序，点击 **「智能诊断」**
-2. 点击 **「开始诊断」**
-3. 程序会自动：
-   - 扫描系统日志中的蓝屏记录 (EventID 41, 1001)
-   - 分析 Minidump 蓝屏转储文件
-   - 检查蓝屏前后的驱动加载/卸载事件
-4. 查看诊断报告，重点关注：
-   - **蓝屏代码** (比如 `DRIVER_POWER_STATE_FAILURE`)
-   - **疑似问题驱动** (比如 `nvlddmkm.sys` = NVIDIA 显卡驱动)
-   - **蓝屏频率趋势**
-5. 根据建议更新或回滚问题驱动
+#### 🛡️ New Fifth Layer: Independent Watchdog Guardian
 
-**常见蓝屏代码速查:**
+- An independent "heartbeat" communication pipe is established between the EXE and PowerShell script
+- Even if an attacker bypasses all PowerShell-level verifications, the EXE-side watchdog still independently detects anomalies
+- After 3 consecutive heartbeat anomalies, the process is forcefully terminated
 
-| 蓝屏代码                            | 可能原因      | 建议              |
-| ------------------------------- | --------- | --------------- |
-| `DRIVER_IRQL_NOT_LESS_OR_EQUAL` | 驱动冲突      | 更新/回滚驱动         |
-| `MEMORY_MANAGEMENT`             | 内存故障      | 运行内存诊断          |
-| `KERNEL_SECURITY_CHECK_FAILURE` | 驱动/系统文件损坏 | 运行 sfc /scannow |
-| `CRITICAL_PROCESS_DIED`         | 关键进程崩溃    | 检查磁盘/系统文件       |
-| `DPC_WATCHDOG_VIOLATION`        | 存储驱动问题    | 更新 SSD 固件/驱动    |
+**What this means for you:** Your tool now has "bodyguard"-level security — even if someone tries to tamper with the program at runtime, the watchdog will detect and stop it within seconds.
 
-### 9.2 系统变慢如何诊断
+#### 🔍 C# Embedded Integrity Verification
 
-**场景**: 电脑用久了越来越慢，想知道是什么在拖慢系统。
+- New C# code block compiled into machine instructions performs integrity verification on 16 core functional modules
+- Compiled IL code is significantly harder to analyze and modify than regular script code
+- Current version hash values are automatically injected at build time, ensuring "this version verifies these files"
 
-**使用 AURORA Analyzer 的排查步骤:**
+**What this means for you:** Core functional modules of the program are protected at the compiled-code level — attackers cannot bypass security checks by simply modifying script code.
 
-1. 点击 **「日志导出」**
-2. 选择「系统」日志
-3. 选择最近一个月的日期范围
-4. 仅筛选 `Warning` 和 `Error` 级别
-5. 导出后打开 CSV 文件，重点关注：
-   - `EventID 10010` — COM 组件超时
-   - `EventID 153` — 磁盘重试操作
-   - `EventID 129` — 存储驱动重置
-   - `EventID 7011` — 服务响应超时
-6. 再使用 **「智能诊断」** 获取自动分析结果
+#### 🔐 Elevation Security Token
 
-### 9.3 怀疑电脑被入侵怎么检查
+- Fixed a security verification vulnerability that could occur during admin privilege operations
+- An independent security token is generated when performing operations requiring admin rights
+- 120-second independent validity period ensures the elevated process can still correctly verify identity
 
-**场景**: 感觉电脑不太对劲，怀疑被人远程控制了。
+**What this means for you:** When using admin rights to export security logs, the program's identity verification is not interrupted — continuous protection throughout.
 
-**使用 AURORA Analyzer 的排查步骤:**
+#### 🚫 Anti-Spoofing Launch Parameter Protection
 
-1. 点击 **「智能诊断」** → 查看 **E 类（安全事件审计）** 报告
-2. 重点关注：
-   - **EventID 4625** — 登录失败次数是否异常（可能是暴力破解）
-   - **EventID 4624 (LogonType=10)** — 是否存在远程桌面登录
-   - **EventID 4720/4726** — 是否有未知账户被创建或删除
-   - **EventID 1102** — 审计日志是否被清除（⚠️ 高度可疑）
-   - **EventID 4672/4673** — 是否有权限提升操作
-3. 如果发现异常，立即：
-   - 断网
-   - 修改所有密码
-   - 运行完整的杀毒扫描
-   - 将诊断报告导出给安全专业人员
+- Fixed a vulnerability where attackers could bypass all security verification by forging launch parameters
+- If forged launch parameters are detected, the program forces a security state reset
 
-### 9.4 导出日志给技术支持
+**What this means for you:** Even if advanced attackers try to deceive the program through command-line arguments, it will be immediately detected and refused.
 
-**场景**: 某软件厂商的技术支持要求您提供系统日志。
+### 8.2 Performance Optimizations
 
-**使用 AURORA Analyzer 的导出步骤:**
+- **Integrity check CPU usage reduced by up to 95%**: New file modification time pre-check — only computes full hashes when files actually change
+- **Near-zero CPU overhead during stable runtime**: Skips expensive SHA256 calculations for unmodified files
+- **More stable alert window**: Switched to C# native controls, resolving countdown instability issues
 
-1. 点击 **「日志导出」**
-2. 选择「应用程序」日志
-3. 输入问题发生的时间范围
-4. 在高级筛选中：
-   - **ProviderName**: 输入软件厂商名称（如 `Microsoft-Windows-...`）
-   - **Level**: 选择 `Error` + `Warning`
-5. 导出
-6. 将 `UserLogs` 文件夹中的所有文件打包发送给技术支持
+### 8.3 Stability Fixes
+
+- Fixed a P0-level issue where security verification could break during admin elevation
+- Fixed errors caused by duplicate component loading in certain scenarios
+- Optimized security cleanup logic for exception scenarios
+- Improved countdown display stability in alert windows
 
 ***
 
-## 10. 性能分级说明
+## 9. FAQ & Common Scenarios
 
-AURORA Analyzer 在启动时会自动评估您的电脑性能，并调整动画效果和资源占用。您不需要手动设置。
+### 9.1 How to Diagnose Frequent BSODs
 
-| 性能等级                 | 适用配置                  | 动画效果         | 说明           |
-| -------------------- | --------------------- | ------------ | ------------ |
-| **Extreme** (极限)     | 8核+ / 16GB+ / 3.5GHz+ | 完整星空动画，60FPS | 高端游戏主机 / 工作站 |
-| **Performance** (性能) | 4-8核 / 8-16GB         | 流畅动画，45FPS   | 中高端电脑        |
-| **Balanced** (均衡)    | 2-4核 / 4-8GB          | 基础动画，30FPS   | 普通办公电脑       |
-| **Eco** (节能)         | 低配 / 虚拟机              | 简化动画，20FPS   | 老旧设备 / 虚拟机   |
+**Scenario**: Computer blue-screens 1-2 times daily lately.
 
-> 💡 性能分级**不影响**日志导出和诊断的核心功能，只影响界面动画的流畅度。
+**Steps using AURORA Analyzer:**
 
-***
+1. Open the program, click **"Smart Diagnosis"**
+2. Click **"Start Diagnosis"**
+3. The program automatically: scans BSOD records in system logs (EventID 41, 1001), analyzes Minidump dump files, checks driver load/unload events around BSODs
+4. Check the diagnosis report, focusing on: **BSOD code**, **suspected offending driver**, **BSOD frequency trend**
+5. Update or roll back the offending driver based on recommendations
 
-## 11. 界面语言切换
+**Common BSOD Code Quick Reference:**
 
-AURORA Analyzer 支持中文和英文双语界面。
+| BSOD Code                       | Possible Cause                | Recommendation             |
+| ------------------------------- | ----------------------------- | -------------------------- |
+| `DRIVER_IRQL_NOT_LESS_OR_EQUAL` | Driver conflict               | Update/rollback driver     |
+| `MEMORY_MANAGEMENT`             | Memory fault                  | Run memory diagnostics     |
+| `KERNEL_SECURITY_CHECK_FAILURE` | Driver/system file corruption | Run sfc /scannow           |
+| `CRITICAL_PROCESS_DIED`         | Critical process crash        | Check disk/system files    |
+| `DPC_WATCHDOG_VIOLATION`        | Storage driver issue          | Update SSD firmware/driver |
 
-**切换方法:**
+### 9.2 How to Diagnose a Slow System
 
-1. 点击 **「设置」** 选项卡
-2. 在语言设置中选择 **「中文」** 或 **「English」**
-3. 界面即时切换，无需重启
+1. Click **"Log Export"** → Select "System" → Choose last month's date range → Filter `Warning` + `Error` only
+2. Export and open CSV, focusing on: EventID 10010 (COM timeout), 153 (disk retries), 129 (storage driver resets), 7011 (service timeout)
+3. Then use **"Smart Diagnosis"** for automated analysis
 
-> 💡 语言切换会同步影响所有界面文字、导出文件名、诊断报告等。
+### 9.3 How to Check for Intrusions
 
-***
+1. Click **"Smart Diagnosis"** → View **Category E (Security Event Audit)** report
+2. Focus on: EventID 4625 (excessive login failures = brute force), 4624 LogonType=10 (RDP connections), 4720/4726 (account changes), 1102 (audit log cleared — ⚠️ highly suspicious)
+3. If anomalies found: disconnect from network, change all passwords, run full virus scan, export diagnostic report for security professionals
 
-## 12. 安全与隐私
+### 9.4 Exporting Logs for Technical Support
 
-### 我们如何保护您的数据
-
-| 保护措施      | 说明                 |
-| --------- | ------------------ |
-| **本地运行**  | 所有操作完全在本地执行，不联网    |
-| **不上传数据** | 不向任何服务器发送您的日志数据    |
-| **不收集信息** | 不收集任何个人信息或系统信息     |
-| **文件加密**  | 核心配置文件加密存储         |
-| **防篡改**   | 五层纵深防御，防篡改、防调试、防注入 |
-| **看门狗守护** | EXE 独立进程监控，实时检测异常  |
-
-### 您需要注意
-
-- 导出的日志文件（CSV/JSON/XML）是**明文存储**的，请妥善保管
-- 如果导出了安全日志，其中可能包含您的计算机名和用户名
-- 将诊断报告分享给他人前，请确认其中不含敏感信息
-- 建议将 `UserLogs` 文件夹中的文件在不使用时删除
+1. Click **"Log Export"** → Select "Application" → Enter the problem time range → Advanced filter: ProviderName = vendor name, Level = Error + Warning → Export
+2. Package all files from the `UserLogs` folder and send to technical support
 
 ***
 
-## 13. 技术支持与反馈
+## 10. Performance Tiers
 
-### 版本信息
+AURORA Analyzer automatically evaluates your computer's performance at startup and adjusts animations and resource usage. No manual configuration needed.
 
-| 项目   | 内容                              |
-| ---- | ------------------------------- |
-| 当前版本 | **V1.1.24.1**                   |
-| 构建日期 | 2026-05-27                      |
-| 作者   | AURORA VelociRaptor-GR Dev PRJ. |
+| Tier            | Suitable For               | Animation                   | Notes                         |
+| --------------- | -------------------------- | --------------------------- | ----------------------------- |
+| **Extreme**     | 8 cores+ / 16GB+ / 3.5GHz+ | Full starfield, 60FPS       | High-end gaming / workstation |
+| **Performance** | 4-8 cores / 8-16GB         | Smooth animation, 45FPS     | Mid-to-high-end PC            |
+| **Balanced**    | 2-4 cores / 4-8GB          | Basic animation, 30FPS      | Standard office PC            |
+| **Eco**         | Low-spec / VM              | Simplified animation, 20FPS | Older devices / VMs           |
 
-### 遇到问题？
-
-如果您在使用过程中遇到问题：
-
-1. **首先检查**: 所有文件是否正确解压，目录结构是否完整
-2. **关键文件**: 确保 `AURORA.Launcher-双击启动.exe` 和 `GAURORA.CHK.ENC` 在同一目录
-3. **权限问题**: 尝试以管理员身份运行
-4. **杀毒软件**: 将程序目录添加到杀毒软件的白名单
-
-### 许可声明
-
-本软件**仅供个人学习与研究使用**，不得用于商业用途。
+> 💡 Performance tier **does not affect** core log export and diagnosis functionality — only UI animation smoothness.
 
 ***
 
-> **文档版本**: V1.1.24.1
-> **日期**: 2026-05-27
-> **作者**: AURORA VelociRaptor-GR Dev PRJ.
-> **许可**: 仅供个人学习与研究使用
+## 11. Language Switching
+
+AURORA Analyzer supports bilingual Chinese and English interfaces.
+
+**How to switch:**
+
+1. Click the **"Settings"** tab
+2. Select **"中文"** or **"English"** under language settings
+3. UI switches instantly, no restart needed
+
+> 💡 Language switching affects all interface text, export file names, diagnostic reports, etc.
+
+***
+
+## 12. Security & Privacy
+
+### How We Protect Your Data
+
+| Protection             | Description                                                             |
+| ---------------------- | ----------------------------------------------------------------------- |
+| **Local Only**         | All operations are performed locally, no internet connection            |
+| **No Data Upload**     | Your log data is never sent to any server                               |
+| **No Data Collection** | No personal or system information is collected                          |
+| **File Encryption**    | Core configuration files are stored encrypted                           |
+| **Tamper Protection**  | Five-layer defense-in-depth: tamper-proof, debug-proof, injection-proof |
+| **Watchdog Guardian**  | Independent EXE process monitoring, real-time anomaly detection         |
+
+### What You Should Know
+
+- Exported log files (CSV/JSON/XML) are stored in **plain text** — keep them secure
+- If you exported security logs, they may contain your computer name and username
+- Before sharing diagnostic reports, verify they don't contain sensitive information
+- It is recommended to delete files in the `UserLogs` folder when not in use
+
+***
+
+## 13. Support & Feedback
+
+### Version Information
+
+| Item            | Content                         |
+| --------------- | ------------------------------- |
+| Current Version | **V1.1.24.1**                   |
+| Build Date      | 2026-05-27                      |
+| Author          | AURORA VelociRaptor-GR Dev PRJ. |
+
+### Having Issues?
+
+If you encounter problems:
+
+1. **Check first**: Are all files properly extracted? Is the directory structure intact?
+2. **Key files**: Ensure `AURORA.Launcher-双击启动.exe` and `GAURORA.CHK.ENC` are in the same directory
+3. **Permission issues**: Try running as administrator
+4. **Antivirus**: Add the program directory to your antivirus whitelist
+
+### License Statement
+
+This software is for **personal learning and research use only**. Commercial use is prohibited.
+
+***
+
+> **Document Version**: V1.1.24.1
+> **Date**: 2026-05-27
+> **Author**: AURORA VelociRaptor-GR Dev PRJ.
+> **License**: For personal learning and research use only
+
