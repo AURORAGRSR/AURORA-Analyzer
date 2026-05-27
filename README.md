@@ -1,1672 +1,754 @@
-# AURORA Analyzer V1.1.24.0 — Developer Technical Specification
+# AURORA Analyzer V1.1.24.1 — 用户手册
 
-**Version:** V1.1.24.0\
-**Build Date:** 2026.05.25\
-**Author:** AURORA VelociRaptor-GR Dev PRJ.\
-**License:** For personal learning and research use only\
-**Type:** Windows System Event Log Export & Intelligent Diagnostics Tool
+> **面向读者**: 普通用户 / 系统管理员 / IT 运维人员
+> **文档定位**: 超详细功能介绍，易读易懂，重点阐述功能使用与实际价值
 
 ***
 
-## Table of Contents
+## 目录
 
-1. [Project Overview](#1-project-overview)
-2. [v1.1.24.0 Core Update: Defense-in-Depth Security](#2-v11240-core-update-defense-in-depth-security)
-3. [System Architecture](#3-system-architecture)
-4. [Module-Level Technical Reference](#4-module-level-technical-reference)
-5. [Security System — Complete Specification](#5-security-system--complete-specification)
-6. [Build System (build.ps1) — Complete Reference](#6-build-system-buildps1--complete-reference)
-7. [Encryption & Cryptographic Primitives](#7-encryption--cryptographic-primitives)
-8. [GUI Architecture & Runspace Model](#8-gui-architecture--runspace-model)
-9. [PRO Mode Export Engine](#9-pro-mode-export-engine)
-10. [Smart Diagnostics Engine (SmartEngine)](#10-smart-diagnostics-engine-smartengine)
-11. [Undo / Repair System (Phase 4.2)](#11-undo--repair-system-phase-42)
-12. [Progress Manager & Session Persistence](#12-progress-manager--session-persistence)
-13. [Animation Core Engine (Phase 5)](#13-animation-core-engine-phase-5)
-14. [Bilingual Infrastructure](#14-bilingual-infrastructure)
-15. [Performance Tiering System](#15-performance-tiering-system)
-16. [Threat Model & Attack Surface Analysis](#16-threat-model--attack-surface-analysis)
-17. [Version History](#17-version-history)
-
-***
-
-## 1. Project Overview
-
-AURORA Analyzer is a professional Windows system event log export and intelligent diagnostics tool written in PowerShell (5.1+) and C# (.NET Framework 4.x). It integrates advanced log analysis, knowledge-base-driven diagnostics, autonomous repair suggestions, system restore/undo capabilities, and a real-time integrity monitoring system.
-
-### 1.1 Key Statistics
-
-| Metric                         | Value                                                                                                   |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| Total Core Files               | 19 (SHA256-signed)                                                                                      |
-| Total Source Lines (estimated) | \~40,000+ lines                                                                                         |
-| Supported Log Types            | 8 (System, Application, Security, Setup, DNS Server, DHCP Server, Directory Service, IIS Admin Service) |
-| Diagnostic Rule Categories     | 5 (System Stability, Application Errors, Driver Issues, Hardware Faults, Security Audits)               |
-| Diagnostic Rules               | 100+                                                                                                    |
-| Output Formats                 | CSV, JSON, XML, Summary Report (TXT), Trend Analysis (TXT + CSV)                                        |
-| Supported Languages            | 2 (Chinese / English) — 144 translation entries                                                         |
-| Performance Tiers              | 4 (Eco, Balanced, Performance, Extreme)                                                                 |
-| Repair Operation Types         | 5 (DisableWindowsUpdate, EnableDefender, DisableTelemetry, ResetNetwork, CleanSystem)                   |
-| Security Layers                | 4 (Build-Time, Launch-Time, Runtime, Multi-Module Launch Detection)                                     |
-
-### 1.2 System Requirements
-
-| Requirement    | Minimum                | Recommended      |
-| -------------- | ---------------------- | ---------------- |
-| OS             | Windows 10/11 (64-bit) | Windows 11 22H2+ |
-| PowerShell     | 5.1                    | 5.1+             |
-| .NET Framework | 4.0+                   | 4.8              |
-| RAM            | 4 GB                   | 8 GB+            |
-| CPU            | 2-core                 | 4-core+          |
-| Disk           | 50 MB available        | SSD storage      |
+- [1. 欢迎使用 AURORA Analyzer](#1-欢迎使用-aurora-analyzer)
+- [2. 快速入门](#2-快速入门)
+  - [2.1 系统要求](#21-系统要求)
+  - [2.2 安装与启动](#22-安装与启动)
+  - [2.3 界面概览](#23-界面概览)
+- [3. 日志导出功能](#3-日志导出功能)
+  - [3.1 支持的日志类型](#31-支持的日志类型)
+  - [3.2 选择导出范围](#32-选择导出范围)
+  - [3.3 高级筛选](#33-高级筛选)
+  - [3.4 导出格式说明](#34-导出格式说明)
+  - [3.5 查看导出结果](#35-查看导出结果)
+- [4. 智能诊断功能](#4-智能诊断功能)
+  - [4.1 什么是智能诊断](#41-什么是智能诊断)
+  - [4.2 五大诊断类别详解](#42-五大诊断类别详解)
+  - [4.3 蓝屏问题分析](#43-蓝屏问题分析)
+  - [4.4 解读诊断报告](#44-解读诊断报告)
+- [5. 系统修复功能](#5-系统修复功能)
+  - [5.1 支持的修复类型](#51-支持的修复类型)
+  - [5.2 修复前保护机制](#52-修复前保护机制)
+  - [5.3 如何执行修复](#53-如何执行修复)
+- [6. 撤销与还原功能](#6-撤销与还原功能)
+  - [6.1 撤销修复操作](#61-撤销修复操作)
+  - [6.2 查看修复历史](#62-查看修复历史)
+  - [6.3 系统还原点](#63-系统还原点)
+- [7. 进度管理与断点续传](#7-进度管理与断点续传)
+  - [7.1 会话自动保存](#71-会话自动保存)
+  - [7.2 恢复中断的任务](#72-恢复中断的任务)
+- [8. v1.1.24.1 新功能](#8-v11241-新功能)
+  - [8.1 安全防护再升级：五层纵深防御](#81-安全防护再升级五层纵深防御)
+  - [8.2 性能优化](#82-性能优化)
+  - [8.3 稳定性修复](#83-稳定性修复)
+- [9. 常见问题与场景](#9-常见问题与场景)
+  - [9.1 电脑频繁蓝屏怎么排查](#91-电脑频繁蓝屏怎么排查)
+  - [9.2 系统变慢如何诊断](#92-系统变慢如何诊断)
+  - [9.3 怀疑电脑被入侵怎么检查](#93-怀疑电脑被入侵怎么检查)
+  - [9.4 导出日志给技术支持](#94-导出日志给技术支持)
+- [10. 性能分级说明](#10-性能分级说明)
+- [11. 界面语言切换](#11-界面语言切换)
+- [12. 安全与隐私](#12-安全与隐私)
+- [13. 技术支持与反馈](#13-技术支持与反馈)
 
 ***
 
-## 2. v1.1.24.0 Core Update: Defense-in-Depth Security
+## 1. 欢迎使用 AURORA Analyzer
 
-The v1.1.24.0 release represents a **complete security system rebuild**, upgrading from a single-password verification model to a **Defense-in-Depth Four-Layer Security Model**. This is the most significant architectural change in AURORA Analyzer's history.
+**AURORA Analyzer** 是一款功能强大的 Windows 系统诊断与日志分析工具。它的核心使命是帮助您：
 
-### 2.1 What Changed
+| 需求            | AURORA Analyzer 为您做什么                        |
+| ------------- | -------------------------------------------- |
+| 🔍 **排查系统问题** | 自动扫描系统日志，定位蓝屏、崩溃、卡顿的根本原因                     |
+| 📊 **导出系统日志** | 将 Windows 事件日志导出为 CSV / JSON / XML 格式，方便分析   |
+| 🔧 **一键修复**   | 自动修复 Windows Update 卡死、Defender 误报、网络异常等常见问题 |
+| 📋 **健康报告**   | 生成详细的系统健康评估报告，包含趋势分析和建议                      |
+| ↩️ **安全回滚**   | 修复前自动创建备份和系统还原点，确保随时可以撤销                     |
+| 🛡️ **安全审计**  | 检查安全日志，发现暴力登录、权限提升等安全事件                      |
 
-| Aspect                         | v1.1.23.0 (Previous)         | v1.1.24.0 (Current)                        |
-| ------------------------------ | ---------------------------- | ------------------------------------------ |
-| Authentication                 | Single password verification | RSA-2048 asymmetric handshake              |
-| Hash list transport            | Plain text in memory         | AES-256-CBC session encryption             |
-| Integrity check interval       | 10 seconds                   | 3 seconds (fixed) + 2-7 seconds (random)   |
-| File checking                  | Break on first mismatch      | Full-file checking (no break)              |
-| Monitoring method              | Single timer                 | Dual timer + FileSystemWatcher             |
-| Reverse engineering protection | None                         | Anti-debugger + anti-dump + C# obfuscation |
-| Replay protection              | None                         | Token 60-second expiry + Nonce             |
-| Unauthorized file injection    | Not detected                 | Real-time Created event monitoring         |
-| Post-launch check              | None                         | 1-second immediate integrity check         |
+### 核心价值
 
-### 2.2 Ten Critical Security Items
-
-1. **RSA-2048 asymmetric key pair** — Per-build key generation for EXE↔PS1 secure handshake protocol
-2. **AES-256-CBC session encryption layer** — Hash list transport protection between EXE and PS1
-3. **Dual timer + FileSystemWatcher** — Real-time runtime integrity monitoring (3s fixed + 2-7s random + filesystem events)
-4. **C# offline metadata obfuscation** — Class and method name randomization during build
-5. **Anti-debugging/anti-dump detection** — Detects x64dbg, OllyDbg, Scylla, Phantom
-6. **Token time-based validation** — 60-second expiry window with 5-second clock skew tolerance
-7. **Check interval optimization** — Reduced from 10s to 3s (P0 fix, 70% attack window reduction)
-8. **Full-file checking** — Removed `break` statements for complete file hash verification (P0 fix)
-9. **1-second post-launch check** — Immediate integrity verification after PS1 startup
-10. **Unauthorized file injection detection** — FileSystemWatcher Created event with whitelist validation
+- **不用打开事件查看器翻几千条日志了** — AURORA Analyzer 帮你自动筛选和分析
+- **不用百度搜蓝屏代码了** — 自动解析 Minidump 文件，告诉你是哪个驱动导致的
+- **修错了能反悔** — 每次修复都自动备份，一键撤销
+- **导出进度不丢失** — 即使关闭程序，下次打开也能从中断处继续
+- **五层纵深防御** — 从构建到运行全程防篡改，银行级安全保护
 
 ***
 
-## 3. System Architecture
+## 2. 快速入门
 
-### 3.1 Directory Structure
+### 2.1 系统要求
+
+| 项目                 | 最低要求               | 推荐配置             |
+| ------------------ | ------------------ | ---------------- |
+| **操作系统**           | Windows 10 (1809+) | Windows 11 22H2+ |
+| **.NET Framework** | 4.7.2              | 4.8+             |
+| **PowerShell**     | 5.1 (内置)           | PowerShell 7+    |
+| **内存**             | 4 GB               | 8 GB+            |
+| **磁盘空间**           | 100 MB             | 500 MB+ (用于日志导出) |
+| **权限**             | 标准用户               | 管理员权限（完整功能）      |
+
+> 💡 **提示**: 大部分功能在标准用户权限下即可使用。只有导出安全日志、系统修复等操作需要管理员权限，程序会自动提示您提权。
+
+### 2.2 安装与启动
+
+**只需两步：**
+
+1. **解压** `AURORA-AnalyzerV1.1.24.1Release.zip` 到任意目录
+2. **双击** `AURORA.Launcher-双击启动.exe` 即可启动
+
+> ⚠️ **注意**:
+>
+> - 请勿修改或删除程序目录中的任何文件，否则程序将拒绝启动
+> - 首次运行如果被杀毒软件拦截，请添加信任（本工具不包含任何恶意代码）
+> - 请勿在压缩包内直接运行，务必先解压
+
+**启动后你会看到：**
+
+- 带有星空动画背景的主界面
+- 顶部菜单栏可以切换功能模块
+- 底部状态栏显示当前系统信息和性能等级
+
+### 2.3 界面概览
 
 ```
-AURORA-Analyzer-Factory/
-├── AURORA.Launcher-双击启动.exe    # C# Windows Forms entry point
-├── GAURORA.CHK.ENC                 # AES-256-CBC encrypted hash list
-├── version.txt                     # Semantic version string
-├── build.ps1                       # Complete build orchestration script
-├── build.log                       # Build session log
-├── desktop.ini                     # Windows folder customization
+┌─────────────────────────────────────────────────┐
+│  AURORA Analyzer V1.1.24.1          [— □ ✕]     │
+├─────────────────────────────────────────────────┤
+│  [日志导出] [智能诊断] [系统修复] [修复历史] [设置] │
+├─────────────────────────────────────────────────┤
+│                                                 │
+│         主内容区域（根据选择的功能模块变化）         │
+│         · 日志类型选择                            │
+│         · 日期范围选择                            │
+│         · 进度条                                  │
+│         · 操作按钮                                │
+│                                                 │
+├─────────────────────────────────────────────────┤
+│  状态栏: 就绪  |  管理员: 是/否  |  语言: 中文   │
+└─────────────────────────────────────────────────┘
+```
+
+***
+
+## 3. 日志导出功能
+
+这是 AURORA Analyzer 最核心的功能，帮助您导出 Windows 系统中的事件日志进行分析。
+
+### 3.1 支持的日志类型
+
+AURORA Analyzer 支持导出 **8 种** Windows 事件日志：
+
+| 日志类型                   | 包含内容                  | 典型使用场景               |
+| ---------------------- | --------------------- | -------------------- |
+| **系统** (System)        | 系统服务启动/停止、驱动加载、内核事件   | 排查蓝屏、系统崩溃、驱动问题       |
+| **应用程序** (Application) | 应用崩溃、错误、安装事件          | 排查软件闪退、安装失败          |
+| **安全** (Security)      | 登录审计、权限变更、账户管理        | 安全审计、检查是否被入侵         |
+| **安装** (Setup)         | Windows 更新安装、组件安装     | 排查 Windows Update 失败 |
+| **DNS 服务器**            | DNS 查询与解析记录           | DNS 故障排查             |
+| **DHCP 服务器**           | DHCP IP 地址分配记录        | 网络地址分配问题             |
+| **目录服务**               | Active Directory 域控事件 | 企业域环境管理              |
+| **IIS 管理**             | IIS Web 服务器管理事件       | Web 服务器运维            |
+
+> 💡 **最常用的选择**: 如果您不确定，先选择「系统」日志，这包含了90%的日常问题信息。
+
+### 3.2 选择导出范围
+
+导出范围有三种选择：
+
+**① 单日导出**
+
+- 只导出指定某一天的所有日志
+- 适合排查"今天电脑出了什么问题"
+
+**② 日期范围导出**
+
+- 导出起始日期到结束日期之间的所有日志
+- 适合分析一段时期内的趋势
+- 例如: 2026年1月1日 \~ 2026年3月1日
+
+**③ 强制重新扫描**
+
+- 忽略之前的缓存，从头开始重新导出
+- 适合怀疑之前的导出不完整时使用
+
+### 3.3 高级筛选
+
+如果您只需要特定类型的事件，可以使用高级筛选缩小范围：
+
+| 筛选项              | 作用         | 示例                               |
+| ---------------- | ---------- | -------------------------------- |
+| **EventID**      | 只导出指定事件ID  | `1001, 41, 6008`（系统诊断 + 意外关机）    |
+| **ProviderName** | 只导出指定来源的事件 | `Microsoft-Windows-Kernel-Power` |
+| **Level**        | 只导出指定级别的事件 | `Critical`（仅关键错误）、`Error`（错误）    |
+
+**Level 级别说明:**
+
+| 级别          | 中文 | 含义      | 举例            |
+| ----------- | -- | ------- | ------------- |
+| Critical    | 关键 | 系统级严重错误 | 内核崩溃、意外关机     |
+| Error       | 错误 | 组件运行出错  | 服务启动失败、应用崩溃   |
+| Warning     | 警告 | 潜在问题提醒  | 磁盘空间不足、驱动即将过期 |
+| Information | 信息 | 一般操作记录  | 服务启动成功、更新安装完成 |
+| Verbose     | 详细 | 调试级详细信息 | 开发者调试用的详细日志   |
+
+> 💡 **建议**: 排查问题时先选 `Critical + Error`，如果没有找到原因再扩大到 `Warning`。
+
+### 3.4 导出格式说明
+
+每次导出会自动生成多种格式的文件：
+
+| 文件              | 格式         | 用途                 | 用什么打开                       |
+| --------------- | ---------- | ------------------ | --------------------------- |
+| `*_日志_*.csv`    | CSV 表格     | 用 Excel 做数据分析、绘制图表 | Excel / WPS / Google Sheets |
+| `*_日志_*.json`   | JSON 结构化数据 | 编程处理、导入其他工具        | 任意文本编辑器 / 编程语言              |
+| `*_日志_*.xml`    | XML 结构化数据  | Windows 事件查看器兼容格式  | 事件查看器 / 浏览器                 |
+| `*_日志_*_摘要.txt` | 纯文本摘要      | 快速浏览概览             | 记事本 / 任意文本编辑器               |
+| `*_趋势分析.txt`    | 纯文本报告      | 查看事件趋势和分布          | 记事本 / 任意文本编辑器               |
+| `*_趋势数据.csv`    | CSV 数据     | 趋势分析原始数据           | Excel / WPS                 |
+
+**输出位置**: 所有文件保存在程序目录下的 `UserLogs\` 文件夹中。
+
+**CSV 文件包含的列:**
+
+- 时间、事件ID、级别、来源、计算机名、用户、事件消息等
+
+### 3.5 查看导出结果
+
+导出完成后，您可以：
+
+1. **在程序中直接查看**: 导出完成后会弹出摘要窗口
+2. **打开文件夹**: 点击"打开输出文件夹"按钮
+3. **用 Excel 分析**: 双击 CSV 文件，您可以：
+   - 按事件ID排序找出最高频的错误
+   - 筛选特定时间段的事件
+   - 创建数据透视表分析趋势
+
+***
+
+## 4. 智能诊断功能
+
+### 4.1 什么是智能诊断
+
+智能诊断是 AURORA Analyzer 的"大脑"。它不像传统工具那样只罗列日志，而是**自动分析日志内容，找出问题并提供修复建议**。
+
+**诊断流程:**
+
+```
+① 扫描系统日志
+    ↓
+② 锁定异常时间窗口（崩溃前后、启动后）
+    ↓
+③ 100+ 条诊断规则匹配
+    ↓
+④ 分析蓝屏转储文件 (Minidump)
+    ↓
+⑤ 生成诊断报告
+    ↓
+⑥ 推荐修复方案
+```
+
+**诊断报告包含:**
+
+- 发现的问题列表（按严重程度排序）
+- 每个问题的详细描述（发生时间、频率、影响）
+- 根本原因分析
+- 建议的修复操作
+
+### 4.2 五大诊断类别详解
+
+#### 🅰️ 系统稳定性
+
+检测与系统基础运行相关的问题：
+
+| 诊断项                   | 检测什么         | 常见原因            |
+| --------------------- | ------------ | --------------- |
+| **意外关机**              | 系统是否频繁意外断电   | 电源问题、CPU过热、主板故障 |
+| **系统服务崩溃**            | 核心服务是否反复停止   | 系统文件损坏、驱动冲突     |
+| **内核电源异常**            | CPU供电/频率是否异常 | 电源设置不当、散热不足     |
+| **Windows Update 失败** | 系统更新是否反复失败   | 更新组件损坏、网络问题     |
+| **磁盘文件系统错误**          | 硬盘是否出现读写错误   | 硬盘坏道、数据线松动      |
+| **系统时间跳变**            | 系统时钟是否异常跳变   | CMOS电池耗尽、主板问题   |
+
+#### 🅱️ 应用程序错误
+
+检测软件运行层面问题：
+
+| 诊断项          | 检测什么             | 常见原因         |
+| ------------ | ---------------- | ------------ |
+| **程序崩溃**     | .NET 程序是否频繁崩溃    | 运行库缺失、权限不足   |
+| **程序挂起**     | 应用是否频繁无响应        | 内存不足、死锁、资源冲突 |
+| **WMI 错误**   | Windows 管理组件是否正常 | WMI 存储库损坏    |
+| **COM 组件错误** | COM 组件调用是否失败     | 注册表损坏、DLL 缺失 |
+
+#### 🅲 驱动程序问题
+
+驱动问题是蓝屏的最常见原因：
+
+| 诊断项        | 检测什么        | 常见原因             |
+| ---------- | ----------- | ---------------- |
+| **驱动加载失败** | 驱动是否加载成功    | 驱动签名问题、不兼容       |
+| **显卡驱动超时** | 显卡驱动是否频繁重置  | 显卡过热、驱动版本不兼容、超频  |
+| **网络驱动错误** | 网卡驱动是否正常    | 驱动版本问题、网卡硬件故障    |
+| **存储驱动错误** | 硬盘控制器驱动是否出错 | 存储驱动冲突、RAID 配置错误 |
+
+#### 🅳 硬件故障预警
+
+在硬件彻底损坏前发现问题：
+
+| 诊断项             | 检测什么           | 应对建议                 |
+| --------------- | -------------- | -------------------- |
+| **磁盘 SMART 预警** | 硬盘是否报告健康问题     | ⚠️ **立即备份数据**，准备更换硬盘 |
+| **磁盘坏块**        | 硬盘是否出现坏道       | 运行 chkdsk，备份重要文件     |
+| **内存纠错**        | ECC 内存是否频繁纠错   | 检查内存条，可能需要更换         |
+| **CPU 过热降频**    | CPU 是否因过热而降频运行 | 清理灰尘、检查散热风扇          |
+| **网卡频繁重置**      | 网卡是否反复断连重置     | 更新网卡驱动、检查网线          |
+
+#### 🅴 安全事件审计
+
+检测系统安全状态：
+
+| 诊断项         | 检测什么          | 严重程度            |
+| ----------- | ------------- | --------------- |
+| **暴力登录**    | 是否有人在反复尝试登录   | 🔴 高危 — 可能正在被攻击 |
+| **权限提升**    | 是否有未授权的权限提升操作 | 🟡 注意 — 可能是恶意软件 |
+| **审计日志清除**  | 安全日志是否被清空过    | 🔴 高危 — 典型的入侵痕迹 |
+| **防火墙规则变更** | 防火墙规则是否被修改    | 🟡 注意 — 检查是否合法  |
+| **账户创建/删除** | 是否有未知账户变更     | 🟡 注意 — 检查账户来源  |
+
+### 4.3 蓝屏问题分析
+
+当您的电脑出现蓝屏时，AURORA Analyzer 可以：
+
+1. **自动扫描** `C:\Windows\Minidump\` 文件夹中的蓝屏转储文件
+2. **解析** 转储文件头部信息，提取：
+   - 蓝屏时间
+   - 停止代码 (BugCheck Code)
+   - 可能导致蓝屏的驱动程序
+   - 当时正在运行的进程
+3. **匹配** 知识库中的已知蓝屏原因
+4. **建议** 更新/卸载问题驱动，或执行系统修复
+
+> 💡 **提示**: 如果 Minidump 文件夹为空，请确保系统开启了"写入调试信息"功能：
+> 控制面板 → 系统 → 高级系统设置 → 启动和故障恢复 → 设置 → 写入调试信息 = "小内存转储(256KB)"
+
+### 4.4 解读诊断报告
+
+诊断报告使用颜色和图标区分严重程度：
+
+| 图标 | 级别     | 含义     | 您应该怎么做     |
+| -- | ------ | ------ | ---------- |
+| 🔴 | **严重** | 需要立即处理 | 按照修复建议立即操作 |
+| 🟠 | **高**  | 存在明确问题 | 尽快处理，避免恶化  |
+| 🟡 | **中**  | 潜在风险   | 了解原因，择机处理  |
+| 🔵 | **低**  | 优化建议   | 可选操作，不影响使用 |
+
+***
+
+## 5. 系统修复功能
+
+### 5.1 支持的修复类型
+
+AURORA Analyzer 可以帮您一键修复以下常见系统问题：
+
+#### 🔧 禁用 Windows Update（暂停自动更新）
+
+**适用场景:**
+
+- Windows 自动更新在工作时强制重启
+- 更新导致特定软件不兼容
+- 需要暂时冻结系统版本
+
+**修复内容:**
+
+- 停止 Windows Update 服务
+- 禁用自动更新计划任务
+- 修改组策略设置
+
+#### 🔧 启用 Windows Defender（恢复杀毒）
+
+**适用场景:**
+
+- Defender 被第三方软件或病毒禁用
+- 使用优化软件后 Defender 无法正常启动
+
+**修复内容:**
+
+- 恢复 Defender 服务为自动启动
+- 移除第三方注册表限制
+- 重启相关安全服务
+
+#### 🔧 禁用遥测与数据收集
+
+**适用场景:**
+
+- 关注隐私保护
+- 减少系统后台资源占用
+
+**修复内容:**
+
+- 禁用 Connected User Experiences and Telemetry 服务
+- 修改遥测级别为"安全"（最低）
+- 关闭相关计划任务
+
+#### 🔧 重置网络设置
+
+**适用场景:**
+
+- 网络连接受限或无法上网
+- DNS 解析异常
+- VPN 连接后网络配置残留
+
+**修复内容:**
+
+- 重置 Winsock 目录
+- 重置 TCP/IP 协议栈
+- 刷新 DNS 缓存
+- 重置 Windows 防火墙规则
+
+#### 🔧 系统清理
+
+**适用场景:**
+
+- C 盘空间不足
+- 系统长时间未清理
+
+**修复内容:**
+
+- 清理临时文件
+- 清空回收站
+- 清理 Windows Update 缓存
+- 清理缩略图缓存
+
+### 5.2 修复前保护机制
+
+**您的安全是我们的首要考虑。** 每次执行修复前，AURORA Analyzer 会自动：
+
+```
+├─ ✅ 创建系统还原点 (System Restore Point)
+│     └── 可以在 Windows 恢复环境中回滚整个系统状态
 │
-├── Data/
-│   └── AURORA-TechData.json        # Diagnostic rule knowledge base (JSON)
+├─ ✅ 创建快速备份快照
+│     ├── 备份即将修改的注册表项
+│     ├── 备份即将修改的文件
+│     └── 记录服务的当前状态
 │
-├── Resources/
-│   ├── AURORAICON.ico              # Application icon
-│   └── CascadiaMono.ttf            # UI monospace font
+├─ ✅ 记录审计日志
+│     └── 详细记录：谁、何时、做了什么、结果如何
 │
-├── Scripts/
-│   ├── AURORA-AnalyzerLauncherGUI.ps1      # Main GUI (RSA public key + runtime monitoring)
-│   ├── AURORA-AnalyzerPRO.ps1              # PRO mode unified entry
-│   ├── AURORA-AnalyzerCHSPRO.ps1           # Chinese PRO export engine (~7,767 lines)
-│   ├── AURORA-AnalyzerENGPRO.ps1           # English PRO export engine (~7,500 lines)
-│   ├── AURORA-SmartEngine.ps1              # Smart diagnostics engine v1.1.32
-│   ├── AURORA-CoreEngine.ps1               # Shared core engine
-│   ├── AURORA-GUI-Functions.ps1            # GUI helper functions
-│   ├── AURORA-Language.psd1                # Bilingual resource file (144 entries)
-│   ├── AURORA-ProgressManager.ps1          # Session persistence & checkpoint resume
-│   ├── AURORA-ProgressManager-Integration.ps1
-│   ├── AURORA-ProgressManager-Integration-CHS.ps1
-│   ├── AURORA-ProgressManager-Integration-ENG.ps1
-│   ├── AURORA-RestoreManager.ps1           # Windows System Restore API wrapper
-│   ├── AURORA-RepairLogger.ps1             # Repair operation audit trail
-│   ├── AURORA-UndoManager.ps1              # Fast backup & restore (registry/files/services)
-│   ├── AURORA-RepairTools.ps1              # Repair toolset entry point
-│   ├── AURORA-UndoViewer.ps1               # Repair history viewer & undo tool
-│   ├── Core/
-│   │   └── AURORA-AnimationCoreEngine.ps1  # Animation core engine (C# + PowerShell)
-│   └── SessionCache/
-│       ├── active/                         # Current active sessions
-│       ├── checkpoints/                    # Checkpoint backups
-│       └── archive/                        # Completed session archives
-│
-├── UserLogs/                               # Exported log output directory
-│   └── *.csv, *.json, *.xml, *.txt
-│
-├── Docs/                                   # Documentation
-├── test/                                   # Test scripts (14 test files)
-└── Releases/                               # Build ZIP output
+└─ ✅ 风险评估
+      └── 高风险操作需要额外确认
 ```
 
-### 3.2 Component Dependency Graph
+> 🛡️ **双重保护**: 即使一种恢复方式失败，另一种还能帮您回滚。
 
-```
-┌──────────────────────────────────────┐
-│   AURORA.Launcher-双击启动.exe       │
-│   (C# WinForms, RSA Private Key)     │
-└──────────────┬───────────────────────┘
-               │ RSA Token + Launch
-               ▼
-┌──────────────────────────────────────┐
-│   AURORA-AnalyzerLauncherGUI.ps1     │
-│   (RSA Public Key, Runtime Monitor)  │
-└───┬──────┬──────┬──────┬──────┬─────┘
-    │      │      │      │      │
-    ▼      ▼      ▼      ▼      ▼
-┌──────┐┌──────┐┌──────┐┌──────┐┌────────────┐
-│PRO   ││Smart ││Repair││Undo  ││Animation   │
-│Engine││Engine││Tools ││Viewer││Core Engine │
-└──┬───┘└──┬───┘└──┬───┘└──┬───┘└────────────┘
-   │       │       │       │
-   ▼       ▼       ▼       ▼
-┌──────────────────────────────────────┐
-│   Shared Dependencies:               │
-│   CoreEngine, Language.psd1,         │
-│   ProgressManager, GUI-Functions     │
-└──────────────────────────────────────┘
-```
+### 5.3 如何执行修复
 
-### 3.3 File Size Reference
+1. 点击 **「系统修复」** 选项卡
+2. 从列表中选择要执行的修复类型
+3. 点击 **「执行修复」** 按钮
+4. 确认风险提示（如有）
+5. 等待修复完成
+6. 查看修复结果报告
 
-| File                           | Approximate Size | Role                      |
-| ------------------------------ | ---------------- | ------------------------- |
-| AURORA.Launcher-双击启动.exe       | \~50-100 KB      | C# compiled entry point   |
-| AURORA-AnalyzerLauncherGUI.ps1 | \~10,000+ lines  | Main GUI + security       |
-| AURORA-AnalyzerCHSPRO.ps1      | \~7,767 lines    | Chinese PRO export engine |
-| AURORA-AnalyzerENGPRO.ps1      | \~7,500 lines    | English PRO export engine |
-| AURORA-SmartEngine.ps1         | \~1,500+ lines   | Smart diagnostics engine  |
-| AURORA-CoreEngine.ps1          | \~486 lines      | Shared core engine        |
-| AURORA-GUI-Functions.ps1       | \~220 lines      | GUI helper functions      |
-| AURORA-AnimationCoreEngine.ps1 | \~800+ lines     | Animation core engine     |
-| AURORA-Language.psd1           | \~250 lines      | Bilingual resources       |
-| AURORA-ProgressManager.ps1     | \~400+ lines     | Session persistence       |
-| build.ps1                      | \~1,185 lines    | Build orchestration       |
+**修复完成后:**
+
+- 大部分修复立即生效
+- 部分修复（如网络重置）可能需要重启电脑
+- 如果修复后出现问题，可以立即使用 **「撤销」** 功能恢复
 
 ***
 
-## 4. Module-Level Technical Reference
+## 6. 撤销与还原功能
 
-### 4.1 AURORA.Launcher-双击启动.exe (C# Entry Point)
+"修错了能反悔"是 AURORA Analyzer 的核心设计理念之一。
 
-**Technology Stack:**
+### 6.1 撤销修复操作
 
-- C# 5.0 (compiled via .NET Framework csc.exe)
-- Target: x86 platform, Windows Forms (windowless/background)
-- Classes: `AuroraLauncher` (obfuscated to `a_<random8chars>` in v1.1.24.0)
+**操作步骤:**
 
-**Key Responsibilities:**
+1. 点击 **「修复历史」** 选项卡
+2. 在历史记录列表中找到要撤销的修复操作
+3. 选中该条记录，点击 **「撤销此操作」**
+4. 确认撤销
+5. 系统自动逆序恢复所有被修改的注册表、文件和服务
 
-1. Anti-debugger detection (`IsDebuggerPresent()`)
-2. Anti-dump module scanning (x64dbg.dll, x32dbg.dll, ollydbg.dll, scylla.dll, phantom.dll)
-3. Core file existence verification (19 files in `RequiredFiles[]`)
-4. `GAURORA.CHK.ENC` decryption and SHA256 hash verification
-5. RSA-2048 token generation and signing
-6. AES-256-CBC session encryption for hash list transport
-7. PowerShell process launch with environment variables
-8. Post-launch memory cleanup and environment variable removal
-
-**Embedded Secrets (build-time injected):**
-
-- `RsaPrivateKeyXml` — RSA-2048 private key (XML format)
-- `PwXorMask` — 16-byte XOR obfuscation mask
-- `PwEncrypted` — XOR+Shuffle obfuscated password bytes
-- `PwOrder` — Password byte position permutation array
-- `DerivationSalt` — 32-byte session derivation salt
-
-**Compilation Command:**
+**撤销原理:**
 
 ```
-csc.exe /out:AURORA.Launcher-双击启动.exe /target:winexe /platform:x86
-        /reference:System.Windows.Forms.dll
-        /win32icon:Resources\AURORAICON.ico
-        AuroraLauncher.cs
+修复前的备份快照
+    ├── registry\wuauserv_start.reg      → 恢复注册表
+    ├── files\hosts.backup               → 恢复文件
+    ├── services\services_state.json     → 恢复服务状态
+    └── tasks\scheduled_tasks.xml        → 恢复计划任务
 ```
 
-**Anti-Debugging Implementation:**
+### 6.2 查看修复历史
 
-```csharp
-[DllImport("kernel32.dll")]
-static extern bool IsDebuggerPresent();
+修复历史查看器显示以下信息：
 
-[DllImport("kernel32.dll")]
-static extern IntPtr GetModuleHandle(string lpModuleName);
+| 列             | 内容                           |
+| ------------- | ---------------------------- |
+| **时间**        | 修复执行的精确时间                    |
+| **操作**        | 执行的修复类型                      |
+| **结果**        | ✓ 成功 / ✗ 失败 / ⚠ 部分成功 / ↩ 已撤销 |
+| **详情**        | 修复了哪些项目                      |
+| **SessionId** | 唯一标识（技术支持可用）                 |
 
-static bool CheckAntiDump()
-{
-    string[] suspiciousModules = { "x64dbg.dll", "x32dbg.dll",
-        "ollydbg.dll", "scylla.dll", "phantom.dll" };
-    foreach (string module in suspiciousModules)
-    {
-        if (GetModuleHandle(module) != IntPtr.Zero)
-            return false;
-    }
-    return true;
-}
+**功能操作:**
 
-[STAThread]
-static void Main()
-{
-    if (IsDebuggerPresent()) return;  // Silent exit
-    if (!CheckAntiDump()) return;     // Silent exit
-    // ... continue launch sequence
-}
-```
+- 按时间/类型排序
+- 查看详细修复日志
+- 导出审计报告为 CSV
 
-### 4.2 AURORA-AnalyzerLauncherGUI.ps1 (Main GUI)
+### 6.3 系统还原点
 
-**Technology Stack:**
+如果您选择了使用系统还原点作为保护：
 
-- PowerShell 5.1+
-- Windows Forms (System.Windows.Forms)
-- Multi-threaded via PowerShell Runspaces
-- `syncHash` synchronized hashtable for cross-thread communication
-- `EventWaitHandle` for event-driven authorization (zero CPU polling)
+- 在 Windows 搜索框输入"创建还原点"
+- 点击"系统还原"
+- 选择 AURORA Analyzer 创建的还原点
+- 按向导操作即可回滚
 
-**Key Parameters:**
-
-```powershell
-Param(
-    [switch]$LaunchedByExe
-)
-```
-
-**RSA Public Key Injection (build-time):**
-
-```powershell
-$global:AURORA_PublicKeyXml = @'
-<RSAKeyValue><Modulus>[2048-bit modulus Base64]</Modulus>
-<Exponent>AQAB</Exponent></RSAKeyValue>
-'@
-```
-
-**Runtime Integrity Monitoring (Lines 422-741):**
-
-- `$global:IntegrityCheckInterval = 3000` (milliseconds, 3s)
-- `$script:runtimeIntegrityTimer` — Fixed 3-second timer
-- `$script:randomIntegrityTimer` — Random 2-7 second timer
-- `$script:fileWatcher` — FileSystemWatcher on root directory
-  - Filter: `*.ps1,*.json,*.xml,*.ico,*.exe,*.enc`
-  - NotifyFilter: FileName | Size | LastWrite
-  - IncludeSubdirectories: true
-- Four integrity checks: file count, existence, SHA256 hash, unauthorized file creation
-
-**Tamper Response Protocol:**
-
-1. Stop all monitoring timers and FileSystemWatcher
-2. Close splash screen and main window
-3. Display 15-second countdown warning dialog
-4. List all missing and tampered files
-5. Program exits after countdown
-
-**Performance Profiler (Lines 91-145):**
-
-```powershell
-$cs = Get-CimInstance Win32_ComputerSystem
-$cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
-$ramGB = [Math]::Round($cs.TotalPhysicalMemory / 1GB)
-$logicalCores = $cpu.NumberOfLogicalProcessors
-$baseClock = $cpu.MaxClockSpeed
-
-$perfScore = ($logicalCores * 15) + ($ramGB * 5) +
-    ([Math]::Max(0, ($baseClock - 2000) / 100))
-
-if ($perfScore -ge 240)       { $global:AuroraPerfTier = "Extreme" }
-elseif ($perfScore -ge 120)   { $global:AuroraPerfTier = "Performance" }
-elseif ($perfScore -ge 70)    { $global:AuroraPerfTier = "Balanced" }
-else                           { $global:AuroraPerfTier = "Eco" }
-```
-
-### 4.3 AURORA-CoreEngine.ps1 (Shared Core Engine)
-
-**Functions:**
-
-| Function                    | Purpose                                       |
-| --------------------------- | --------------------------------------------- |
-| `Test-AdminRequired`        | Check if a log type requires admin privileges |
-| `Invoke-ElevationCheck`     | Request admin elevation via syncHash/GUI      |
-| `Write-AuroraLog`           | Unified logging (GUI syncHash or console)     |
-| `Read-AuroraInput`          | Get user input via syncHash or Read-Host      |
-| `New-StreamWriterOperation` | Safe StreamWriter with directory creation     |
-| `Get-SafeFilePath`          | Path traversal prevention validator           |
-| `Save-ProgressSafe`         | Progress persistence to filesystem            |
-| `Get-ProgressInfo`          | Load previously saved progress                |
-| `Manage-Session`            | Session recovery/restart logic                |
-| `Get-SystemInfo`            | System environment probe                      |
-| `Initialize-Engine`         | Core engine bootstrap                         |
-
-**Global Variable Guard:**
-
-```powershell
-if ($global:AURORA_CoreEngine_Loaded -eq $true) { return }
-$global:AURORA_CoreEngine_Loaded = $true
-```
-
-**Admin-Required Log Types:**
-
-```powershell
-$script:AdminRequiredLogTypes = @(
-    "Security", "Setup", "DNS Server", "DHCP Server",
-    "Directory Service", "IIS Admin Service"
-)
-```
-
-### 4.4 AURORA-AnalyzerPRO.ps1 (PRO Mode Unified Entry)
-
-**Role:** Language-aware routing dispatcher. Detects user UI culture and delegates to either CHSPRO or ENGPRO.
-
-**Version:** \~200 lines
-
-**Flow:**
-
-1. Receive parameters (LogType, StartTime, EndTime, etc.)
-2. Detect `[System.Threading.Thread]::CurrentThread.CurrentUICulture.Name`
-3. If culture starts with "zh" → route to `AURORA-AnalyzerCHSPRO.ps1`
-4. Otherwise → route to `AURORA-AnalyzerENGPRO.ps1`
-5. Forward all parameters to the target engine
-
-### 4.5 AURORA-AnalyzerCHSPRO.ps1 / AURORA-AnalyzerENGPRO.ps1
-
-**Role:** Full-featured professional log export engines with identical logic but separate language resources.
-
-**Supported Log Types (8):**
-
-1. System
-2. Application
-3. Security (admin required)
-4. Setup (admin required)
-5. DNS Server (admin required)
-6. DHCP Server (admin required)
-7. Directory Service (admin required)
-8. IIS Admin Service (admin required)
-
-**Export Modes:**
-
-- Single Day — Quick export for a specific date
-- Date Range — Batch export across multiple dates (e.g., 6 months)
-- ForceRescan — Ignore cached results
-
-**Advanced Filtering:**
-
-- EventID filter
-- ProviderName filter
-- Level filter (Critical / Error / Warning / Information / Verbose)
-
-**Output Formats (per log type):**
-
-1. `{LogType}_日志_{YYYYMMDD}___{YYYYMMDD}.csv`
-2. `{LogType}_日志_{YYYYMMDD}___{YYYYMMDD}.json`
-3. `{LogType}_日志_{YYYYMMDD}___{YYYYMMDD}.xml`
-4. `{LogType}_日志_{YYYYMMDD}___{YYYYMMDD}_摘要.txt` (Summary Report)
-5. `{LogType}_日志_{YYYYMMDD}_至_{YYYYMMDD}_趋势分析.txt` (Trend Analysis)
-6. `{LogType}_日志_{YYYYMMDD}_至_{YYYYMMDD}_趋势数据.csv` (Trend Data)
+> ⚠️ **注意**: 系统还原点会回滚整个系统到创建时的状态，包括其他程序的安装和系统设置。
 
 ***
 
-## 5. Security System — Complete Specification
+## 7. 进度管理与断点续传
 
-### 5.1 Four-Layer Defense-in-Depth Architecture
+### 7.1 会话自动保存
 
-```
-┌──────────────────────────────────────────────────────────┐
-│              Layer 1: Build-Time Security                 │
-│  Key Generation → Password Obfuscation → File Hashing     │
-│  → PBKDF2 Derivation → AES-256 Encryption → C# Injection  │
-│  → Symbol Obfuscation → Recompilation                    │
-├──────────────────────────────────────────────────────────┤
-│              Layer 2: Launch-Time Security                │
-│  Anti-Debug → File Existence → Decrypt CHK → SHA256      │
-│  → RSA Token → AES Session → PS1 Launch                  │
-├──────────────────────────────────────────────────────────┤
-│              Layer 3: Runtime Security                    │
-│  Dual Timers (3s + 2-7s) → FileSystemWatcher →           │
-│  Count Check → Existence Check → SHA256 → Injection Det   │
-│  → Tamper Response (15s countdown → Exit)                │
-├──────────────────────────────────────────────────────────┤
-│           Layer 4: Multi-Module Launch Detection          │
-│  GUI_Mode → syncHash → RSA Token → 5s countdown exit     │
-└──────────────────────────────────────────────────────────┘
-```
+导出大量日志时（比如导出半年的系统日志），可能需要很长时间。AURORA Analyzer 会自动保存进度：
 
-### 5.2 Layer 1: Build-Time Security (build.ps1 Steps \[0.5]-\[5])
+- **每处理完一个数据块**自动记录 checkpoint
+- 即使程序意外关闭，进度也不会丢失
+- 会话文件保存在 `Scripts\SessionCache\active\` 目录
 
-#### 5.2.1 RSA-2048 Key Pair Generation
+### 7.2 恢复中断的任务
 
-```powershell
-$rsaProvider = New-Object System.Security.Cryptography.RSACryptoServiceProvider(2048)
-$RsaPrivateKeyRaw = $rsaProvider.ToXmlString($true)   # Embed in EXE
-$RsaPublicKeyRaw  = $rsaProvider.ToXmlString($false)   # Inject into PS1
-```
+如果导出过程中程序关闭了（无论是因为崩溃、关机还是手动关闭），下次启动时会：
 
-#### 5.2.2 Password XOR+Shuffle Obfuscation
+1. 自动检测到未完成的会话
+2. 提示"发现未完成的任务，是否继续？"
+3. 选择"继续"后从中断处自动恢复
+4. 已导出的数据不会重复处理
 
-```powershell
-$passwordBytes = [Text.Encoding]::UTF8.GetBytes($MasterPassword)
-$xorMask = New-Object byte[] 16  # Random 16-byte mask
-$pwShuffled = New-Object byte[] $pwLen
-$pwOrder = 0..($pwLen - 1) | Sort-Object { Get-Random }
-
-for ($i = 0; $i -lt $pwLen; $i++) {
-    $pwShuffled[$i] = $passwordBytes[$pwOrder[$i]] -bxor $xorMask[$i % 16]
-}
-```
-
-**C# Deobfuscation (runtime):**
-
-```csharp
-static string GetMasterPassword()
-{
-    byte[] decrypted = new byte[PwEncrypted.Length];
-    for (int i = 0; i < PwEncrypted.Length; i++)
-        decrypted[PwOrder[i]] = (byte)(PwEncrypted[i] ^ PwXorMask[i % PwXorMask.Length]);
-    return Encoding.UTF8.GetString(decrypted);
-}
-```
-
-#### 5.2.3 SHA256 Hash Signing (19 Core Files)
-
-```
-Format: {sha256_lowercase_hex} {relative_path}\r\n
-```
-
-**Protected Files List:**
-
-1. `Scripts\AURORA-AnalyzerLauncherGUI.ps1`
-2. `Scripts\AURORA-AnalyzerENGPRO.ps1`
-3. `Scripts\AURORA-AnalyzerCHSPRO.ps1`
-4. `Scripts\AURORA-SmartEngine.ps1`
-5. `Data\AURORA-TechData.json`
-6. `Scripts\AURORA-ProgressManager.ps1`
-7. `Scripts\AURORA-ProgressManager-Integration-CHS.ps1`
-8. `Scripts\AURORA-ProgressManager-Integration-ENG.ps1`
-9. `Scripts\AURORA-GUI-Functions.ps1`
-10. `Scripts\AURORA-CoreEngine.ps1`
-11. `Scripts\AURORA-Language.psd1`
-12. `Scripts\AURORA-AnalyzerPRO.ps1`
-13. `Scripts\AURORA-ProgressManager-Integration.ps1`
-14. `Scripts\AURORA-RestoreManager.ps1`
-15. `Scripts\AURORA-RepairLogger.ps1`
-16. `Scripts\AURORA-UndoManager.ps1`
-17. `Scripts\AURORA-RepairTools.ps1`
-18. `Scripts\AURORA-UndoViewer.ps1`
-19. `Scripts\Core\AURORA-AnimationCoreEngine.ps1`
-
-#### 5.2.4 GAURORA.CHK.ENC Encryption
-
-```
-Encryption Pipeline:
-  Plain hash list → PBKDF2-SHA256(Password, Salt, 100,000 iterations) → AES-256-CBC key
-  → AES-256-CBC encrypt → Base64 encode → Write to GAURORA.CHK.ENC
-
-Binary Format:
-  [Salt: 16 bytes] [IV: 16 bytes] [AES-256-CBC Ciphertext: variable length]
-  → Full blob Base64-encoded for storage
-```
-
-```powershell
-# Key Derivation
-$pbkdf2 = New-Object System.Security.Cryptography.Rfc2898DeriveBytes(
-    $MasterPassword, $salt, 100000,
-    [System.Security.Cryptography.HashAlgorithmName]::SHA256
-)
-$keyBytes = $pbkdf2.GetBytes(32)
-
-# Encryption
-$aes = [Security.Cryptography.Aes]::Create()
-$aes.Key = $keyBytes
-$aes.GenerateIV()  # Random 16-byte IV
-$enc = $aes.CreateEncryptor().TransformFinalBlock(...)
-
-# Assembly
-$final = Salt + IV + Ciphertext
-[Convert]::ToBase64String($final) → GAURORA.CHK.ENC
-```
-
-#### 5.2.5 C# Offline Metadata Obfuscation
-
-**Process:**
-
-1. Compile original C# source → temporary EXE
-2. Load assembly via `[System.Reflection.Assembly]::Load()`
-3. Generate random class name: `a_` + 8 random lowercase ASCII chars
-4. Generate random method names: `c_` + 6 chars (CRC), `d_` + 6 chars (anti-dump)
-5. Replace in source: `class AuroraLauncher` → `class a_xxxxxxxx`
-6. Replace method calls and declarations
-7. **Main() is NOT renamed** (C# entry point requirement)
-8. Recompile with obfuscated source → final EXE
-9. Original EXE discarded, temporary files cleaned
-
-```powershell
-$randomChars = -join (1..8 | ForEach-Object {
-    [char](Get-Random -Minimum 97 -Maximum 123)
-})
-$obfClassName = "a_$randomChars"
-$CsCodeObf = $CsCode.Replace("class AuroraLauncher", "class $obfClassName")
-$CsCodeObf = $CsCodeObf.Replace("CalculateCrc32(", "$obfCrc(")
-$CsCodeObf = $CsCodeObf.Replace("CheckAntiDump()", "$obfCheck()")
-```
-
-**Note:** When obfuscation is applied, CRC32 self-check is disabled. When obfuscation fails, fallback to CRC32 self-check.
-
-### 5.3 Layer 2: Launch-Time Security (EXE Main)
-
-#### 5.3.1 Anti-Debugging & Anti-Dump Detection
-
-```csharp
-if (IsDebuggerPresent()) return;           // Silent exit
-if (!CheckAntiDump()) return;              // Silent exit
-// Modules checked: x64dbg.dll, x32dbg.dll, ollydbg.dll, scylla.dll, phantom.dll
-```
-
-#### 5.3.2 Component Existence Verification
-
-```csharp
-foreach (string file in RequiredFiles)
-{
-    if (!File.Exists(Path.Combine(dir, file)))
-    {
-        MessageBox.Show("Error: Missing component:\n" + file, ...);
-        return;
-    }
-}
-```
-
-#### 5.3.3 File Integrity Verification
-
-```csharp
-// 1. Read GAURORA.CHK.ENC → Base64 decode
-// 2. Extract Salt[0..15], IV[16..31], Cipher[32..]
-// 3. PBKDF2-SHA256(Password, Salt, 100,000) → 32-byte key
-// 4. AES-256-CBC decrypt → hash list plaintext
-// 5. For each file: SHA256 hash → compare with expected
-// 6. File ORDER also validated (index-based comparison)
-// 7. Any mismatch → error dialog and exit
-```
-
-#### 5.3.4 EXE→PS1 RSA Handshake Protocol (New in v1.1.24.0)
-
-```
-┌──────────────── EXE (C#, holds Private Key) ────────────────┐
-│                                                               │
-│  1. Generate random Nonce (GUID without dashes)               │
-│  2. Get current UTC timestamp (Unix seconds)                  │
-│  3. Derive session key:                                       │
-│     sessionKey = PBKDF2(Nonce, "AU_SESSION_2026_SALT_V1", 1000) │
-│  4. Generate random 16-byte Session IV                        │
-│  5. AES-256-CBC encrypt hash list plaintext:                  │
-│     Cipher = AES(PlainHashList, sessionKey, sessionIV)        │
-│  6. Construct HashPayload = sessionIV + Cipher              │
-│  7. HashB64 = Base64(HashPayload)                             │
-│  8. RSA-SHA256 sign:                                          │
-│     Signature = RSASign(Nonce:Timestamp:HashB64, SHA256)      │
-│  9. Write Token file (%TEMP%\aurora_token_{GUID}.tok):        │
-│     {Nonce}:{Timestamp}:{HashB64}:{Signature}                 │
-│  10. Write HashList file (%TEMP%\aurora_hash_{GUID}.tmp)      │
-│  11. Set env vars: AURORA_TOKEN_PATH, AURORA_HASH_PATH       │
-│  12. Launch PowerShell with GUI script                         │
-│  13. Clear env vars, Array.Clear all sensitive buffers        │
-│  14. Triple GC.Collect()                                       │
-│                                                               │
-└───────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌──────────────── PS1 (holds Public Key) ──────────────────────┐
-│                                                               │
-│  1. Read env var AURORA_TOKEN_PATH                            │
-│  2. Parse Token: Nonce, Timestamp, HashB64, Signature          │
-│  3. RSA-SHA256 verify:                                        │
-│     rsa.VerifyData(Nonce:Timestamp:HashB64, Signature, SHA256) │
-│  4. Timestamp validation: (now - timestamp) < 60 seconds      │
-│     Allow 5-second clock skew tolerance (age > -5)             │
-│  5. Derive sessionKey = PBKDF2(Nonce, AES_SALT, 1000)         │
-│  6. AES-256-CBC decrypt HashPayload → hash list plaintext      │
-│  7. Populate ExpectedFileHashes dictionary                     │
-│  8. Launch runtime integrity monitoring                       │
-│  9. Clean up temp token files                                  │
-│                                                               │
-└───────────────────────────────────────────────────────────────┘
-```
-
-### 5.4 Layer 3: Runtime Security (PS1 LauncherGUI)
-
-#### 5.4.1 Dual Timer System
-
-| Timer                   | Interval                | Purpose                          |
-| ----------------------- | ----------------------- | -------------------------------- |
-| `runtimeIntegrityTimer` | 3,000 ms (fixed)        | Primary periodic integrity check |
-| `randomIntegrityTimer`  | 2,000-7,000 ms (random) | Unpredictable secondary check    |
-
-#### 5.4.2 FileSystemWatcher Configuration
-
-| Property              | Value                                  |
-| --------------------- | -------------------------------------- |
-| Path                  | Root project directory                 |
-| Filter                | `*.ps1,*.json,*.xml,*.ico,*.exe,*.enc` |
-| IncludeSubdirectories | `true`                                 |
-| NotifyFilter          | `FileName \| Size \| LastWrite`        |
-| Events monitored      | Changed, Deleted, Renamed, Created     |
-
-**Event Handling Delays:**
-
-- Changed/Deleted/Renamed: 200 ms delay before integrity check
-- Created: 500 ms delay, then check against whitelist
-
-#### 5.4.3 Integrity Check Logic (Four Checks)
-
-```powershell
-$script:checkIntegrity = {
-    # Check 1: File Count Verification
-    #   actualCount != expectedCount → TAMPERED
-
-    # Check 2: Per-File Existence
-    #   foreach file in ExpectedFileHashes.Keys:
-    #     Test-Path failure → TAMPERED (continue checking)
-
-    # Check 3: Per-File SHA256 Hash Comparison
-    #   foreach file in ExpectedFileHashes.Keys:
-    #     actualHash != expectedHash → TAMPERED (continue checking)
-
-    # Check 4: FileSystemWatcher Created Events
-    #   New file not in whitelist → TAMPERED
-}
-```
-
-**Key P0 Fixes:**
-
-- Removed all `break` statements — now checks ALL files every time
-- If tampering is detected, collects ALL missing/tampered file names for the alert
-
-#### 5.4.4 Tamper Response Protocol
-
-```
-TAMPER DETECTED →
-  1. Stop the triggering timer/event source
-  2. Stop runtimeIntegrityTimer
-  3. Stop randomIntegrityTimer
-  4. Stop FileSystemWatcher (EnableRaisingEvents = false)
-  5. Close splash screen (if open)
-  6. Close main window (if open)
-  7. Display 15-second countdown warning window:
-     - Lists all MISSING files (red marker)
-     - Lists all TAMPERED files (yellow marker)
-  8. After 15 seconds → program exits
-```
-
-#### 5.4.5 Post-Launch Immediate Check
-
-```powershell
-# 1,000 ms after PS1 startup → execute first integrity check
-# Bridges the gap between startup and first timer tick
-```
-
-### 5.5 Layer 4: Multi-Module Launch Detection
-
-Every sub-module (SmartEngine, PRO, RepairTools, UndoViewer) includes identical launch detection logic:
-
-```powershell
-# Detection Method 1: GUI_Mode parameter check
-if ($GUI_Mode) { $isLaunchedByGUI = $true }
-
-# Detection Method 2: syncHash global variable check
-if (Get-Variable -Name "syncHash" -Scope Global -ErrorAction SilentlyContinue) {
-    $isLaunchedByGUI = $true
-}
-
-# Detection Method 3: RSA Token verification (final fallback)
-$TokenPath = $env:AURORA_TOKEN_PATH
-if (Test-Path $TokenPath) {
-    $tokenContent = Get-Content $TokenPath -Raw -Encoding UTF8
-    $parts = $tokenContent -split ':', 4
-    if (Test-RSATokenSignature -Nonce $parts[0] -Timestamp $parts[1]
-        -HashPayload $parts[2] -Signature $parts[3])
-    {
-        $now = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
-        if (($now - $parts[1]) -lt 60 -and ($now - $parts[1]) -gt -5) {
-            $isLaunchedByGUI = $true
-        }
-    }
-}
-
-# If NOT launched by GUI → 5-second countdown → exit
-if (-not $isLaunchedByGUI) {
-    Write-Host "This script cannot be run directly!" -ForegroundColor Red
-    Start-Sleep -Seconds 5
-    exit 1
-}
-```
-
-### 5.6 Memory Cleanup Procedures
-
-**C# EXE (post-launch):**
-
-```csharp
-Array.Clear(keyBytes, 0, keyBytes.Length);
-masterPassword = null;
-Array.Clear(PwXorMask, 0, PwXorMask.Length);
-Array.Clear(PwEncrypted, 0, PwEncrypted.Length);
-Array.Clear(sessionKey, 0, sessionKey.Length);
-Array.Clear(sessionIv, 0, sessionIv.Length);
-GC.Collect();
-GC.WaitForPendingFinalizers();
-GC.Collect();
-```
-
-**PS1 (post-verification):**
-
-```powershell
-$global:PassedHashListFromExe = $null
-$script:ExpectedFileHashes.Clear()
-```
+> 💡 **实用场景**: 正在导出500万条日志时突然停电，来电后重新打开程序，点击"继续"即可从上次中断处接着导出。
 
 ***
 
-## 6. Build System (build.ps1) — Complete Reference
+## 8. v1.1.24.1 新功能
 
-### 6.1 Build Pipeline Stages
+v1.1.24.1 在 v1.1.24.0 的基础上进行了重大安全加固，核心变化包括：
 
-| Stage  | Description                                   | Output                                          |
-| ------ | --------------------------------------------- | ----------------------------------------------- |
-| \[0.5] | RSA key pair generation                       | Private + Public key XML                        |
-| \[0.7] | Pre-inject security code into LauncherGUI.ps1 | Updated PS1 with RSA public key                 |
-| \[0]   | Check required files exist                    | All 19 files verified                           |
-| \[1]   | Calculate SHA256 hashes                       | Hash list in memory                             |
-| \[2]   | Generate plain text check data                | In-memory byte array                            |
-| \[3]   | AES-256-CBC encrypt with PBKDF2               | `GAURORA.CHK.ENC`                               |
-| \[4]   | Decryption verification round-trip            | Confirmation                                    |
-| \[5]   | Generate C# code + compile + obfuscate        | `AURORA.Launcher-双击启动.exe`                      |
-| \[6]   | Folder customization                          | `desktop.ini`                                   |
-| \[7]   | Post-build verification                       | All files confirmed                             |
-| \[8]   | Interactive ZIP packaging                     | `Releases/AURORA_Analyzer_vX.X.X.X_Release.zip` |
+### 8.1 安全防护再升级：五层纵深防御
 
-### 6.2 Version Management
+v1.1.24.0 建立了四层纵深防御体系。v1.1.24.1 新增**第五层——看门狗守护**，实现了从构建到运行的全程防篡改保护。
 
-```powershell
-# Read from version.txt
-$VersionFile = Join-Path $PSScriptRoot "version.txt"
-$CurrentVersion = Get-Content $VersionFile -Raw
+#### 🛡️ 新增第五层：独立看门狗守护
 
-# Auto-increment (--IncrementVersion switch)
-$VersionParts = $CurrentVersion -split "\."
-$Minor++
-$CurrentVersion = "$Major.$Minor"
-```
+- EXE 和 PowerShell 脚本之间建立了独立的"心跳"通信管道
+- 即使攻击者绕过了所有 PowerShell 层面的验证，EXE 端的看门狗仍能独立检测异常
+- 连续检测到3次异常心跳后，立即强制终止进程
 
-### 6.3 Password Strength Validation
+**这对您意味着什么:** 您的工具现在拥有了"保镖"级别的安全保护——即使有人试图在运行时篡改程序，看门狗会在几秒内发现并阻止。
 
-```powershell
-function Test-PasswordStrength {
-    # Requirements:
-    # - Minimum 8 characters
-    # - At least one uppercase letter
-    # - At least one lowercase letter
-    # - At least one digit
-    # - At least one special character
-    # Returns: $true / $false
-}
+#### 🔍 C# 嵌入式完整性验证
 
-function Test-PasswordWithRetry {
-    # Retries: 3
-    # Input: Read-Host -AsSecureString
-    # Validates: Test-PasswordStrength
-}
-```
+- 新增了编译为机器指令的 C# 代码块，对 16 个核心功能模块进行完整性验证
+- 编译后的代码比普通脚本代码更难被分析和修改
+- 每次构建时自动注入当前版本的哈希值，确保"此版本验证此文件"
 
-### 6.4 Smart Security Code Injection
+**这对您意味着什么:** 程序的核心功能模块受到编译级保护，攻击者无法通过简单修改脚本代码来绕过安全检查。
 
-The build script intelligently handles three cases for LauncherGUI.ps1:
+#### 🔐 提权操作安全令牌
 
-1. **Already injected with RSA keys** → Update RSA public key and SessionSalt (regex replace)
-2. **Has placeholder functions** → Replace placeholder `Test-RSATokenSignature` / `Decrypt-HashListFromToken` with real implementations
-3. **First-time injection** → Insert full security block after `Param(...)` block
+- 修复了管理员权限操作时可能出现的安全验证漏洞
+- 当执行需要管理员权限的操作时，会生成独立的安全令牌
+- 120 秒的独立有效期，确保提权后的进程也能正确验证身份
 
-### 6.5 C# Compilation
+**这对您意味着什么:** 使用管理员权限导出安全日志时，程序的身份验证不会中断——全程保护您的安全。
 
-```powershell
-# Find compiler
-$cscPaths = @(
-    "${env:windir}\Microsoft.NET\Framework64\v4.0.30319\csc.exe",
-    "${env:windir}\Microsoft.NET\Framework\v4.0.30319\csc.exe"
-)
+#### 🚫 反伪造启动参数
 
-# First compilation (un-obfuscated)
-& $csc /out:$ExePath /target:winexe /platform:x86 \
-    /reference:"System.Windows.Forms.dll" $iconArg $CsPath
+- 修复了攻击者可能通过伪造启动参数绕过所有安全验证的漏洞
+- 如果检测到伪造的启动参数，程序会强制重置安全状态
 
-# Recompile with obfuscated symbol names
-& $csc /out:$ExePathObf /target:winexe /platform:x86 \
-    /reference:"System.Windows.Forms.dll" \
-    /reference:"System.Reflection.dll" $iconArg $CsPathObf
-```
+**这对您意味着什么:** 即使高级攻击者尝试通过命令行参数欺骗程序，也会被立刻识破并拒绝运行。
 
-### 6.6 CRC32 Self-Check (Non-Obfuscated Fallback)
+### 8.2 性能优化
 
-When obfuscation is not applied, a CRC32 self-check is embedded:
+- **完整性检查 CPU 占用降低最多 95%**: 新增文件修改时间快速筛选，只在文件实际发生变化时才计算完整哈希
+- **稳定运行时 CPU 开销接近零**: 对于未修改的文件，跳过耗时的 SHA256 计算
+- **Alarm 告警窗口更稳定**: 改用 C# 原生控件，解决倒计时不稳定的问题
 
-```powershell
-$crc32 = Calculate-CRC32($exeBytes)
-$crcHex = "0x$($crc32.ToString('X8'))"
-$CsCode2 = $CsCode.Replace("const uint ExpectedCrc32 = 0x00000000;",
-    "const uint ExpectedCrc32 = $crcHex;")
-```
+### 8.3 稳定性修复
 
-### 6.7 desktop.ini Folder Customization
-
-```ini
-[.ShellClassInfo]
-IconResource=Resources\AURORAICON.ico,0
-InfoTip=AURORA Analyzer v{version} - Windows Event Log Export and Smart Diagnostics Tool
-IconFile=Resources\AURORAICON.ico
-IconIndex=0
-[ViewState]
-FolderType=Documents
-```
-
-Applied via:
-
-```powershell
-attrib +h +s "desktop.ini"
-attrib +r "{ScriptDir}"
-```
-
-### 6.8 ZIP Release Packaging
-
-```powershell
-$ReleasesDir = Join-Path $ScriptDir "Releases"
-$ZipFileName = "AURORA_Analyzer_v$CurrentVersion`_Release.zip"
-Compress-Archive -Path $ZipFiles -DestinationPath $ZipPath -Force
-```
-
-**Packaged files include:** EXE, CHK.ENC, all 19 PS1/JSON files, icon, font, desktop.ini, version.txt.
+- 修复了管理员提权操作时安全验证可能中断的 P0 级问题
+- 修复了特定情况下重复加载组件导致的报错
+- 优化了异常情况下的安全清理逻辑
+- 改进了告警窗口的倒计时显示稳定性
 
 ***
 
-## 7. Encryption & Cryptographic Primitives
+## 9. 常见问题与场景
 
-### 7.1 Primitive Inventory
+### 9.1 电脑频繁蓝屏怎么排查
 
-| Primitive   | Algorithm                | Parameters                                                    | Purpose                                   |       Security Rating      |
-| ----------- | ------------------------ | ------------------------------------------------------------- | ----------------------------------------- | :------------------------: |
-| RSA         | RSA                      | 2048-bit, PKCS#1 v1.5 padding, SHA256                         | EXE↔PS1 handshake signature               |          ✅ Strong          |
-| AES         | AES                      | 256-bit, CBC mode, PKCS7 padding                              | Hash list encryption + Session encryption |          ✅ Strong          |
-| PBKDF2      | Rfc2898DeriveBytes       | SHA256, 100,000 iterations (CHK) / 1,000 iterations (session) | Password/AES key derivation               |          ✅ Strong          |
-| SHA256      | SHA-256                  | Standard                                                      | File integrity hashing                    |          ✅ Strong          |
-| XOR+Shuffle | Custom                   | 16-byte mask + permutation                                    | Password static obfuscation               | ⚠️ Weak (obfuscation only) |
-| Random IV   | RNGCryptoServiceProvider | 16 bytes                                                      | AES initialization vector                 |          ✅ Strong          |
-| Random Salt | RNGCryptoServiceProvider | 16 bytes (CHK) / 32 bytes (session)                           | PBKDF2 salt                               |          ✅ Strong          |
-| CRC32       | IEEE 802.3               | —                                                             | EXE self-integrity (fallback)             |   ⚠️ Weak (checksum only)  |
+**场景**: 电脑最近每天蓝屏 1-2 次，不知道是什么原因。
 
-### 7.2 Key Lifecycle
+**使用 AURORA Analyzer 的排查步骤:**
 
-```
-BUILD PHASE:
-  RSA Key Pair → Private XML → embedded in C# EXE → compiled binary
-  RSA Key Pair → Public XML  → injected into PS1 script
-  Master Password → XOR+Shuffle → embedded in C# EXE
-  PBKDF2 Salt → random → embedded in C# EXE
-  Derivation Salt → random → embedded in PS1 script
+1. 打开程序，点击 **「智能诊断」**
+2. 点击 **「开始诊断」**
+3. 程序会自动：
+   - 扫描系统日志中的蓝屏记录 (EventID 41, 1001)
+   - 分析 Minidump 蓝屏转储文件
+   - 检查蓝屏前后的驱动加载/卸载事件
+4. 查看诊断报告，重点关注：
+   - **蓝屏代码** (比如 `DRIVER_POWER_STATE_FAILURE`)
+   - **疑似问题驱动** (比如 `nvlddmkm.sys` = NVIDIA 显卡驱动)
+   - **蓝屏频率趋势**
+5. 根据建议更新或回滚问题驱动
 
-RUNTIME PHASE (EXE):
-  XOR+Shuffle deobfuscate → Master Password (in memory)
-  PBKDF2(Password, Salt, 100k) → AES key → decrypt CHK.ENC
-  Generate Nonce → PBKDF2(Nonce, AesSalt, 1k) → Session Key
-  Generate random IV → AES encrypt hash list → HashPayload
-  RSA sign(Nonce:Timestamp:HashPayload) → Signature
-  Write Token → Launch PS1 → Array.Clear all keys → GC.Collect
+**常见蓝屏代码速查:**
 
-RUNTIME PHASE (PS1):
-  Read Token → RSA verify → timestamp check (<60s)
-  PBKDF2(Nonce, AesSalt, 1k) → Session Key → AES decrypt HashPayload
-  Populate ExpectedFileHashes → Launch runtime monitoring
-```
+| 蓝屏代码                            | 可能原因      | 建议              |
+| ------------------------------- | --------- | --------------- |
+| `DRIVER_IRQL_NOT_LESS_OR_EQUAL` | 驱动冲突      | 更新/回滚驱动         |
+| `MEMORY_MANAGEMENT`             | 内存故障      | 运行内存诊断          |
+| `KERNEL_SECURITY_CHECK_FAILURE` | 驱动/系统文件损坏 | 运行 sfc /scannow |
+| `CRITICAL_PROCESS_DIED`         | 关键进程崩溃    | 检查磁盘/系统文件       |
+| `DPC_WATCHDOG_VIOLATION`        | 存储驱动问题    | 更新 SSD 固件/驱动    |
 
-### 7.3 Data Format Specifications
+### 9.2 系统变慢如何诊断
 
-**GAURORA.CHK.ENC:**
+**场景**: 电脑用久了越来越慢，想知道是什么在拖慢系统。
 
-```
-Base64( Salt[16] + IV[16] + AES-256-CBC(HashList, PBKDF2(Password, Salt, 100000, SHA256)) )
-```
+**使用 AURORA Analyzer 的排查步骤:**
 
-**RSA Token File:**
+1. 点击 **「日志导出」**
+2. 选择「系统」日志
+3. 选择最近一个月的日期范围
+4. 仅筛选 `Warning` 和 `Error` 级别
+5. 导出后打开 CSV 文件，重点关注：
+   - `EventID 10010` — COM 组件超时
+   - `EventID 153` — 磁盘重试操作
+   - `EventID 129` — 存储驱动重置
+   - `EventID 7011` — 服务响应超时
+6. 再使用 **「智能诊断」** 获取自动分析结果
 
-```
-{Nonce}:{UTC_Timestamp}:{Base64(IV[16] + AES-256-CBC(HashList, SessionKey))}:{Base64(RSA_Sign(Nonce:Timestamp:HashPayload, SHA256))}
-```
+### 9.3 怀疑电脑被入侵怎么检查
 
-**Hash List Plaintext:**
+**场景**: 感觉电脑不太对劲，怀疑被人远程控制了。
 
-```
-{sha256_lowercase_hex} {relative_path}\r\n
-{sha256_lowercase_hex} {relative_path}\r\n
-...
-```
+**使用 AURORA Analyzer 的排查步骤:**
 
-***
+1. 点击 **「智能诊断」** → 查看 **E 类（安全事件审计）** 报告
+2. 重点关注：
+   - **EventID 4625** — 登录失败次数是否异常（可能是暴力破解）
+   - **EventID 4624 (LogonType=10)** — 是否存在远程桌面登录
+   - **EventID 4720/4726** — 是否有未知账户被创建或删除
+   - **EventID 1102** — 审计日志是否被清除（⚠️ 高度可疑）
+   - **EventID 4672/4673** — 是否有权限提升操作
+3. 如果发现异常，立即：
+   - 断网
+   - 修改所有密码
+   - 运行完整的杀毒扫描
+   - 将诊断报告导出给安全专业人员
 
-## 8. GUI Architecture & Runspace Model
+### 9.4 导出日志给技术支持
 
-### 8.1 Runspace Architecture
+**场景**: 某软件厂商的技术支持要求您提供系统日志。
 
-```
-┌──────────────────────────┐
-│   Main PowerShell Thread  │
-│   (Windows Forms GUI)     │
-│                           │
-│   - Form event loop       │
-│   - UI rendering          │
-│   - User interaction      │
-│   - Timer management      │
-│   - syncHash orchestrator │
-└──────────┬───────────────┘
-           │
-           │ syncHash (Synchronized Hashtable)
-           │ EventWaitHandle (Authorization)
-           │
-┌──────────▼───────────────┐
-│   Worker Runspace         │
-│   (Background Tasks)      │
-│                           │
-│   - Log export execution  │
-│   - Smart diagnostics     │
-│   - Repair operations     │
-│   - Progress updates      │
-└───────────────────────────┘
-```
+**使用 AURORA Analyzer 的导出步骤:**
 
-### 8.2 syncHash Communication Protocol
-
-The `$global:syncHash` is a synchronized hashtable that serves as the communication bridge between the GUI thread and worker Runspaces:
-
-| Key                      | Type   | Direction  | Purpose                       |
-| ------------------------ | ------ | ---------- | ----------------------------- |
-| `LogOutput`              | string | Worker→GUI | Real-time log text            |
-| `Progress`               | int    | Worker→GUI | Progress percentage (0-100)   |
-| `CurrentStatus`          | string | Worker→GUI | Current operation description |
-| `RequestElevation`       | bool   | Worker→GUI | Admin elevation request flag  |
-| `ElevationAuthorized`    | bool?  | GUI→Worker | User's elevation decision     |
-| `UserInput`              | string | GUI→Worker | User input response           |
-| `IsHostAlive`            | bool   | GUI→Worker | GUI liveness heartbeat        |
-| `ShowSessionRecoveryHUD` | bool   | Worker→GUI | Session recovery prompt flag  |
-| `SessionRestored`        | bool   | GUI→Worker | User chose to restore         |
-| `SessionRestarted`       | bool   | GUI→Worker | User chose to restart         |
-
-### 8.3 Authorization System
-
-Uses `EventWaitHandle` instead of polling loops — zero CPU overhead:
-
-```powershell
-# Worker requests elevation → sets flag → waits on EventWaitHandle
-$global:syncHash.RequestElevation = $true
-# GUI detects flag → shows dialog → sets response → signals EventWaitHandle
-$global:syncHash.ElevationAuthorized = $true
-```
+1. 点击 **「日志导出」**
+2. 选择「应用程序」日志
+3. 输入问题发生的时间范围
+4. 在高级筛选中：
+   - **ProviderName**: 输入软件厂商名称（如 `Microsoft-Windows-...`）
+   - **Level**: 选择 `Error` + `Warning`
+5. 导出
+6. 将 `UserLogs` 文件夹中的所有文件打包发送给技术支持
 
 ***
 
-## 9. PRO Mode Export Engine
+## 10. 性能分级说明
 
-### 9.1 Input Parameters
+AURORA Analyzer 在启动时会自动评估您的电脑性能，并调整动画效果和资源占用。您不需要手动设置。
 
-```powershell
-Param(
-    [string]$OutputPath,
-    [hashtable]$GUIParams,
-    [hashtable]$hash,
-    [string]$Language = "CHS",
-    [switch]$GUI_Mode,
-    [string]$LogType,
-    [string]$Level,
-    [string]$EventId,
-    [string]$ProviderName,
-    $StartTime,
-    $EndTime,
-    [string[]]$LogTypes,
-    [switch]$ForceRescan
-)
-```
+| 性能等级                 | 适用配置                  | 动画效果         | 说明           |
+| -------------------- | --------------------- | ------------ | ------------ |
+| **Extreme** (极限)     | 8核+ / 16GB+ / 3.5GHz+ | 完整星空动画，60FPS | 高端游戏主机 / 工作站 |
+| **Performance** (性能) | 4-8核 / 8-16GB         | 流畅动画，45FPS   | 中高端电脑        |
+| **Balanced** (均衡)    | 2-4核 / 4-8GB          | 基础动画，30FPS   | 普通办公电脑       |
+| **Eco** (节能)         | 低配 / 虚拟机              | 简化动画，20FPS   | 老旧设备 / 虚拟机   |
 
-### 9.2 Export Pipeline
-
-```
-1. Date Selection (GUI dialog or parameter)
-2. Permission Check (admin required for Security/Setup/DNS/DHCP/AD/IIS)
-3. Log Query (Get-WinEvent with FilterHashtable)
-4. Data Processing (sort, deduplicate, enrich)
-5. Multi-Format Output:
-   - CSV (structured, Excel-compatible)
-   - JSON (machine-readable, full schema)
-   - XML (structured, XSD-compatible)
-   - Summary Report (human-readable text)
-   - Trend Analysis (statistical aggregation)
-6. Progress Checkpoint Save (for resume capability)
-7. Open output folder on completion
-```
-
-### 9.3 Performance Estimates
-
-| Log Type    | 24-Hour Export Time              |
-| ----------- | -------------------------------- |
-| System      | \~5-10 seconds                   |
-| Application | \~3-8 seconds                    |
-| Security    | \~10-20 seconds (admin required) |
-| Setup       | \~2-5 seconds                    |
-| DNS Server  | \~2-8 seconds                    |
+> 💡 性能分级**不影响**日志导出和诊断的核心功能，只影响界面动画的流畅度。
 
 ***
 
-## 10. Smart Diagnostics Engine (SmartEngine)
+## 11. 界面语言切换
 
-### 10.1 Version & Parameters
+AURORA Analyzer 支持中文和英文双语界面。
 
-**Version:** v1.1.32Release (2026.05.18)
+**切换方法:**
 
-```powershell
-Param(
-    [string]$OutputPath,
-    [hashtable]$GUIParams,
-    [hashtable]$hash,
-    [string]$Language = "CHS",
-    [switch]$GUI_Mode,
-    [string]$LogType, [string]$Level,
-    [string]$EventId, [string]$ProviderName,
-    $StartTime, $EndTime,
-    [string[]]$LogTypes,
-    [switch]$FromPRO,
-    [switch]$FromGUI,
-    [string]$ExportedLogPath
-)
-```
+1. 点击 **「设置」** 选项卡
+2. 在语言设置中选择 **「中文」** 或 **「English」**
+3. 界面即时切换，无需重启
 
-### 10.2 Diagnostic Pipeline
-
-```
-Phase 1: Environment Sensing
-  → Detect system uptime
-  → Detect recent crashes (Event ID 41/6008)
-  → If crash: lock 2-hour window before crash
-  → If no crash: routine 24-hour check
-
-Phase 2: Log Extraction
-  → Concurrent high-risk log extraction
-  → Minidump (.dmp) file auto-discovery
-  → Minidump parsing (BugCheck code, parameters)
-
-Phase 3: Knowledge Graph Matching
-  → Load AURORA-TechData.json
-  → Dual-index pre-lookup (EventID + Provider)
-  → Candidate set generation
-  → Regex exact matching against log content
-
-Phase 4: Repair Terminal
-  → Display matched issues with severity
-  → Present repair suggestions
-  → One-click repair execution
-  → Secure sandbox execution via Invoke-AuroraSafeAction
-```
-
-### 10.3 Diagnostic Rule Categories
-
-| Category    | Focus              | Example Rules                                              |
-| ----------- | ------------------ | ---------------------------------------------------------- |
-| **Class A** | System Stability   | Unexpected shutdowns (EventID 41, 6008), BSOD analysis     |
-| **Class B** | Application Errors | .NET runtime crashes, application hangs, service failures  |
-| **Class C** | Driver Issues      | Driver load failures, timeout detections, IRQL errors      |
-| **Class D** | Hardware Faults    | Disk errors, memory errors, WHEA events                    |
-| **Class E** | Security Audits    | Failed logins, privilege escalations, audit policy changes |
-
-### 10.4 Minidump Analysis
-
-**Supported BugCheck Codes (20+):**
-
-- `0x0000000A` — IRQL\_NOT\_LESS\_OR\_EQUAL
-- `0x0000001E` — KMODE\_EXCEPTION\_NOT\_HANDLED
-- `0x0000003B` — SYSTEM\_SERVICE\_EXCEPTION
-- `0x0000007E` — SYSTEM\_THREAD\_EXCEPTION\_NOT\_HANDLED
-- `0x00000116` — VIDEO\_TDR\_ERROR
-- `0x00000124` — WHEA\_UNCORRECTABLE\_ERROR
-- `0x00000133` — DPC\_WATCHDOG\_VIOLATION
-- `0x00000050` — PAGE\_FAULT\_IN\_NONPAGED\_AREA
-- `0x000000D1` — DRIVER\_IRQL\_NOT\_LESS\_OR\_EQUAL
-- `0x00000109` — CRITICAL\_STRUCTURE\_CORRUPTION
-- ... and more
-
-### 10.5 Secure Sandbox Executor
-
-```powershell
-function Invoke-AuroraSafeAction {
-    # Flow:
-    # 1. Pre-Check: Validate operation safety
-    # 2. Risk Assessment: Classify risk level (Low/Medium/High)
-    # 3. Authorization: User confirmation dialog
-    # 4. Execute: Run repair command
-    # 5. Verify: Check post-execution state
-    # 6. Rollback: Auto-rollback on failure
-}
-```
+> 💡 语言切换会同步影响所有界面文字、导出文件名、诊断报告等。
 
 ***
 
-## 11. Undo / Repair System (Phase 4.2)
+## 12. 安全与隐私
 
-### 11.1 Component Overview
+### 我们如何保护您的数据
 
-| Module         | File                        | Role                                            |
-| -------------- | --------------------------- | ----------------------------------------------- |
-| RestoreManager | `AURORA-RestoreManager.ps1` | Windows System Restore API wrapper              |
-| UndoManager    | `AURORA-UndoManager.ps1`    | Fast backup snapshots (registry/files/services) |
-| RepairLogger   | `AURORA-RepairLogger.ps1`   | Repair audit trail & session logging            |
-| RepairTools    | `AURORA-RepairTools.ps1`    | Repair operation entry point                    |
-| UndoViewer     | `AURORA-UndoViewer.ps1`     | History viewer & undo UI                        |
+| 保护措施      | 说明                 |
+| --------- | ------------------ |
+| **本地运行**  | 所有操作完全在本地执行，不联网    |
+| **不上传数据** | 不向任何服务器发送您的日志数据    |
+| **不收集信息** | 不收集任何个人信息或系统信息     |
+| **文件加密**  | 核心配置文件加密存储         |
+| **防篡改**   | 五层纵深防御，防篡改、防调试、防注入 |
+| **看门狗守护** | EXE 独立进程监控，实时检测异常  |
 
-### 11.2 Dual Protection Strategy
+### 您需要注意
 
-```
-Protection Layer 1: System Restore Points (Windows System Restore API)
-  → WMI: root\default\SystemRestore
-  → Requires admin + System Restore enabled
-  → Full system state snapshot
-  → Requires reboot to restore
-
-Protection Layer 2: Fast Backup Snapshots
-  → Registry export (.reg files)
-  → File copy backup
-  → Service configuration export (JSON)
-  → No reboot required for undo
-  → Snapshot ID: BS_{YYYYMMDD}_{HHmmss}_{random3digits}
-```
-
-### 11.3 Repair Operation Types
-
-| RepairType             | Target                 | Description                         |
-| ---------------------- | ---------------------- | ----------------------------------- |
-| `DisableWindowsUpdate` | Windows Update Service | Disable automatic updates           |
-| `EnableDefender`       | Windows Defender       | Re-enable Windows Defender          |
-| `DisableTelemetry`     | Telemetry Services     | Disable diagnostic data collection  |
-| `ResetNetwork`         | Network Stack          | Reset TCP/IP, Winsock, DNS cache    |
-| `CleanSystem`          | System Cleanup         | Temp files, event logs, recycle bin |
-| `Custom`               | User-defined           | Custom repair command               |
-
-### 11.4 Repair Session Lifecycle
-
-```
-Start-RepairSession(RepairType, Target)
-  → Session ID: RS_{YYYYMMDD}_{HHmmss}_{random3digits}
-  → Create Restore Point (if enabled)
-  → Create Backup Snapshot (registry/files/services)
-  → Execute Repair Commands
-  → Verify Results
-  → Log-SystemRestoreResult (success/failure)
-  → Complete-RepairSession (mark undoable)
-
-Undo-RepairSession(SessionId)
-  → Option A: SystemRestore (requires reboot)
-  → Option B: FastBackupRestore (instant)
-  → Mark session as "Undone"
-```
-
-### 11.5 RepairLogger Audit Trail
-
-Each repair session records:
-
-- `SessionId` — Unique identifier
-- `StartTime` / `EndTime` — Timestamps
-- `RepairType` — Operation category
-- `Target` — Specific target description
-- `CommandsExecuted` — Array of PowerShell commands
-- `RestorePointId` — System Restore Point sequence number (if created)
-- `BackupSnapshotId` — Fast backup snapshot ID (if created)
-- `Result` — Success / Failed / Partial
-- `Undoable` — Boolean flag
-
-### 11.6 UndoViewer Features
-
-| Action    | Description                                               |
-| --------- | --------------------------------------------------------- |
-| `List`    | Show last 20 repair sessions with status indicators       |
-| `View`    | Detailed view of a specific session                       |
-| `Details` | Full command log and backup paths                         |
-| `Undo`    | Execute undo for a session (restore point or fast backup) |
-| `Cleanup` | Remove old sessions and expired backups                   |
+- 导出的日志文件（CSV/JSON/XML）是**明文存储**的，请妥善保管
+- 如果导出了安全日志，其中可能包含您的计算机名和用户名
+- 将诊断报告分享给他人前，请确认其中不含敏感信息
+- 建议将 `UserLogs` 文件夹中的文件在不使用时删除
 
 ***
 
-## 12. Progress Manager & Session Persistence
+## 13. 技术支持与反馈
 
-### 12.1 Version & Architecture
+### 版本信息
 
-**Version:** V1.1.31Release (2026.05.14)
+| 项目   | 内容                              |
+| ---- | ------------------------------- |
+| 当前版本 | **V1.1.24.1**                   |
+| 构建日期 | 2026-05-27                      |
+| 作者   | AURORA VelociRaptor-GR Dev PRJ. |
 
-**Cache Directory Structure:**
+### 遇到问题？
 
-```
-Scripts/SessionCache/
-├── active/          # Currently active sessions (JSON)
-├── checkpoints/     # Checkpoint backups
-└── archive/         # Completed sessions (archived)
-```
+如果您在使用过程中遇到问题：
 
-### 12.2 Session File Format
+1. **首先检查**: 所有文件是否正确解压，目录结构是否完整
+2. **关键文件**: 确保 `AURORA.Launcher-双击启动.exe` 和 `GAURORA.CHK.ENC` 在同一目录
+3. **权限问题**: 尝试以管理员身份运行
+4. **杀毒软件**: 将程序目录添加到杀毒软件的白名单
 
-```json
-{
-  "SessionId": "SESSION_{YYYYMMDD}_{HHmmss}_{random4digits}",
-  "Stage": "Exporting|Analyzing|Reporting|Completed|Failed",
-  "Progress": 0-100,
-  "LogType": "System",
-  "StartTime": "ISO8601",
-  "LastUpdated": "ISO8601",
-  "Checkpoints": [
-    { "Stage": "...", "Progress": 0, "Timestamp": "..." }
-  ],
-  "Parameters": {
-    "StartTime": "...",
-    "EndTime": "...",
-    "Filters": { ... }
-  }
-}
-```
+### 许可声明
 
-### 12.3 Key Functions
-
-| Function                     | Description                                 |
-| ---------------------------- | ------------------------------------------- |
-| `Initialize-ProgressManager` | Setup cache directories, 7-day auto-expiry  |
-| `New-AuroraSession`          | Create new session record                   |
-| `Save-AuroraProgress`        | Save progress with retry logic (3 attempts) |
-| `Create-AuroraCheckpoint`    | Snapshot current state as checkpoint        |
-| `Get-RecoverableSession`     | Find latest incomplete session              |
-| `Restore-AuroraSession`      | Restore session from archive                |
-| `Complete-AuroraSession`     | Mark session as complete, move to archive   |
-| `Cleanup-ExpiredSessions`    | Remove sessions older than 7 days           |
-
-### 12.4 Checkpoint Stages
-
-```
-Checkpoint_Starting    → "Preparing to start"
-Checkpoint_Exporting   → "Exporting logs"
-Checkpoint_Analyzing   → "Analyzing patterns"
-Checkpoint_Reporting   → "Generating reports"
-Checkpoint_Completed   → "Export completed"
-Checkpoint_Failed      → "Export failed"
-```
-
-### 12.5 Integration Modules
-
-| Module                                       | Language | Purpose                      |
-| -------------------------------------------- | -------- | ---------------------------- |
-| `AURORA-ProgressManager-Integration.ps1`     | Agnostic | Unified progress integration |
-| `AURORA-ProgressManager-Integration-CHS.ps1` | Chinese  | Chinese PRO integration      |
-| `AURORA-ProgressManager-Integration-ENG.ps1` | English  | English PRO integration      |
+本软件**仅供个人学习与研究使用**，不得用于商业用途。
 
 ***
 
-## 13. Animation Core Engine (Phase 5)
-
-### 13.1 Architecture
-
-The animation engine is split into two layers:
-
-1. **C# Compiled Layer** (`AURORA-AnimationCoreEngine.ps1` → `AURORA-AnimationCoreEngine.dll`)
-   - Embedded C# via `Add-Type`
-   - Compiled to DLL on first load (cached)
-   - Performance-critical rendering logic
-2. **PowerShell Layer** (same file)
-   - UI control instantiation
-   - Animation orchestration
-   - Event binding
-
-### 13.2 C# Type Definitions
-
-```csharp
-// Enums
-public enum PerformanceTier { Eco = 0, Balanced = 1, Performance = 2, Extreme = 3 }
-public enum EasingType { Linear, EaseInCubic, EaseOutCubic, EaseInOutCubic }
-
-// Static Configuration
-public static class AuroraRenderEngine
-{
-    // Performance-tiered settings:
-    // Eco:        30 FPS, 80 stars, 0 particles, no effects
-    // Balanced:   60 FPS, 180 stars, 30 particles, basic effects
-    // Performance: 60 FPS, 350 stars, 80 particles, all effects
-    // Extreme:    60 FPS, 600 stars, 150 particles, all effects
-}
-
-// Animation Framework
-public abstract class Animation { public abstract bool Update(); }
-public interface IAnimatable {
-    void SetAnimationValue(string propertyName, float value);
-    void Invalidate();
-}
-
-// Animation Types
-public class AnimationManager      // Timer-driven animation scheduler
-public class FloatAnimation        // Value interpolation with easing
-public class GlareSweepAnimation   // Progress bar glow sweep
-public static class AURORA_Animation  // Global animation singleton
-```
-
-### 13.3 C# Loading Strategy
-
-```powershell
-$engineDll = Join-Path $engineDir "AURORA-AnimationCoreEngine.dll"
-
-# Attempt to load existing DLL
-if (Test-Path $engineDll) {
-    try {
-        Add-Type -Path $engineDll -ErrorAction Stop
-        $loaded = $true
-    } catch {
-        # DLL in use or corrupt → delete and recompile
-        Remove-Item $engineDll -Force
-    }
-}
-
-# Fallback: compile on-the-fly
-if (-not $loaded) {
-    Add-Type -ReferencedAssemblies System.Windows.Forms -TypeDefinition @'
-    // ... embedded C# source ...
-'@
-}
-```
-
-### 13.4 Easing Functions
-
-```csharp
-// Cubic easing implementations
-EaseInCubic:     easedProgress = progress³
-EaseOutCubic:    easedProgress = 1 - (1 - progress)³
-EaseInOutCubic:  if progress < 0.5 → 4 * progress³
-                 else → 1 - 4 * (1 - progress)³
-```
-
-All animations run at \~16ms intervals (\~60 FPS) via `AnimationManager`'s internal timer.
-
-***
-
-## 14. Bilingual Infrastructure
-
-### 14.1 Language Resource File
-
-**File:** `Scripts/AURORA-Language.psd1`\
-**Version:** V1.1.13Release (2026.05.14)\
-**Entries:** 144 translations (72 per language)
-
-### 14.2 Resource Categories
-
-| Category                | Key Prefix                               | Entries |
-| ----------------------- | ---------------------------------------- | ------- |
-| Startup Detection       | `Launcher_*`, `Method_*`, `Closing_Soon` | 5       |
-| Permission Request      | `Admin_*`                                | 5       |
-| Date Selection          | `Date_*`                                 | 3       |
-| Export Progress         | `Export_*`                               | 4       |
-| Analysis Progress       | `Analyze_*`                              | 3       |
-| Report Generation       | `Report_*`                               | 3       |
-| Error Messages          | `Error_*`                                | 4       |
-| PRO Mode Specific       | `PRO_*`                                  | 8       |
-| SmartEngine Integration | `SmartEngine_*`                          | 2       |
-| Progress Manager        | `Checkpoint_*`                           | 6       |
-
-### 14.3 Usage Pattern
-
-```powershell
-# Load language resources
-$langResource = Import-LocalizedData -FileName "AURORA-Language.psd1"
-$L = $langResource[$Language]  # $Language = "CHS" or "ENG"
-
-# Usage with string formatting
-Write-Host ($L["Export_Done"] -f $recordCount)
-Write-Host $L["Launcher_Required"]
-```
-
-### 14.4 Language Auto-Detection
-
-```powershell
-$uiCulture = [System.Threading.Thread]::CurrentThread.CurrentUICulture.Name
-$useChinese = $uiCulture -like "zh*"
-$Language = if ($useChinese) { "CHS" } else { "ENG" }
-```
-
-### 14.5 Progress Manager Bilingual Support
-
-The ProgressManager module contains its own embedded bilingual strings (76 entries in `Get-LocalizedString`) for session management messages, independent of the shared Language.psd1 resource file.
-
-***
-
-## 15. Performance Tiering System
-
-### 15.1 Scoring Algorithm
-
-```powershell
-$perfScore = ($logicalCores * 15) + ($ramGB * 5) +
-    ([Math]::Max(0, ($baseClock - 2000) / 100))
-```
-
-**Component Weights:**
-
-- CPU Cores: ×15 multiplier (dominant factor)
-- RAM: ×5 multiplier (secondary factor)
-- Base Clock: Bonus points above 2000 MHz (minor factor)
-
-### 15.2 Tier Thresholds
-
-| Tier            | Score Range | Example Hardware    | Star Count | Particle Count | FPS |
-| --------------- | :---------: | ------------------- | :--------: | :------------: | :-: |
-| **Eco**         |     < 70    | 2-core, 4 GB RAM    |     80     |        0       |  30 |
-| **Balanced**    |    70-119   | 4-core, 8 GB RAM    |     180    |       30       |  60 |
-| **Performance** |   120-239   | 6-core, 16 GB RAM   |     350    |       80       |  60 |
-| **Extreme**     |    ≥ 240    | 8-core+, 32 GB+ RAM |     600    |       150      |  60 |
-
-### 15.3 Effect Enablement by Tier
-
-| Effect              | Eco | Balanced | Performance | Extreme |
-| ------------------- | :-: | :------: | :---------: | :-----: |
-| PathGradientShadows |  ❌  |     ✅    |      ✅      |    ✅    |
-| Particle System     |  ❌  |     ✅    |      ✅      |    ✅    |
-| Dynamic Sweep       |  ❌  |     ❌    |      ✅      |    ✅    |
-| Complex Glow        |  ❌  |     ❌    |      ✅      |    ✅    |
-
-### 15.4 Environment Variable Passthrough
-
-```powershell
-# PS1 sets:
-$env:AURORA_PERF_TIER = $global:AuroraPerfTier
-
-# C# DLL reads:
-string tierStr = Environment.GetEnvironmentVariable("AURORA_PERF_TIER");
-```
-
-***
-
-## 16. Threat Model & Attack Surface Analysis
-
-### 16.1 STRIDE Coverage
-
-| Threat Category            | Defense Mechanism                                         | Status |
-| -------------------------- | --------------------------------------------------------- | :----: |
-| **S**poofing               | RSA signature verification (EXE→PS1 handshake)            |    ✅   |
-| **T**ampering              | SHA256 hash verification + real-time FileSystemWatcher    |    ✅   |
-| **R**epudiation            | RepairLogger audit trail (SessionId + timestamps)         |    ✅   |
-| **I**nformation Disclosure | AES-256-CBC encryption, memory cleanup, temp file cleanup |    ✅   |
-| **D**enial of Service      | File count checks detect mass deletion                    |    ✅   |
-| **E**levation of Privilege | On-demand admin elevation with user authorization         |    ✅   |
-
-### 16.2 Attack Scenario Walkthroughs
-
-**Scenario 1: Replace SmartEngine.ps1**
-
-```
-Attacker replaces Scripts\AURORA-SmartEngine.ps1
-→ FileSystemWatcher detects Changed event (≤200ms)
-→ Next timer tick (≤3s): SHA256 mismatch detected
-→ Tamper alert: all monitoring stopped, 15s countdown, exit
-RESULT: ATTACK FAILED
-```
-
-**Scenario 2: Delete 3 Core Files Simultaneously**
-
-```
-Attacker deletes 3 of 19 files
-→ FileSystemWatcher detects Deleted events
-→ File count check: 16 ≠ 19 → TAMPERED
-→ All missing files listed in alert
-RESULT: ATTACK FAILED
-```
-
-**Scenario 3: Reverse Engineer EXE, Extract Private Key**
-
-```
-Attacker decompiles EXE (must bypass obfuscation + anti-debug)
-→ Extracts RSA private key
-→ Attempts to forge token
-→ 60-second timestamp window already expired
-→ Even within window: new Nonce prevents replay
-RESULT: ATTACK REQUIRES ADVANCED RE SKILLS + TIME CONSTRAINT
-```
-
-**Scenario 4: Directly Run SmartEngine.ps1**
-
-```
-User/attacker double-clicks AURORA-SmartEngine.ps1
-→ No GUI_Mode parameter → check 1 fails
-→ No syncHash global variable → check 2 fails
-→ No RSA token → check 3 fails
-→ "This script cannot be run directly!" → 5s countdown → exit
-RESULT: ATTACK FAILED
-```
-
-**Scenario 5: Inject Malicious .ps1 File**
-
-```
-Attacker creates malicious.ps1 in Scripts directory
-→ FileSystemWatcher detects Created event (≤500ms)
-→ File not in expected whitelist (19 core files)
-→ TAMPERED flag triggered
-→ Creates detection → tamper alert → exit
-RESULT: ATTACK FAILED
-```
-
-### 16.3 Known Limitations
-
-| Limitation                       | Impact                                             | Mitigation                             |
-| -------------------------------- | -------------------------------------------------- | -------------------------------------- |
-| AES-CBC (no authentication)      | Ciphertext tampering could cause decryption errors | Format validation after decrypt        |
-| XOR obfuscation (not encryption) | Advanced reverse engineering can recover password  | Binary compilation barrier             |
-| FileSystemWatcher high-load drop | May miss events under extreme I/O load             | Dual timer periodic checks as fallback |
-| Token via filesystem             | High-privilege process could read temp token       | 60s expiry + immediate deletion        |
-| No Authenticode signing          | EXE lacks digital certificate                      | Planned for future release             |
-
-### 16.4 Security Scorecard
-
-| Dimension                  |  Score (/10) |
-| -------------------------- | :----------: |
-| Anti-Tampering (Integrity) |      9.0     |
-| Anti-Reverse Engineering   |      7.5     |
-| Cryptographic Strength     |      9.0     |
-| Anti-Replay                |      9.0     |
-| Communication Security     |      9.5     |
-| Privilege Isolation        |      7.5     |
-| Runtime Protection         |      8.5     |
-| **Overall**                | **8.6 / 10** |
-
-***
-
-## 17. Version History
-
-### V1.1.24.0 (2026.05.25) — Current Version
-
-**Security System Rebuild:**
-
-- ✅ RSA-2048 asymmetric key pair generation (per-build)
-- ✅ EXE↔PS1 secure handshake protocol with token validation
-- ✅ AES-256-CBC session encryption layer for hash list transport
-- ✅ Dual timer system (3s fixed + 2-7s random interval)
-- ✅ FileSystemWatcher real-time integrity monitoring
-- ✅ C# offline metadata obfuscation (class/method name randomization)
-- ✅ Anti-debugging/anti-dump detection (x64dbg, OllyDbg, Scylla, Phantom)
-- ✅ Token 60-second time-based validation with 5s clock skew tolerance
-- ✅ 1-second post-launch immediate integrity check
-- ✅ Unauthorized file injection detection via FileSystemWatcher
-- ✅ P0 Fix: Check interval optimized from 10s to 3s (70% reduction)
-- ✅ P0 Fix: Removed break statements for full file hash checking
-- ✅ Smart security code injection (detect existing → update → replace → first-time)
-- ✅ Session Derivation Salt per-build randomization
-
-### V1.1.23.0 (2026.05.19)
-
-- Complete bilingual support (Chinese/English)
-- Phase 4.2 Undo Support System (RestoreManager, UndoManager, RepairLogger, RepairTools, UndoViewer)
-- Phase 5 Animation Engine Decoupling (AURORA-AnimationCoreEngine)
-- Automatic Minidump blue screen file analysis
-- Knowledge base cache mechanism (CliXML serialization)
-- Performance optimization: dual-index pre-lookup + candidate set exact matching
-- Security enhancement: pre-check + risk assessment + rollback mechanism
-- UI beautification: folder icon + desktop.ini configuration
-- Build optimization: automatic ZIP packaging + version management
-- Bug fix: GUI authorization polling CPU usage (switched to EventWaitHandle)
-
-### V1.1.22.0
-
-- Added progress manager (breakpoint resume)
-- Added multi-log type support
-- Optimized log export performance
-
-### V1.1.0Release
-
-- Initial public release
-- Basic log export functionality
-- Smart diagnostics engine v1.0
-
-***
-
-## Appendix A: Test Scripts Inventory
-
-| Test File                                   | Purpose                         |
-| ------------------------------------------- | ------------------------------- |
-| `test/Test-ProgressManager.ps1`             | Progress manager unit test      |
-| `test/Test-ProgressManager-Load.ps1`        | Progress manager load test      |
-| `test/Test-ProgressManager-Integration.ps1` | Progress integration test       |
-| `test/Test-ProgressManager-ENG.ps1`         | English progress test           |
-| `test/Test-ProgressManager-Bilingual.ps1`   | Bilingual progress test         |
-| `test/Test-Bilingual.ps1`                   | Bilingual support test          |
-| `test/Test-UndoBackup.ps1`                  | Undo backup test                |
-| `test/Test-RealBackup.ps1`                  | Real backup test                |
-| `test/AURORA-UndoTest.ps1`                  | Undo manager test               |
-| `test/Test-Verification.ps1`                | Verification test               |
-| `test/Test-Runtime-Tamper.ps1`              | Runtime tamper simulation       |
-| `test/Test-Runtime-Tamper-Fixed.ps1`        | Runtime tamper (fixed version)  |
-| `test/test-rsa-verification.ps1`            | RSA verification test           |
-| `test/Remove-BOM.ps1`                       | BOM removal utility             |
-| `Diagnose-IntegrityCheck.ps1`               | Integrity check diagnostic tool |
-| `Test-IntegrityFix.ps1`                     | Integrity fix test              |
-| `diagnose-rsa.ps1`                          | RSA diagnostic tool             |
-| `Remove-BOM.ps1`                            | BOM removal script              |
-
-***
-
-## Appendix B: Security Component Code Index
-
-| Component                     | Location                                                                                                                                                           | Lines |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----- |
-| C# Complete Source (template) | \[build.ps1]\(file:///e:/PC SOFT/优化软件/PowerShellBat/AURORA-Analyzer/AURORA-Analyzer-Factory/build.ps1#L501-L778)                                                   | 278   |
-| RSA Token Signing (C#)        | \[build.ps1]\(file:///e:/PC SOFT/优化软件/PowerShellBat/AURORA-Analyzer/AURORA-Analyzer-Factory/build.ps1#L694-L742)                                                   | 49    |
-| RSA Public Key Verify (PS1)   | \[AURORA-AnalyzerLauncherGUI.ps1]\(file:///e:/PC SOFT/优化软件/PowerShellBat/AURORA-Analyzer/AURORA-Analyzer-Factory/Scripts/AURORA-AnalyzerLauncherGUI.ps1#L10-L73)   | 64    |
-| Runtime Integrity Monitor     | \[AURORA-AnalyzerLauncherGUI.ps1]\(file:///e:/PC SOFT/优化软件/PowerShellBat/AURORA-Analyzer/AURORA-Analyzer-Factory/Scripts/AURORA-AnalyzerLauncherGUI.ps1#L422-L741) | 320   |
-| Multi-Module Launch Detection | SmartEngine:L30-L111, PRO:L71-L98, RepairTools:L46-L72, UndoViewer:L38-L67                                                                                         | —     |
-| Build: Key Generation         | \[build.ps1]\(file:///e:/PC SOFT/优化软件/PowerShellBat/AURORA-Analyzer/AURORA-Analyzer-Factory/build.ps1#L143-L162)                                                   | 20    |
-| Build: Password Obfuscation   | \[build.ps1]\(file:///e:/PC SOFT/优化软件/PowerShellBat/AURORA-Analyzer/AURORA-Analyzer-Factory/build.ps1#L164-L188)                                                   | 25    |
-| Build: CHK.ENC Encryption     | \[build.ps1]\(file:///e:/PC SOFT/优化软件/PowerShellBat/AURORA-Analyzer/AURORA-Analyzer-Factory/build.ps1#L421-L455)                                                   | 35    |
-| Build: Obfuscation Pipeline   | \[build.ps1]\(file:///e:/PC SOFT/优化软件/PowerShellBat/AURORA-Analyzer/AURORA-Analyzer-Factory/build.ps1#L825-L910)                                                   | 86    |
-
-***
-
-*Document Version: V1.1.24.0 | Last Updated: 2026.05.25 | Author: AURORA VelociRaptor-GR Dev PRJ.*
+> **文档版本**: V1.1.24.1
+> **日期**: 2026-05-27
+> **作者**: AURORA VelociRaptor-GR Dev PRJ.
+> **许可**: 仅供个人学习与研究使用
