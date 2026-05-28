@@ -15,10 +15,10 @@ Param(
 # 🔐 RSA 公钥验证模块（构建时注入）
 # ==========================================
 $global:AURORA_PublicKeyXml = @'
-<RSAKeyValue><Modulus>oduX+0X6aG277YlOkl+iUnXb1V2n+r5VXcpsD2goSd1793IARCdRCYxoOEWdYkNgzJstFRcmTpWtSE9DNmmU5xnx8FHryEtQoAN44m08H6n42x/WMd37XKjYXacOWj/tMsUWJZLwmOk5Drtr+MvlL0QQZ67prWNI6Arlhu2FtoANzY95VWTM+hw0VB1HxA1epj4FxMEzaq9KPrcIbmuk8CPszylm1egfn8TLcr/hYwmdlAKhAsXbzyOv6RU/E+JPRdgvsI88ypLjzey0suuQ5Q+otdQRvfiGcapElrgDfAdiyDI5x7CYzkN5aV4y1RDV8Ue614QYF7VfaVdYrIXpdQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>
+<RSAKeyValue><Modulus>xgvx0PaADaP4jyA/9F0tfAqKU6HKC6mI/gj+9sZSVvxFdLxDA9tjWtZZUim9hzrr+oHgOLavWqlY/WLMSlbBwUX8HsdhM6JqBEoZnWw8jQ5t7o58etKtiwIRHHC2yJb447Z+ofzFC3jpw+L+928oekFvDSsY7aK1mz1bNBkaOu4udTPUoYeZu/xO1fZ6+QN4RXEEH4xBUA/dRTRHEYAQW8tnvnLaVZ0l5H3P/oNWDGXB114V0wwfM+KN7yNh9F97kMS1TDAGFtyh9/SmShZXXKnYP9oBy3tAfZ1dv9DauaseU7e8wnaQyGKhk9fKe4NcDlyGqYM1R1u/HDk++2zSzQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>
 '@
 
-$global:AURORA_SessionSalt = [Convert]::FromBase64String('V00mdPBlYl9WuL+Z/riDzmJLjZ6mp5NiadliWFYbvps=')
+$global:AURORA_SessionSalt = [Convert]::FromBase64String('LXRh4nz9fbEWa96aTOUznkqwLtG1n4k1/PvrCZ9n5A8=')
 
 $global:AURORA_AesSalt = [System.Text.Encoding]::UTF8.GetBytes('AU_SESSION_2026_SALT_V1')
 
@@ -373,10 +373,13 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Linq;
 
 public class AuroraGuard
 {
-    `private static readonly Dictionary<string, string> _expected = new Dictionary<string, string>
+    private static readonly Dictionary<string, string> _expected = new Dictionary<string, string>
     {
         { "Scripts\\AURORA-SmartEngine.ps1", "334de8b99b20ad788263ef11249f8f80641cfc042d2034ba2207e251d0f38c0d" },
         { "Scripts\\AURORA-CoreEngine.ps1", "b4be6694531435e8c6b054d9ae222a300ef3fa51396fa19406fd2c2f0e7d37c5" },
@@ -398,9 +401,207 @@ public class AuroraGuard
 
     private static string _baseDir;
 
+    [DllImport("kernel32.dll")]
+    private static extern bool IsDebuggerPresent();
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool CheckRemoteDebuggerPresent(IntPtr hProcess, ref bool isDebuggerPresent);
+
+    [DllImport("ntdll.dll", SetLastError = true)]
+    private static extern int NtQueryInformationProcess(
+        IntPtr hProcess,
+        int processInformationClass,
+        IntPtr processInformation,
+        int processInformationLength,
+        ref int returnLength);
+
+    private const int ProcessDebugPort = 7;
+    private const int ProcessDebugFlags = 31;
+    private const int ProcessHandleTracing = 34;
+
+    private static readonly string[] DEBUGGER_PROCESS_NAMES = new string[]
+    {
+        // 调试器
+        "windbg", "windbgx", "cdb", "ntsd", "x64dbg", "x32dbg",
+        "ida", "ida64", "idag", "idag64", "idaw", "idaw64",
+        "ollydbg", "x64ollydbg", "immunity debugger",
+        "ghidra", "ghidraRun",
+        "radare2", "r2", "rizin", "rz",
+        "dbgshell", "mdb", "mdbx",
+        "vsjitdebugger", "mdbg", "cordebug",
+        "processhacker", "processhacker2",
+        "wireshark", "fiddler", "fiddlereverywhere",
+        "dnspy", "dnspy64", "ilspy", "jetbrains.dotpeek",
+        "scylla", "scyllahide", "titancall", "phant0m",
+        "devenv", "visualfsharp", "visualstudio",
+        
+        // ⚠️ 已移除：虚拟机软件（容易误判）
+        // "vmware", "vbox", "virtualbox", "xenserver", "vmmap"
+    };
+
     public static void Initialize(string baseDir)
     {
         _baseDir = baseDir;
+    }
+
+    private static bool CheckDebuggerAPIs()
+    {
+        try
+        {
+            if (IsDebuggerPresent())
+                return true;
+
+            bool isRemoteDebugger = false;
+            if (CheckRemoteDebuggerPresent(Process.GetCurrentProcess().Handle, ref isRemoteDebugger) && isRemoteDebugger)
+                return true;
+
+            IntPtr hProcess = Process.GetCurrentProcess().Handle;
+            int returnLength = 0;
+            IntPtr portInfo = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(IntPtr)));
+            
+            try
+            {
+                int result = NtQueryInformationProcess(hProcess, ProcessDebugPort, portInfo, Marshal.SizeOf(typeof(IntPtr)), ref returnLength);
+                if (result == 0 && Marshal.ReadIntPtr(portInfo) != IntPtr.Zero)
+                    return true;
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(portInfo);
+            }
+
+            returnLength = 0;
+            IntPtr flagsInfo = Marshal.AllocHGlobal(sizeof(int));
+            
+            try
+            {
+                int result = NtQueryInformationProcess(hProcess, ProcessDebugFlags, flagsInfo, sizeof(int), ref returnLength);
+                if (result == 0)
+                {
+                    int flags = Marshal.ReadInt32(flagsInfo);
+                    if ((flags & 0x1) == 0)
+                        return true;
+                }
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(flagsInfo);
+            }
+
+            returnLength = 0;
+            IntPtr tracingInfo = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(IntPtr)) * 2);
+            
+            try
+            {
+                int result = NtQueryInformationProcess(hProcess, ProcessHandleTracing, tracingInfo, Marshal.SizeOf(typeof(IntPtr)) * 2, ref returnLength);
+                if (result == 0)
+                {
+                    long count = Marshal.ReadInt64(tracingInfo);
+                    if (count > 0)
+                        return true;
+                }
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(tracingInfo);
+            }
+        }
+        catch
+        {
+        }
+
+        return false;
+    }
+
+    private static bool CheckDebuggerProcesses()
+    {
+        try
+        {
+            Process currentProcess = Process.GetCurrentProcess();
+            int currentPid = currentProcess.Id;
+            
+            Process[] allProcesses = Process.GetProcesses();
+            foreach (Process proc in allProcesses)
+            {
+                if (proc.Id == currentPid)
+                    continue;
+                    
+                try
+                {
+                    string processName = proc.ProcessName.ToLowerInvariant();
+                    foreach (string debuggerName in DEBUGGER_PROCESS_NAMES)
+                    {
+                        if (processName.Contains(debuggerName))
+                            return true;
+                    }
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    proc.Dispose();
+                }
+            }
+        }
+        catch
+        {
+        }
+        
+        return false;
+    }
+
+    private static bool CheckDLLInjection()
+    {
+        try
+        {
+            Process currentProcess = Process.GetCurrentProcess();
+            string expectedDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            
+            foreach (ProcessModule module in currentProcess.Modules)
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(module.FileName))
+                    {
+                        string modulePath = module.FileName.ToLowerInvariant();
+                        
+                        // 排除系统 DLL 和 .NET Framework DLL
+                        if (modulePath.Contains("\\windows\\") || 
+                            modulePath.Contains("\\microsoft.net\\") ||
+                            modulePath.Contains("\\assembly\\") ||
+                            modulePath.Contains("system.") ||
+                            modulePath.Contains("microsoft.") ||
+                            modulePath.Contains("netstandard") ||
+                            modulePath.Contains("mscorlib"))
+                        {
+                            continue;  // 跳过系统 DLL
+                        }
+                        
+                        if (!modulePath.StartsWith(expectedDirectory.ToLowerInvariant()))
+                        {
+                            string moduleName = Path.GetFileNameWithoutExtension(modulePath).ToLowerInvariant();
+                            
+                            // 只检测明显的恶意关键词，排除常见误报
+                            if (moduleName.Contains("inject") || 
+                                moduleName.Contains("detour") ||
+                                moduleName.Contains("spy"))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                }
+            }
+        }
+        catch
+        {
+        }
+        
+        return false;
     }
 
     public static bool CheckIntegrity()
@@ -428,33 +629,55 @@ public class AuroraGuard
 
     public static bool VerifyOrDie()
     {
+        if (CheckDebuggerAPIs())
+            return false;
+            
+        if (CheckDebuggerProcesses())
+            return false;
+            
+        if (CheckDLLInjection())
+            return false;
+            
         if (!CheckIntegrity())
             return false;
+            
         return true;
+    }
+
+    public static string GetDetectionReason()
+    {
+        if (CheckDebuggerAPIs())
+            return "DEBUGGER_API";
+            
+        if (CheckDebuggerProcesses())
+            return "DEBUGGER_PROCESS";
+            
+        if (CheckDLLInjection())
+            return "DLL_INJECTION";
+            
+        if (!CheckIntegrity())
+            return "INTEGRITY_FAILURE";
+            
+        return "NONE";
     }
 }
 "@
 
+# 检测系统语言（需在 AuroraExitCountdown 编译前设置）
+$UseChinese = $false
 try {
-    Add-Type -TypeDefinition $AURORA_GUARD_SOURCE -ReferencedAssemblies "System.Core" -ErrorAction Stop
-    [AuroraGuard]::Initialize((Split-Path -Parent $PSScriptRoot))
-    $AURORA_GUARD_INITIALIZED = $true
-} catch {
-    Write-Host "[守卫] 加载失败，将以降级模式运行" -ForegroundColor DarkYellow
-    $AURORA_GUARD_INITIALIZED = $false
-}
+    $uiCulture = [System.Threading.Thread]::CurrentThread.CurrentUICulture.Name
+    if ($uiCulture -like "zh*") {
+        $UseChinese = $true
+    }
+} catch {}
 
-# 如果不是由 EXE 启动（且无有效令牌），回退到密码验证
-if (-not $IsLaunchedByExe) {
-    # 需要密码验证路径 - 后续代码会处理
-    Write-Host "[信息] 非 EXE 启动模式，将请求密码验证" -ForegroundColor Gray
-}
-
-# 倒计时退出窗口 - C# 内嵌类（避免 PowerShell Timer 作用域问题）
+#  提前编译倒计时窗口类（在 AuroraGuard 之前，以便检测时可用）
 Add-Type -TypeDefinition @"
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Threading;
 
 public class AuroraExitCountdown {
     public static void Show(string titleCN, string titleEN, string messageCN, string messageEN, int seconds, bool forceExit, bool useChinese) {
@@ -485,14 +708,14 @@ public class AuroraExitCountdown {
         messageLabel.AutoSize = false;
 
         var countdownLabel = new Label();
-        countdownLabel.Text = (useChinese ? "\u5012\u8ba1\u65f6\uff1a" : "Countdown: ") + seconds + " " + (useChinese ? "\u79d2" : "s");
+        countdownLabel.Text = (useChinese ? "倒计时：" : "Countdown: ") + seconds + " " + (useChinese ? "秒" : "s");
         countdownLabel.Location = new Point(25, 240);
         countdownLabel.Size = new Size(480, 30);
         countdownLabel.Font = new Font("Microsoft YaHei UI", 10, FontStyle.Bold);
         countdownLabel.ForeColor = Color.FromArgb(255, 150, 100);
 
         var warningIcon = new Label();
-        warningIcon.Text = "\u26a0";
+        warningIcon.Text = "⚠";
         warningIcon.Location = new Point(25, 200);
         warningIcon.Size = new Size(480, 30);
         warningIcon.Font = new Font("Segoe UI Symbol", 14, FontStyle.Bold);
@@ -511,11 +734,11 @@ public class AuroraExitCountdown {
         timer.Tick += (sender, e) => {
             if (remaining > 0) {
                 remaining--;
-                string countdownText = useChinese ? "[\u5012\u8ba1\u65f6] \u5269\u4f59\u65f6\u95f4\uff1a" : "[Countdown] Remaining: ";
-                string secondsText = useChinese ? "\u79d2" : "s";
+                string countdownText = useChinese ? "[倒计时] 剩余时间：" : "[Countdown] Remaining: ";
+                string secondsText = useChinese ? "秒" : "s";
                 Console.WriteLine(countdownText + remaining + " " + secondsText);
                 if (!form.IsDisposed) {
-                    countdownLabel.Text = (useChinese ? "\u5012\u8ba1\u65f6\uff1a" : "Countdown: ") + remaining + " " + (useChinese ? "\u79d2" : "s");
+                    countdownLabel.Text = (useChinese ? "倒计时：" : "Countdown: ") + remaining + " " + (useChinese ? "秒" : "s");
                     if (remaining <= 5) {
                         countdownLabel.ForeColor = Color.FromArgb(255, 50, 50);
                     }
@@ -527,26 +750,77 @@ public class AuroraExitCountdown {
                 if (!form.IsDisposed) { form.Close(); }
                 if (forceExit) {
                     Environment.Exit(1);
-                } else {
-                    Application.Exit();
                 }
             }
         };
 
         form.Show();
         timer.Start();
+        
+        // 处理消息循环，让 Timer 能正常工作
+        DateTime endTime = DateTime.Now.AddSeconds(seconds + 1);
+        while (DateTime.Now < endTime) {
+            Application.DoEvents();
+            Thread.Sleep(100);
+        }
     }
 }
 "@ -ReferencedAssemblies "System.Windows.Forms", "System.Drawing"
 
-# 检测系统语言（需在所有路径可用）
-$UseChinese = $false
 try {
-    $uiCulture = [System.Threading.Thread]::CurrentThread.CurrentUICulture.Name
-    if ($uiCulture -like "zh*") {
-        $UseChinese = $true
+    Add-Type -TypeDefinition $AURORA_GUARD_SOURCE -ReferencedAssemblies "System.Core" -ErrorAction Stop
+    [AuroraGuard]::Initialize((Split-Path -Parent $PSScriptRoot))
+    $AURORA_GUARD_INITIALIZED = $true
+    
+    # 🔐 启动时立即执行环境安全扫描（类似完整性检测）
+    $envDetectionReason = [AuroraGuard]::GetDetectionReason()
+    if ($envDetectionReason -ne "NONE") {
+        Write-Host "[安全守卫] 启动时检测到威胁：$envDetectionReason" -ForegroundColor Red
+        
+        $reasonText = switch ($envDetectionReason) {
+            "DEBUGGER_API" { "调试器 API 检测" }
+            "DEBUGGER_PROCESS" { "调试工具进程检测" }
+            "DLL_INJECTION" { "DLL 注入检测" }
+            "INTEGRITY_FAILURE" { "文件完整性验证失败" }
+            default { "未知威胁" }
+        }
+        
+        Write-Host "[Security Alert] 启动时检测到调试或注入，程序将在 15 秒后退出..." -ForegroundColor Red
+        
+        # 🔴 关键修复：使用模态窗口阻塞，等待用户确认或倒计时结束
+        $script:ExitCountdownStarted = $true
+        [AuroraExitCountdown]::Show(
+            " 安全警报：$reasonText！",
+            " Security Alert: $envDetectionReason!",
+            "启动时检测到程序正在被调试或注入：$reasonText`n`n程序将在 15 秒后自动退出。",
+            "Debugging or injection detected at startup: $reasonText`n`nProgram will exit in 15 seconds.",
+            15,
+            $true,
+            $UseChinese
+        )
+        
+        # 等待倒计时结束（Environment.Exit 会在 C# 端执行）
+        while ($true) {
+            Start-Sleep -Milliseconds 500
+        }
+    } else {
+        Write-Host "[安全守卫] 启动环境扫描完成 - 安全" -ForegroundColor DarkGray
     }
-} catch {}
+} catch {
+    Write-Host "[守卫] 加载失败，将以降级模式运行" -ForegroundColor DarkYellow
+    Write-Host "[守卫] 错误详情：$($_.Exception.Message)" -ForegroundColor Red
+    if ($_.Exception.InnerException) {
+        Write-Host "[守卫] 内部错误：$($_.Exception.InnerException.Message)" -ForegroundColor Red
+    }
+    Write-Host "[守卫] 堆栈跟踪：$($_.ScriptStackTrace)" -ForegroundColor DarkGray
+    $AURORA_GUARD_INITIALIZED = $false
+}
+
+# 如果不是由 EXE 启动（且无有效令牌），回退到密码验证
+if (-not $IsLaunchedByExe) {
+    # 需要密码验证路径 - 后续代码会处理
+    Write-Host "[信息] 非 EXE 启动模式，将请求密码验证" -ForegroundColor Gray
+}
 
 if (-not $IsLaunchedByExe) {
     # 需要密码验证（程序集已在 L836-844 中加载）
@@ -9669,9 +9943,32 @@ function ShowProMode {
                 # 优化：快速创建后台 Runspace
                 # ==========================================
                 try { 
-                    $guardOk = [AuroraGuard]::VerifyOrDie()
-                    if (-not $guardOk) {
-                        Write-Host "[ShowProMode] 完整性验证警告：部分文件哈希不匹配（开发环境正常）" -ForegroundColor Yellow
+                    $detectionReason = [AuroraGuard]::GetDetectionReason()
+                    if ($detectionReason -ne "NONE") {
+                        Write-Host "[安全守卫] 检测到威胁：$detectionReason" -ForegroundColor Red
+                        
+                        if (-not $script:ExitCountdownStarted) {
+                            $script:ExitCountdownStarted = $true
+                            
+                            $reasonText = switch ($detectionReason) {
+                                "DEBUGGER_API" { "调试器 API 检测" }
+                                "DEBUGGER_PROCESS" { "调试工具进程检测" }
+                                "DLL_INJECTION" { "DLL 注入检测" }
+                                "INTEGRITY_FAILURE" { "文件完整性验证失败" }
+                                default { "未知威胁" }
+                            }
+                            
+                            Write-Host "[Security Alert] 检测到调试或注入，程序将在 15 秒后退出..." -ForegroundColor Red
+                            [AuroraExitCountdown]::Show(
+                                " 安全警报：$reasonText！",
+                                " Security Alert: $detectionReason!",
+                                "检测到程序正在被调试或注入：$reasonText`n`n程序将在 15 秒后自动退出。",
+                                "Debugging or injection detected: $reasonText`n`nProgram will exit in 15 seconds.",
+                                15,
+                                $true,
+                                $UseChinese
+                            )
+                        }
                     }
                 } catch { 
                     Write-Host "[ShowProMode] 完整性守卫未初始化（降级模式）" -ForegroundColor DarkGray
