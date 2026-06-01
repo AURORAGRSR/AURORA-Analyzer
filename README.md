@@ -1,612 +1,593 @@
-# AURORA Analyzer V1.1.24.1 — User Manual
+# AURORA Analyzer V1.2.24.5Release — Technical Documentation
 
-> **Target Audience**: General Users / System Administrators / IT Operations
-> **Document Purpose**: Ultra-detailed feature guide, easy to read and understand, focusing on functionality and practical value
+> **Target Audience**: Security Researchers / Reverse Engineers / Community Contributors / Advanced Developers
+> **Document Focus**: In-depth technical details, architecture analysis, and security implementation — suitable for professional research and secondary development
 
 ***
 
 ## Table of Contents
 
-- [1. Welcome to AURORA Analyzer](#1-welcome-to-aurora-analyzer)
-- [2. Quick Start](#2-quick-start)
-  - [2.1 System Requirements](#21-system-requirements)
-  - [2.2 Installation & Launch](#22-installation--launch)
-  - [2.3 Interface Overview](#23-interface-overview)
-- [3. Log Export](#3-log-export)
-  - [3.1 Supported Log Types](#31-supported-log-types)
-  - [3.2 Export Range Selection](#32-export-range-selection)
-  - [3.3 Advanced Filtering](#33-advanced-filtering)
-  - [3.4 Export Formats](#34-export-formats)
-  - [3.5 Viewing Export Results](#35-viewing-export-results)
-- [4. Smart Diagnosis](#4-smart-diagnosis)
-  - [4.1 What Is Smart Diagnosis](#41-what-is-smart-diagnosis)
-  - [4.2 Five Diagnostic Categories Explained](#42-five-diagnostic-categories-explained)
-  - [4.3 BSOD Analysis](#43-bsod-analysis)
-  - [4.4 Reading Diagnostic Reports](#44-reading-diagnostic-reports)
-- [5. System Repair](#5-system-repair)
-  - [5.1 Supported Repair Types](#51-supported-repair-types)
-  - [5.2 Pre-Repair Protection](#52-pre-repair-protection)
-  - [5.3 How to Execute Repairs](#53-how-to-execute-repairs)
-- [6. Undo & Restore](#6-undo--restore)
-  - [6.1 Undoing Repair Operations](#61-undoing-repair-operations)
-  - [6.2 Viewing Repair History](#62-viewing-repair-history)
-  - [6.3 System Restore Points](#63-system-restore-points)
-- [7. Progress Management & Resume](#7-progress-management--resume)
-  - [7.1 Auto-Save Sessions](#71-auto-save-sessions)
-  - [7.2 Resuming Interrupted Tasks](#72-resuming-interrupted-tasks)
-- [8. What's New in v1.1.24.1](#8-whats-new-in-v11241)
-  - [8.1 Security Upgrade: Five-Layer Defense-in-Depth](#81-security-upgrade-five-layer-defense-in-depth)
-  - [8.2 Performance Optimizations](#82-performance-optimizations)
-  - [8.3 Stability Fixes](#83-stability-fixes)
-- [9. FAQ & Common Scenarios](#9-faq--common-scenarios)
-  - [9.1 How to Diagnose Frequent BSODs](#91-how-to-diagnose-frequent-bsods)
-  - [9.2 How to Diagnose a Slow System](#92-how-to-diagnose-a-slow-system)
-  - [9.3 How to Check for Intrusions](#93-how-to-check-for-intrusions)
-  - [9.4 Exporting Logs for Technical Support](#94-exporting-logs-for-technical-support)
-- [10. Performance Tiers](#10-performance-tiers)
-- [11. Language Switching](#11-language-switching)
-- [12. Security & Privacy](#12-security--privacy)
-- [13. Support & Feedback](#13-support--feedback)
+- [1. Project Overview](#1-project-overview)
+- [2. Security Architecture](#2-security-architecture)
+  - [2.1 Defense-in-Depth Model](#21-defense-in-depth-model)
+  - [2.2 Key Hierarchy](#22-key-hierarchy)
+  - [2.3 Authentication & Verification Chain](#23-authentication--verification-chain)
+- [3. Core Subsystems](#3-core-subsystems)
+  - [3.1 RSA Token Verification](#31-rsa-token-verification)
+  - [3.2 EXE Watchdog Duplex Communication](#32-exe-watchdog-duplex-communication)
+  - [3.3 AuroraGuard Runtime Sentinel](#33-auroraguard-runtime-sentinel)
+  - [3.4 File Integrity Verification](#34-file-integrity-verification)
+- [4. v1.2.24.5 Security Upgrade Details](#4-v12245-security-upgrade-details)
+  - [4.1 Key Rotation & Cryptographic Hardening](#41-key-rotation--cryptographic-hardening)
+  - [4.2 Launch Flow Timing Fix](#42-launch-flow-timing-fix)
+  - [4.3 CheckHardwareBreakpoints Memory Layout Fix](#43-checkhardwarebreakpoints-memory-layout-fix)
+  - [4.4 WOW64 Compatibility Fix](#44-wow64-compatibility-fix)
+  - [4.5 Diagnostic Observability Enhancement](#45-diagnostic-observability-enhancement)
+- [5. Anti-Debugging & Anti-Analysis Techniques](#5-anti-debugging--anti-analysis-techniques)
+  - [5.1 Debugger API Detection](#51-debugger-api-detection)
+  - [5.2 Hardware Breakpoint Detection](#52-hardware-breakpoint-detection)
+  - [5.3 PEB Analysis](#53-peb-analysis)
+  - [5.4 Thread Hiding](#54-thread-hiding)
+- [6. Build System](#6-build-system)
+  - [6.1 build.ps1 Build Pipeline](#61-buildps1-build-pipeline)
+  - [6.2 Pipe Communication Protocol](#62-pipe-communication-protocol)
+- [7. Attack Surface Analysis](#7-attack-surface-analysis)
+  - [7.1 Known Attack Vectors](#71-known-attack-vectors)
+  - [7.2 Mitigation Measures](#72-mitigation-measures)
+- [8. Contributing](#8-contributing)
 
 ***
 
-## 1. Welcome to AURORA Analyzer
+## 1. Project Overview
 
-**AURORA Analyzer** is a powerful Windows system diagnostics and log analysis tool. Its core mission is to help you:
-
-| Need                          | What AURORA Analyzer Does For You                                                               |
-| ----------------------------- | ----------------------------------------------------------------------------------------------- |
-| 🔍 **Diagnose System Issues** | Automatically scan system logs to identify root causes of BSODs, crashes, and slowdowns         |
-| 📊 **Export System Logs**     | Export Windows event logs to CSV / JSON / XML format for easy analysis                          |
-| 🔧 **One-Click Repair**       | Automatically fix Windows Update issues, Defender misconfigurations, network anomalies and more |
-| 📋 **Health Reports**         | Generate detailed system health assessment reports with trend analysis and recommendations      |
-| ↩️ **Safe Rollback**          | Auto-create backups and system restore points before each repair, ensuring you can always undo  |
-| 🛡️ **Security Auditing**     | Check security logs for brute-force login attempts, privilege escalation, and more              |
-
-### Core Value
-
-- **No more digging through thousands of log entries in Event Viewer** — AURORA Analyzer filters and analyzes for you
-- **No more Googling BSOD codes** — Automatically parses Minidump files and tells you which driver caused the crash
-- **Mistakes are reversible** — Every repair is automatically backed up, one-click undo
-- **Export progress is never lost** — Even if you close the program, resume from where you left off next time
-- **Five-layer defense-in-depth** — Tamper-proof from build to runtime, with bank-grade security protection
-
-***
-
-## 2. Quick Start
-
-### 2.1 System Requirements
-
-| Item               | Minimum            | Recommended                   |
-| ------------------ | ------------------ | ----------------------------- |
-| **OS**             | Windows 10 (1809+) | Windows 11 22H2+              |
-| **.NET Framework** | 4.7.2              | 4.8+                          |
-| **PowerShell**     | 5.1 (built-in)     | PowerShell 7+                 |
-| **RAM**            | 4 GB               | 8 GB+                         |
-| **Disk Space**     | 100 MB             | 500 MB+ (for log export)      |
-| **Permissions**    | Standard user      | Administrator (full features) |
-
-> 💡 **Tip**: Most features work with standard user permissions. Only exporting security logs and system repairs require admin rights — the program will prompt you for elevation automatically.
-
-### 2.2 Installation & Launch
-
-**Just two steps:**
-
-1. **Extract** `AURORA-AnalyzerV1.1.24.1Release.zip` to any directory
-2. **Double-click** `AURORA.Launcher-双击启动.exe` to launch
-
-> ⚠️ **Note**:
->
-> - Do not modify or delete any files in the program directory, or the program will refuse to launch
-> - If your antivirus blocks it on first run, add an exception (this tool contains no malicious code)
-> - Do not run directly from within the archive — always extract first
-
-**After launching you will see:**
-
-- A main interface with a starfield animation background
-- A top menu bar for switching between function modules
-- A bottom status bar showing current system info and performance tier
-
-### 2.3 Interface Overview
+AURORA Analyzer is a Windows system diagnostics tool built on a **PowerShell / C# hybrid architecture**. The project employs a three-layer architecture of **PS1 Script + Embedded C# Types + C# EXE Loader**:
 
 ```
-┌─────────────────────────────────────────────────┐
-│  AURORA Analyzer V1.1.24.1          [— □ ✕]     │
-├─────────────────────────────────────────────────┤
-│  [Log Export] [Diagnosis] [Repair] [History] [Settings] │
-├─────────────────────────────────────────────────┤
-│                                                 │
-│         Main content area (changes based on selected module) │
-│         · Log type selection                    │
-│         · Date range selection                  │
-│         · Progress bar                          │
-│         · Action buttons                        │
-│                                                 │
-├─────────────────────────────────────────────────┤
-│  Status: Ready  |  Admin: Yes/No  |  Language: English  │
-└─────────────────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│  AURORA-Analyzer.exe (C# EXE Loader)     │
+│  - RSA token generation & signing        │
+│  - Named Pipe watchdog server            │
+│  - Process lifecycle management           │
+└──────────────┬──────────────────────────┘
+               │ Process.Start + env var injection
+┌──────────────▼──────────────────────────┐
+│  AURORA-AnalyzerLauncherGUI.ps1          │
+│  - GUI entry point (Windows Forms)        │
+│  - AuroraGuard (embedded C# type)         │
+│  - AuroraExitCountdown (embedded C# type) │
+│  - Watchdog client + Runspace             │
+│  - Performance tiering engine             │
+└──────────────┬──────────────────────────┘
+               │ Dot-sourcing
+┌──────────────▼──────────────────────────┐
+│  Core Engine Scripts (16 .ps1 files)      │
+│  - SmartEngine / CoreEngine              │
+│  - RepairTools / UndoManager             │
+│  - ProgressManager / AnimationCore       │
+│  - All files protected by SHA256 hashes  │
+└─────────────────────────────────────────┘
+```
+
+**Technology Stack**:
+
+| Layer        | Language                 | Runtime                                     |
+| ------------ | ------------------------ | ------------------------------------------- |
+| EXE Loader   | C#                       | .NET Framework 4.x (compiled to target EXE) |
+| GUI Launcher | PowerShell + Embedded C# | Windows PowerShell 5.1+                     |
+| Core Engines | PowerShell               | Windows PowerShell 5.1+                     |
+
+***
+
+## 2. Security Architecture
+
+### 2.1 Defense-in-Depth Model
+
+```
+Layer 0: Build-Time Protection
+  ├── RSA key pair (private key held by build tool for token signing)
+  ├── SHA256 integrity hash table (hardcoded in AuroraGuard)
+  └── Token time-to-live (60-second window)
+
+Layer 1: Launch Verification
+  ├── RSA token signature verification (SHA256 + PKCS#1 v1.5)
+  ├── Hash manifest decryption (AES-256-CBC + PBKDF2 session key)
+  └── Launch environment sanity check (non-debugging context)
+
+Layer 2: IPC Security
+  ├── Named Pipe mutual authentication
+  ├── HMAC-SHA256 challenge-response protocol
+  └── Bidirectional heartbeat (single failure = termination)
+
+Layer 3: Runtime Sentinel
+  ├── Debugger API detection (IsDebuggerPresent + NtQueryInformationProcess)
+  ├── Hardware breakpoint detection (Dr0-Dr3 register scan)
+  ├── PEB analysis (NtGlobalFlag)
+  ├── Process name scan (90+ known debugger names)
+  ├── DLL injection detection (module path analysis)
+  └── Continuous polling (every 3 seconds + WMI real-time events)
+
+Layer 4: Exit Cleanup
+  ├── Dual event registration (PowerShell.Exiting + ProcessExit)
+  ├── Cascading resource release (Pipe → Runspace → Timer → WMI)
+  └── Environment variable zeroization
+```
+
+### 2.2 Key Hierarchy
+
+```
+Master Secret (RSA private key, held only by build tool)
+    │
+    ├──sign──→ RSA Token (SHA256 signature, 60s TTL)
+    │          │
+    │          └──derive──→ AES Session Key (PBKDF2, Nonce, AU_SESSION_2026_SALT_V1)
+    │                          │
+    │                          └──decrypt──→ Hash Manifest (SHA256 list)
+    │
+    └──sign──→ EXE-embedded verification logic (RSA public key hardcoded in PS1)
+```
+
+### 2.3 Authentication & Verification Chain
+
+```
+Build Time:
+  1. Generate Random Nonce (32 hex chars)
+  2. Compute SHA256 hashes for all core scripts
+  3. PBKDF2(Nonce, AesSalt) → AES Session Key
+  4. AES-256-CBC encrypt hash list → HashPayload
+  5. RSA-SHA256 sign(Nonce:Timestamp:HashPayload) → Signature
+  6. Write token file: Nonce:Timestamp:HashPayload:Signature
+
+PS1 Startup:
+  1. Read $env:AURORA_TOKEN_PATH → token file
+  2. Parse Nonce:Timestamp:HashPayload:Signature
+  3. RSA public key verify signature (SHA256, PKCS#1 v1.5)
+  4. Check timestamp (|now - timestamp| < 60s)
+  5. PBKDF2(Nonce, AesSalt) → AES Session Key
+  6. AES-256-CBC decrypt HashPayload → hash manifest
+  7. AuroraGuard.Initialize(baseDir) → store base directory
+  8. AuroraGuard.CheckIntegrity() → per-file SHA256 verification
+
+EXE-PS1 Watchdog Handshake:
+  1. EXE creates NamedPipeServerStream (random name)
+  2. Environment variable injection → PS1 connects via NamedPipeClientStream
+  3. EXE sends HMAC key (49-byte handshake: 0x10 + key)
+  4. PS1 stores HMAC key, enters watchdog response loop
+  5. Periodic challenge: EXE sends 0x03 + 16B Nonce + 8B Timestamp
+  6. PS1 responds: HMAC-SHA256(Nonce) + 8B Uptime + 32B SelfHash
+  7. EXE verifies HMAC → mismatch triggers Kill(ps1Proc)
 ```
 
 ***
 
-## 3. Log Export
+## 3. Core Subsystems
 
-This is AURORA Analyzer's most core function — helping you export Windows system event logs for analysis.
+### 3.1 RSA Token Verification
 
-### 3.1 Supported Log Types
+**Implementation**: [AURORA-AnalyzerLauncherGUI.ps1:17-77](file:///e%3A/PC%20SOFT/%E4%BC%98%E5%8C%96%E8%BD%AF%E4%BB%B6/PowerShellBat/AURORA-Analyzer/AURORA-Analyzer-Factory/Scripts/AURORA-AnalyzerLauncherGUI.ps1#L17-L77)
 
-AURORA Analyzer supports exporting **8 types** of Windows event logs:
+**Key Parameters**:
 
-| Log Type              | Contents                                            | Typical Use                                       |
-| --------------------- | --------------------------------------------------- | ------------------------------------------------- |
-| **System**            | Service start/stop, driver loading, kernel events   | Troubleshoot BSODs, system crashes, driver issues |
-| **Application**       | App crashes, errors, installation events            | Troubleshoot app crashes, installation failures   |
-| **Security**          | Login audit, privilege changes, account management  | Security auditing, intrusion detection            |
-| **Setup**             | Windows update installation, component installation | Troubleshoot Windows Update failures              |
-| **DNS Server**        | DNS query and resolution records                    | DNS troubleshooting                               |
-| **DHCP Server**       | DHCP IP address assignment records                  | Network address allocation issues                 |
-| **Directory Service** | Active Directory domain controller events           | Enterprise domain management                      |
-| **IIS Admin**         | IIS Web server management events                    | Web server operations                             |
+| Parameter              | Value                       | Purpose              | <br /> | <br />            |
+| ---------------------- | --------------------------- | -------------------- | :----- | :---------------- |
+| Signature Algorithm    | RSA-SHA256 + PKCS#1 v1.5    | Token signing        | <br /> | <br />            |
+| Public Key Format      | XML (Modulus + Exponent)    | Embedded in PS1      | <br /> | <br />            |
+| Session Key Derivation | PBKDF2 (Rfc2898DeriveBytes) | 1000 iterations      | <br /> | <br />            |
+| AES Mode               | AES-256-CBC, PKCS7 Padding  | Hash list encryption | <br /> | <br />            |
+| Token TTL              | 60 seconds (                | age                  | < 60)  | Replay prevention |
 
-> 💡 **Most common choice**: If you're unsure, start with "System" logs — they contain 90% of everyday problem information.
+**Signature Input Format**: `{Nonce}:{Timestamp}:{HashPayload}`
 
-### 3.2 Export Range Selection
+### 3.2 EXE Watchdog Duplex Communication
 
-Three export range options:
+**Implementation**: [build.ps1:928-1020](file:///e%3A/PC%20SOFT/%E4%BC%98%E5%8C%96%E8%BD%AF%E4%BB%B6/PowerShellBat/AURORA-Analyzer/AURORA-Analyzer-Factory/build.ps1#L928-L1020) / [AURORA-AnalyzerLauncherGUI.ps1:342-470](file:///e%3A/PC%20SOFT/%E4%BC%98%E5%8C%96%E8%BD%AF%E4%BB%B6/PowerShellBat/AURORA-Analyzer/AURORA-Analyzer-Factory/Scripts/AURORA-AnalyzerLauncherGUI.ps1#L342-L470)
 
-**① Single Day Export** — Export all logs for a specific day. Best for "what went wrong today".
+**Named Pipe Protocol**:
 
-**② Date Range Export** — Export logs from a start date to an end date. Best for analyzing trends over a period.
+| Command | Direction | Payload                             | Description        |
+| ------- | --------- | ----------------------------------- | ------------------ |
+| `0x10`  | EXE→PS1   | 32B HMAC Key                        | Handshake init     |
+| `0x03`  | EXE→PS1   | 16B Nonce + 8B Timestamp            | Periodic challenge |
+| `0x03`  | PS1→EXE   | 32B HMAC + 8B Uptime + 32B SelfHash | Challenge response |
 
-**③ Force Rescan** — Ignore previous cache and re-export from scratch. Use when you suspect the previous export was incomplete.
+**Pipe Naming**: `AURORA_WD_{8 hex chars}` (UUID-derived)
 
-### 3.3 Advanced Filtering
+### 3.3 AuroraGuard Runtime Sentinel
 
-If you only need specific types of events, use advanced filtering:
+**Implementation**: [AURORA-AnalyzerLauncherGUI.ps1:497-1037](file:///e%3A/PC%20SOFT/%E4%BC%98%E5%8C%96%E8%BD%AF%E4%BB%B6/PowerShellBat/AURORA-Analyzer/AURORA-Analyzer-Factory/Scripts/AURORA-AnalyzerLauncherGUI.ps1#L497-L1037)
 
-| Filter           | Purpose                                   | Example                                                      |
-| ---------------- | ----------------------------------------- | ------------------------------------------------------------ |
-| **EventID**      | Export only specific event IDs            | `1001, 41, 6008` (system diagnostics + unexpected shutdowns) |
-| **ProviderName** | Export only events from a specific source | `Microsoft-Windows-Kernel-Power`                             |
-| **Level**        | Export only events of a specific level    | `Critical`, `Error`                                          |
-
-**Level Descriptions:**
-
-| Level       | Meaning                     | Example                                        |
-| ----------- | --------------------------- | ---------------------------------------------- |
-| Critical    | System-level critical error | Kernel crash, unexpected shutdown              |
-| Error       | Component runtime error     | Service start failure, app crash               |
-| Warning     | Potential issue warning     | Low disk space, driver nearing expiration      |
-| Information | General operation record    | Service started successfully, update installed |
-| Verbose     | Debug-level detail          | Developer debugging logs                       |
-
-> 💡 **Tip**: When troubleshooting, start with `Critical + Error`. Expand to `Warning` if no cause is found.
-
-### 3.4 Export Formats
-
-Each export automatically generates multiple file formats:
-
-| File                   | Format               | Use                                              | Open With                              |
-| ---------------------- | -------------------- | ------------------------------------------------ | -------------------------------------- |
-| `*_Log_*.csv`          | CSV Table            | Data analysis and charting in Excel              | Excel / WPS / Google Sheets            |
-| `*_Log_*.json`         | JSON Structured Data | Programmatic processing, import into other tools | Any text editor / programming language |
-| `*_Log_*.xml`          | XML Structured Data  | Windows Event Viewer compatible                  | Event Viewer / Browser                 |
-| `*_Log_*_Summary.txt`  | Plain Text Summary   | Quick overview                                   | Notepad / any text editor              |
-| `*_Trend_Analysis.txt` | Plain Text Report    | View event trends and distribution               | Notepad / any text editor              |
-| `*_Trend_Data.csv`     | CSV Data             | Raw trend analysis data                          | Excel / WPS                            |
-
-**Output Location**: All files are saved in the `UserLogs\` folder within the program directory.
-
-### 3.5 Viewing Export Results
-
-After export, you can:
-
-1. **View directly in the program**: A summary window pops up after completion
-2. **Open folder**: Click the "Open Output Folder" button
-3. **Analyze in Excel**: Double-click the CSV file to sort by EventID, filter by time range, or create pivot tables
-
-***
-
-## 4. Smart Diagnosis
-
-### 4.1 What Is Smart Diagnosis
-
-Smart Diagnosis is the "brain" of AURORA Analyzer. Unlike traditional tools that just list logs, it **automatically analyzes log content to find problems and provide fix recommendations**.
-
-**Diagnosis Flow:**
+**Detection Hierarchy**:
 
 ```
-① Scan system logs
-    ↓
-② Lock onto anomaly time windows (around crashes, after boots)
-    ↓
-③ Match 100+ diagnostic rules
-    ↓
-④ Analyze BSOD dump files (Minidump)
-    ↓
-⑤ Generate diagnostic report
-    ↓
-⑥ Recommend repair actions
+CheckDebuggerAPIs()
+  ├── IsDebuggerPresent()                     // kernel32
+  ├── CheckRemoteDebuggerPresent()            // kernel32
+  ├── NtQueryInformationProcess(DebugPort)    // ntdll, Class=7
+  ├── NtQueryInformationProcess(DebugFlags)   // ntdll, Class=31
+  ├── NtQueryInformationProcess(HandleTracing)// ntdll, Class=34
+  ├── CheckPEBNtGlobalFlag()                  // PEB.NtGlobalFlag
+  └── CheckHardwareBreakpoints()              // GetThreadContext + Dr0-Dr3
+
+CheckDebuggerProcesses()
+  └── Process.GetProcesses() enumeration → match 90+ known debugger names
+
+CheckDLLInjection()
+  └── Process.Modules enumeration → non-system/non-framework DLL path analysis
+
+CheckIntegrity()
+  └── SHA256 hash comparison for 16 core files (10-second cache)
 ```
 
-**Diagnostic report includes:**
+### 3.4 File Integrity Verification
 
-- List of discovered issues (sorted by severity)
-- Detailed description of each issue (time, frequency, impact)
-- Root cause analysis
-- Recommended repair actions
+**Verified Files**: 16 core scripts + 1 data file
 
-### 4.2 Five Diagnostic Categories Explained
+**Implementation Details**:
 
-#### 🅰️ System Stability
+```csharp
+// Cache: repeated calls within 10 seconds return cached result
+private static readonly TimeSpan _integrityCacheDuration = TimeSpan.FromSeconds(10);
+private static readonly object _integrityLock = new object();
 
-| Diagnostic Item             | What It Detects                   | Common Causes                                      |
-| --------------------------- | --------------------------------- | -------------------------------------------------- |
-| **Unexpected Shutdowns**    | Frequent unexpected power loss    | Power issues, CPU overheating, motherboard failure |
-| **System Service Crashes**  | Core services stopping repeatedly | System file corruption, driver conflicts           |
-| **Kernel Power Anomalies**  | CPU power/frequency anomalies     | Improper power settings, insufficient cooling      |
-| **Windows Update Failures** | Repeated update failures          | Update component corruption, network issues        |
-| **Disk File System Errors** | Disk read/write errors            | Bad sectors, loose data cable                      |
-| **System Time Drift**       | Abnormal clock drift              | CMOS battery exhaustion, motherboard issue         |
-
-#### 🅱️ Application Errors
-
-| Diagnostic Item | What It Detects                             | Common Causes                              |
-| --------------- | ------------------------------------------- | ------------------------------------------ |
-| **App Crashes** | Frequent .NET app crashes                   | Missing runtimes, insufficient permissions |
-| **App Hangs**   | Frequent unresponsiveness                   | Low memory, deadlocks, resource conflicts  |
-| **WMI Errors**  | Windows Management Instrumentation failures | WMI repository corruption                  |
-| **COM Errors**  | COM component call failures                 | Registry corruption, missing DLLs          |
-
-#### 🅲 Driver Issues
-
-Driver issues are the most common cause of BSODs:
-
-| Diagnostic Item          | What It Detects                  | Common Causes                                                 |
-| ------------------------ | -------------------------------- | ------------------------------------------------------------- |
-| **Driver Load Failure**  | Drivers failing to load          | Driver signing issues, incompatibility                        |
-| **GPU Driver Timeout**   | GPU driver frequent resets       | GPU overheating, driver version incompatibility, overclocking |
-| **Network Driver Error** | NIC driver anomalies             | Driver version issues, NIC hardware failure                   |
-| **Storage Driver Error** | Storage controller driver errors | Driver conflicts, RAID configuration error                    |
-
-#### 🅳 Hardware Failure Warning
-
-Detect issues before hardware fails completely:
-
-| Diagnostic Item            | What It Detects                        | Recommended Action                                       |
-| -------------------------- | -------------------------------------- | -------------------------------------------------------- |
-| **Disk SMART Warning**     | Disk self-reporting health issues      | ⚠️ **Backup data immediately**, prepare disk replacement |
-| **Disk Bad Sectors**       | Bad sectors appearing                  | Run chkdsk, backup important files                       |
-| **Memory ECC Corrections** | Frequent ECC corrections               | Check RAM sticks, may need replacement                   |
-| **CPU Thermal Throttling** | CPU throttling due to overheating      | Clean dust, check cooling fan                            |
-| **NIC Frequent Resets**    | NIC repeatedly disconnecting/resetting | Update NIC driver, check cable                           |
-
-#### 🅴 Security Event Audit
-
-| Diagnostic Item               | What It Detects                  | Severity                                 |
-| ----------------------------- | -------------------------------- | ---------------------------------------- |
-| **Brute Force Logins**        | Repeated login attempts          | 🔴 Critical — potential ongoing attack   |
-| **Privilege Escalation**      | Unauthorized privilege elevation | 🟡 Warning — possible malware            |
-| **Audit Log Cleared**         | Security log has been cleared    | 🔴 Critical — typical intrusion evidence |
-| **Firewall Rule Changes**     | Firewall rules modified          | 🟡 Warning — verify legitimacy           |
-| **Account Creation/Deletion** | Unknown account changes          | 🟡 Warning — check account origin        |
-
-### 4.3 BSOD Analysis
-
-When your computer blue screens, AURORA Analyzer can:
-
-1. **Automatically scan** `C:\Windows\Minidump\` folder for dump files
-2. **Parse** dump file headers to extract: crash time, BugCheck code, likely offending driver, running process at the time
-3. **Match** against the knowledge base of known BSOD causes
-4. **Recommend** updating/uninstalling the offending driver or performing system repairs
-
-### 4.4 Reading Diagnostic Reports
-
-Diagnostic reports use colors and icons to indicate severity:
-
-| Icon | Level        | Meaning                   | What You Should Do                            |
-| ---- | ------------ | ------------------------- | --------------------------------------------- |
-| 🔴   | **Critical** | Needs immediate attention | Follow the repair recommendation immediately  |
-| 🟠   | **High**     | Clear issue exists        | Address soon to prevent escalation            |
-| 🟡   | **Medium**   | Potential risk            | Understand the cause, address when convenient |
-| 🔵   | **Low**      | Optimization suggestion   | Optional, does not affect usage               |
-
-***
-
-## 5. System Repair
-
-### 5.1 Supported Repair Types
-
-AURORA Analyzer can help you one-click fix these common system problems:
-
-#### 🔧 Disable Windows Update (temporarily pause auto-updates)
-
-- Stops Windows Update service, disables auto-update scheduled tasks, modifies group policy settings
-
-#### 🔧 Enable Windows Defender (restore antivirus)
-
-- Restores Defender service to auto-start, removes third-party registry restrictions, restarts related security services
-
-#### 🔧 Disable Telemetry & Data Collection
-
-- Disables Connected User Experiences and Telemetry service, sets telemetry level to "Security" (minimum), disables related scheduled tasks
-
-#### 🔧 Reset Network Settings
-
-- Resets Winsock catalog, resets TCP/IP stack, flushes DNS cache, resets Windows Firewall rules
-
-#### 🔧 System Cleanup
-
-- Clears temporary files, empties Recycle Bin, cleans Windows Update cache, cleans thumbnail cache
-
-### 5.2 Pre-Repair Protection
-
-**Your safety is our top priority.** Before each repair, AURORA Analyzer automatically:
-
-```
-├─ ✅ Create System Restore Point
-│     └── Roll back the entire system state in Windows Recovery Environment
-│
-├─ ✅ Create Quick Backup Snapshot
-│     ├── Backup registry keys about to be modified
-│     ├── Backup files about to be modified
-│     └── Record current service states
-│
-├─ ✅ Record Audit Log
-│     └── Detailed record: who, when, what, result
-│
-└─ ✅ Risk Assessment
-      └── High-risk operations require additional confirmation
+// Read retry: up to 3 attempts (handles file locking scenarios)
+while (retryCount < maxRetry)
+{
+    try
+    {
+        using (var sha = SHA256.Create())
+        {
+            byte[] hash = sha.ComputeHash(File.ReadAllBytes(path));
+            actual = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+        }
+        hashOk = true;
+        break;
+    }
+    catch (IOException) { retryCount++; Thread.Sleep(100 * retryCount); }
+}
 ```
 
-> 🛡️ **Dual protection**: Even if one recovery method fails, the other can still help you roll back.
+***
 
-### 5.3 How to Execute Repairs
+## 4. v1.2.24.5 Security Upgrade Details
 
-1. Click the **"System Repair"** tab
-2. Select the repair type from the list
-3. Click **"Execute Repair"**
-4. Confirm risk warning (if any)
-5. Wait for repair to complete
-6. View the repair result report
+### 4.1 Key Rotation & Cryptographic Hardening
+
+**Changes**:
+
+| Component   | v1.2.20.5             | v1.2.24.5             | Security Impact                 |
+| ----------- | --------------------- | --------------------- | ------------------------------- |
+| RSA Modulus | `tF61rYipRTBERmH...`  | `5wMKsJpF5BoHkv...`   | Prevents old key leakage impact |
+| SessionSalt | `qHI6yeoytN0LRm7e...` | `BqsDzvd9iEdvRySj...` | Session key space refresh       |
+
+**Rationale**: Security audit identified the need to follow periodic key rotation best practices, ensuring that even if old build artifacts or key material are compromised, they cannot affect the current version.
+
+### 4.2 Launch Flow Timing Fix
+
+**Root Cause**: A variant of the classic **TOCTOU (Time-of-Check-Time-of-Use)** problem — but in the reverse direction: cleanup was performed before the read.
+
+```powershell
+# Bug: Clear-AuroraWatchdogEnv executed before environment variable read
+# State: $env:AURORA_WD_PIPE exists → Clear zeroes it → Read returns $null
+
+# Fix: Save to script variables (lexical scope) first, then clean environment
+$AURORA_WD_PIPE_NAME = $env:AURORA_WD_PIPE      # Save
+$AURORA_WD_SESSION = $env:AURORA_WD_SESSION      # Save
+Clear-AuroraWatchdogEnv                           # Safe cleanup
+```
+
+**Timing Diagram**:
+
+```
+Before (intermittent failure):
+EXE ──Start PS1──→ PS1 ──Clear Env──→ PS1 ──Read Env ($null)──→ Skip Watchdog
+EXE ──Wait Pipe──→ Timeout ──→ Kill(PS1) ──→ Startup failure
+
+After (stable):
+EXE ──Start PS1──→ PS1 ──Read Env (save)──→ PS1 ──Clear Env──→ Connect Pipe
+EXE ──Wait Pipe──→ Connected ──→ Handshake ──→ Startup success
+```
+
+### 4.3 CheckHardwareBreakpoints Memory Layout Fix
+
+This is the **critical fix** of this release. The Windows x64 `CONTEXT` structure layout in memory differs from intuitive expectations, and the original code used incorrect offsets.
+
+**Windows x64 CONTEXT Structure Layout** (simplified, key fields):
+
+```
+Offset  Size  Field
+------  ----  -----
+0x0000   4    P1Home
+0x0004   4    P2Home
+0x0008   4    P3Home
+0x000C   4    P4Home
+0x0010   4    P5Home
+0x0014   4    P6Home
+0x0018   4    Padding/alignment
+0x001C   4    Padding/alignment
+0x0020   4    Padding/alignment
+0x0024   4    Padding/alignment
+0x0028   4    Padding/alignment
+0x002C   4    Padding/alignment
+0x0030   4    ContextFlags  ← Correct ContextFlags position!
+0x0034   4    MxCsr
+0x0038   2    SegCs
+0x003A   2    SegDs
+0x003C   2    SegEs
+0x003E   2    SegFs
+0x0040   2    SegGs
+0x0042   2    SegSs
+0x0044   4    EFlags
+0x0048   8    Dr0          ← Correct Dr0 position!
+0x0050   8    Dr1
+0x0058   8    Dr2
+0x0060   8    Dr3
+0x0068   8    Dr6
+0x0070   8    Dr7
+...
+(Total size: 1232 bytes)
+```
+
+**Cascading Effect of the Three Errors**:
+
+1. `ContextFlags` written to `ctxBuffer[0]` → overwrites `P1Home` area → `GetThreadContext` receives an uninitialized ContextFlags → undefined behavior
+2. `Dr0` read from `ctxBuffer[0x3E0]` (992) → far beyond the debug register position within the 1232-byte CONTEXT → **triggers Access Violation**
+3. `ReadInt32` (4 bytes) reading x64 8-byte registers → only captures lower 32 bits → incomplete detection
+
+### 4.4 WOW64 Compatibility Fix
+
+**ProcessHandleTracing Architecture Differences**:
+
+| Architecture       | Return Value Size | Read Method         |
+| ------------------ | ----------------- | ------------------- |
+| Native x86         | 4 bytes           | `Marshal.ReadInt32` |
+| Native x64         | 8 bytes           | `Marshal.ReadInt64` |
+| WOW64 (x86 on x64) | 4 bytes           | `Marshal.ReadInt32` |
+
+**Problem**: The original code allocated a buffer of `2 × IntPtr.Size = 8` bytes under WOW64, but the actual return value is only 4 bytes. While this doesn't directly cause a crash, `ReadInt64` reads uninitialized upper 32 bits.
+
+**Fix**: Buffer size changed to `IntPtr.Size` (adaptive 4/8 bytes), read method changed to `Marshal.ReadIntPtr` (platform-adaptive).
+
+### 4.5 Diagnostic Observability Enhancement
+
+**New** **`DiagLog`** **Function**:
+
+```csharp
+private static void DiagLog(string msg)
+{
+    // Dual-channel output:
+    // 1. stderr — unbuffered, real-time visible (even during imminent crash)
+    // 2. File — persisted to %TEMP%\aurora_guard_diag.log
+    Console.Error.WriteLine(msg);
+    Console.Error.Flush();
+    string logPath = Path.Combine(Path.GetTempPath(), "aurora_guard_diag.log");
+    File.AppendAllText(logPath, DateTime.Now.ToString("HH:mm:ss.fff") + " " + msg);
+}
+```
+
+**Design Considerations**:
+
+- Uses `Console.Error` (stderr) over `Console.Out` (stdout) because stderr is unbuffered by default, ensuring the last log line is output even during a crash
+- Simultaneous file write prevents log loss when the console closes
+- `Flush()` forces immediate write to avoid buffering delay
 
 ***
 
-## 6. Undo & Restore
+## 5. Anti-Debugging & Anti-Analysis Techniques
 
-"Being able to undo mistakes" is one of AURORA Analyzer's core design principles.
+### 5.1 Debugger API Detection
 
-### 6.1 Undoing Repair Operations
+| Method                                   | API      | Principle                                                  |
+| ---------------------------------------- | -------- | ---------------------------------------------------------- |
+| IsDebuggerPresent                        | kernel32 | Reads PEB.BeingDebugged flag                               |
+| CheckRemoteDebuggerPresent               | kernel32 | Same as above, supports checking other processes           |
+| NtQueryInformationProcess(DebugPort)     | ntdll    | Non-zero debug port = being debugged                       |
+| NtQueryInformationProcess(DebugFlags)    | ntdll    | Bit 0 of DebugFlags = 0 means being debugged               |
+| NtQueryInformationProcess(HandleTracing) | ntdll    | Abnormally high handle tracing count = suspicious activity |
 
-1. Click the **"Repair History"** tab
-2. Find the repair operation you want to undo
-3. Select the record, click **"Undo This Operation"**
-4. Confirm the undo
-5. The system restores all modified registry keys, files, and services in reverse order
+### 5.2 Hardware Breakpoint Detection
 
-### 6.2 Viewing Repair History
+**Principle**: Hardware debuggers set breakpoints via CPU debug registers (Dr0-Dr7). By calling `GetThreadContext` to read the current thread context, we check if Dr0-Dr3 are non-zero.
 
-The repair history viewer shows:
+**Correct x64 Implementation**:
 
-| Column        | Content                                          |
-| ------------- | ------------------------------------------------ |
-| **Time**      | Precise time of repair execution                 |
-| **Operation** | Type of repair performed                         |
-| **Result**    | ✓ Success / ✗ Failed / ⚠ Partial / ↩ Reverted    |
-| **Details**   | What was repaired                                |
-| **SessionId** | Unique identifier (useful for technical support) |
+```csharp
+int ctxSize = 1232;  // sizeof(CONTEXT) on Windows x64
+IntPtr ctxBuffer = Marshal.AllocHGlobal(ctxSize);
 
-### 6.3 System Restore Points
+// ContextFlags at offset 0x30
+Marshal.WriteInt32(ctxBuffer, 0x30, (int)(CONTEXT_DEBUG_REGISTERS | CONTEXT_FULL));
 
-If you chose to use system restore points as protection:
+if (GetThreadContext(GetCurrentThread(), ctxBuffer))
+{
+    // Dr0 at offset 0x48, each Dr register is 8 bytes
+    long dr0 = Marshal.ReadInt64(ctxBuffer, 0x48);
+    long dr1 = Marshal.ReadInt64(ctxBuffer, 0x50);
+    long dr2 = Marshal.ReadInt64(ctxBuffer, 0x58);
+    long dr3 = Marshal.ReadInt64(ctxBuffer, 0x60);
+    if (dr0 != 0 || dr1 != 0 || dr2 != 0 || dr3 != 0)
+        return true;  // Hardware breakpoint detected
+}
+```
 
-- Search "Create a restore point" in Windows
-- Click "System Restore"
-- Select the restore point created by AURORA Analyzer
-- Follow the wizard to roll back
+**Correct x86 Implementation**:
 
-> ⚠️ **Note**: System restore points roll back the entire system to the state when the point was created.
+```csharp
+int ctxSize = 716;  // sizeof(CONTEXT) on Windows x86
+IntPtr ctxBuffer = Marshal.AllocHGlobal(ctxSize);
 
-***
+Marshal.WriteInt32(ctxBuffer, 0, (int)(CONTEXT_DEBUG_REGISTERS | CONTEXT_FULL));
 
-## 7. Progress Management & Resume
+if (GetThreadContext(GetCurrentThread(), ctxBuffer))
+{
+    // Dr0 at offset 4 (immediately after ContextFlags)
+    uint dr0 = (uint)Marshal.ReadInt32(ctxBuffer, 4);
+    ...
+}
+```
 
-### 7.1 Auto-Save Sessions
+### 5.3 PEB Analysis
 
-When exporting large volumes of logs (e.g., 6 months of system logs), it can take a long time. AURORA Analyzer automatically saves progress:
+**NtGlobalFlag Detection**:
 
-- Checkpoints are recorded after **each data chunk** is processed
-- Progress is never lost even if the program closes unexpectedly
-- Session files are saved in `Scripts\SessionCache\active\`
+When a process is launched by a debugger, Windows sets the following flag combination in the PEB `NtGlobalFlag` field:
 
-### 7.2 Resuming Interrupted Tasks
+```
+FLG_HEAP_ENABLE_TAIL_CHECK   (0x10)
+FLG_HEAP_ENABLE_FREE_CHECK   (0x20)
+FLG_HEAP_VALIDATE_PARAMETERS (0x40)
+───────────────────────────────────
+Combined flags: 0x70
+```
 
-If the program closes during an export (due to crash, shutdown, or manual closure), it will:
+If `(NtGlobalFlag & 0x70) == 0x70`, the process was likely launched by a debugger.
 
-1. Auto-detect the unfinished session
-2. Prompt "Found unfinished task, continue?"
-3. Selecting "Continue" resumes from the interruption point
-4. Already exported data is not reprocessed
+**PEB Access**: Via `NtQueryInformationProcess(ProcessBasicInformation)` to obtain `PROCESS_BASIC_INFORMATION`, from which the PEB base address is read, then `PEB + NtGlobalFlag` offset.
 
-> 💡 **Practical scenario**: Power goes out while exporting 5 million log entries. After power returns, relaunch the program, click "Continue" — and it picks up right where it left off.
+| Architecture | PEB offset in PBI | NtGlobalFlag offset |
+| ------------ | ----------------- | ------------------- |
+| x86          | 4                 | 0x68                |
+| x64          | 8                 | 0xBC                |
 
-***
+### 5.4 Thread Hiding
 
-## 8. What's New in v1.1.24.1
+**API**: `NtSetInformationThread(GetCurrentThread(), ThreadHideFromDebugger, 0, 0)`
 
-v1.1.24.1 introduces significant security hardening on top of v1.1.24.0. Key changes include:
+**Principle**: Setting the `ThreadHideFromDebugger` (0x11) information class prevents the debugger from receiving debug events for this thread. If the debugger attempts to resume execution, the thread exits directly.
 
-### 8.1 Security Upgrade: Five-Layer Defense-in-Depth
-
-v1.1.24.0 established a four-layer defense-in-depth system. v1.1.24.1 adds a **fifth layer — Watchdog Guardian**, achieving full tamper-proof protection from build to runtime.
-
-#### 🛡️ New Fifth Layer: Independent Watchdog Guardian
-
-- An independent "heartbeat" communication pipe is established between the EXE and PowerShell script
-- Even if an attacker bypasses all PowerShell-level verifications, the EXE-side watchdog still independently detects anomalies
-- After 3 consecutive heartbeat anomalies, the process is forcefully terminated
-
-**What this means for you:** Your tool now has "bodyguard"-level security — even if someone tries to tamper with the program at runtime, the watchdog will detect and stop it within seconds.
-
-#### 🔍 C# Embedded Integrity Verification
-
-- New C# code block compiled into machine instructions performs integrity verification on 16 core functional modules
-- Compiled IL code is significantly harder to analyze and modify than regular script code
-- Current version hash values are automatically injected at build time, ensuring "this version verifies these files"
-
-**What this means for you:** Core functional modules of the program are protected at the compiled-code level — attackers cannot bypass security checks by simply modifying script code.
-
-#### 🔐 Elevation Security Token
-
-- Fixed a security verification vulnerability that could occur during admin privilege operations
-- An independent security token is generated when performing operations requiring admin rights
-- 120-second independent validity period ensures the elevated process can still correctly verify identity
-
-**What this means for you:** When using admin rights to export security logs, the program's identity verification is not interrupted — continuous protection throughout.
-
-#### 🚫 Anti-Spoofing Launch Parameter Protection
-
-- Fixed a vulnerability where attackers could bypass all security verification by forging launch parameters
-- If forged launch parameters are detected, the program forces a security state reset
-
-**What this means for you:** Even if advanced attackers try to deceive the program through command-line arguments, it will be immediately detected and refused.
-
-### 8.2 Performance Optimizations
-
-- **Integrity check CPU usage reduced by up to 95%**: New file modification time pre-check — only computes full hashes when files actually change
-- **Near-zero CPU overhead during stable runtime**: Skips expensive SHA256 calculations for unmodified files
-- **More stable alert window**: Switched to C# native controls, resolving countdown instability issues
-
-### 8.3 Stability Fixes
-
-- Fixed a P0-level issue where security verification could break during admin elevation
-- Fixed errors caused by duplicate component loading in certain scenarios
-- Optimized security cleanup logic for exception scenarios
-- Improved countdown display stability in alert windows
+**Call Timing**: First step in `VerifyOrDie()`, serving as the initial line of defense.
 
 ***
 
-## 9. FAQ & Common Scenarios
+## 6. Build System
 
-### 9.1 How to Diagnose Frequent BSODs
+### 6.1 build.ps1 Build Pipeline
 
-**Scenario**: Computer blue-screens 1-2 times daily lately.
+```
+build.ps1
+  │
+  ├── 1. Generate Random Nonce + Token
+  │     ├── Compute SHA256 for all core scripts
+  │     ├── PBKDF2(Nonce, AesSalt) → AES Key
+  │     ├── AES-256-CBC encrypt hash manifest
+  │     └── RSA-SHA256 sign → Token file
+  │
+  ├── 2. Compile C# EXE Loader
+  │     ├── Add-Type + CSharpCodeProvider
+  │     ├── Embed: RSA public key / Master Password / hash table
+  │     └── Compile to AURORA-Analyzer.exe
+  │
+  ├── 3. Generate Watchdog HMAC Key
+  │     └── PBKDF2(MasterPassword, WdHmacSalt, 10000) → 32 bytes
+  │
+  ├── 4. Launch PS1 Subprocess
+  │     ├── ProcessStartInfo Configuration
+  │     │   ├── FileName: "powershell.exe"
+  │     │   ├── Arguments: "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden"
+  │     │   ├── UseShellExecute: false
+  │     │   └── CreateNoWindow: true
+  │     ├── Environment Variable Injection:
+  │     │   ├── AURORA_WD_PIPE (pipe name)
+  │     │   ├── AURORA_WD_SESSION (session ID)
+  │     │   └── AURORA_LAUNCHED_BY_EXE = 1
+  │     └── Process.Start()
+  │
+  ├── 5. Watchdog Pipe Server Loop
+  │     ├── Wait for PS1 connection (3 retries, 8000ms timeout)
+  │     ├── Send HMAC key (0x10 command)
+  │     ├── Periodic challenge loop (every 10000ms, send 0x03)
+  │     └── HMAC verification failure → Kill(PS1)
+  │
+  └── 6. Process Exit Handling
+        └── All Kill() calls protected with try-catch
+```
 
-**Steps using AURORA Analyzer:**
+### 6.2 Pipe Communication Protocol
 
-1. Open the program, click **"Smart Diagnosis"**
-2. Click **"Start Diagnosis"**
-3. The program automatically: scans BSOD records in system logs (EventID 41, 1001), analyzes Minidump dump files, checks driver load/unload events around BSODs
-4. Check the diagnosis report, focusing on: **BSOD code**, **suspected offending driver**, **BSOD frequency trend**
-5. Update or roll back the offending driver based on recommendations
+**Handshake Packet Format**:
 
-**Common BSOD Code Quick Reference:**
+```
+Byte 0:     0x10 (command code)
+Byte 1-32:  HMAC key (32 bytes)
+Byte 33-48: Guid Session ID (16 bytes)
+─────────────────────────────────
+Total: 49 bytes
+```
 
-| BSOD Code                       | Possible Cause                | Recommendation             |
-| ------------------------------- | ----------------------------- | -------------------------- |
-| `DRIVER_IRQL_NOT_LESS_OR_EQUAL` | Driver conflict               | Update/rollback driver     |
-| `MEMORY_MANAGEMENT`             | Memory fault                  | Run memory diagnostics     |
-| `KERNEL_SECURITY_CHECK_FAILURE` | Driver/system file corruption | Run sfc /scannow           |
-| `CRITICAL_PROCESS_DIED`         | Critical process crash        | Check disk/system files    |
-| `DPC_WATCHDOG_VIOLATION`        | Storage driver issue          | Update SSD firmware/driver |
+**Challenge Packet Format (Send)**:
 
-### 9.2 How to Diagnose a Slow System
+```
+Byte 0:     0x03 (challenge command)
+Byte 1-16:  Random Nonce (16 bytes)
+Byte 17-24: Timestamp (8 bytes, Unix milliseconds)
+─────────────────────────────────
+Total: 25 bytes
+```
 
-1. Click **"Log Export"** → Select "System" → Choose last month's date range → Filter `Warning` + `Error` only
-2. Export and open CSV, focusing on: EventID 10010 (COM timeout), 153 (disk retries), 129 (storage driver resets), 7011 (service timeout)
-3. Then use **"Smart Diagnosis"** for automated analysis
+**Response Packet Format**:
 
-### 9.3 How to Check for Intrusions
-
-1. Click **"Smart Diagnosis"** → View **Category E (Security Event Audit)** report
-2. Focus on: EventID 4625 (excessive login failures = brute force), 4624 LogonType=10 (RDP connections), 4720/4726 (account changes), 1102 (audit log cleared — ⚠️ highly suspicious)
-3. If anomalies found: disconnect from network, change all passwords, run full virus scan, export diagnostic report for security professionals
-
-### 9.4 Exporting Logs for Technical Support
-
-1. Click **"Log Export"** → Select "Application" → Enter the problem time range → Advanced filter: ProviderName = vendor name, Level = Error + Warning → Export
-2. Package all files from the `UserLogs` folder and send to technical support
-
-***
-
-## 10. Performance Tiers
-
-AURORA Analyzer automatically evaluates your computer's performance at startup and adjusts animations and resource usage. No manual configuration needed.
-
-| Tier            | Suitable For               | Animation                   | Notes                         |
-| --------------- | -------------------------- | --------------------------- | ----------------------------- |
-| **Extreme**     | 8 cores+ / 16GB+ / 3.5GHz+ | Full starfield, 60FPS       | High-end gaming / workstation |
-| **Performance** | 4-8 cores / 8-16GB         | Smooth animation, 45FPS     | Mid-to-high-end PC            |
-| **Balanced**    | 2-4 cores / 4-8GB          | Basic animation, 30FPS      | Standard office PC            |
-| **Eco**         | Low-spec / VM              | Simplified animation, 20FPS | Older devices / VMs           |
-
-> 💡 Performance tier **does not affect** core log export and diagnosis functionality — only UI animation smoothness.
-
-***
-
-## 11. Language Switching
-
-AURORA Analyzer supports bilingual Chinese and English interfaces.
-
-**How to switch:**
-
-1. Click the **"Settings"** tab
-2. Select **"中文"** or **"English"** under language settings
-3. UI switches instantly, no restart needed
-
-> 💡 Language switching affects all interface text, export file names, diagnostic reports, etc.
-
-***
-
-## 12. Security & Privacy
-
-### How We Protect Your Data
-
-| Protection             | Description                                                             |
-| ---------------------- | ----------------------------------------------------------------------- |
-| **Local Only**         | All operations are performed locally, no internet connection            |
-| **No Data Upload**     | Your log data is never sent to any server                               |
-| **No Data Collection** | No personal or system information is collected                          |
-| **File Encryption**    | Core configuration files are stored encrypted                           |
-| **Tamper Protection**  | Five-layer defense-in-depth: tamper-proof, debug-proof, injection-proof |
-| **Watchdog Guardian**  | Independent EXE process monitoring, real-time anomaly detection         |
-
-### What You Should Know
-
-- Exported log files (CSV/JSON/XML) are stored in **plain text** — keep them secure
-- If you exported security logs, they may contain your computer name and username
-- Before sharing diagnostic reports, verify they don't contain sensitive information
-- It is recommended to delete files in the `UserLogs` folder when not in use
+```
+Byte 0-31:  HMAC-SHA256(Nonce) (32 bytes)
+Byte 32-39: System uptime (8 bytes, milliseconds)
+Byte 40-71: PS1 self SHA256 (32 bytes)
+─────────────────────────────────
+Total: 72 bytes
+```
 
 ***
 
-## 13. Support & Feedback
+## 7. Attack Surface Analysis
 
-### Version Information
+### 7.1 Known Attack Vectors
 
-| Item            | Content                         |
-| --------------- | ------------------------------- |
-| Current Version | **V1.1.24.1**                   |
-| Build Date      | 2026-05-27                      |
-| Author          | AURORA VelociRaptor-GR Dev PRJ. |
+| Attack Vector                                  | Difficulty | Existing Mitigations                             |
+| ---------------------------------------------- | ---------- | ------------------------------------------------ |
+| Replace core scripts                           | Medium     | SHA256 integrity verification                    |
+| Attach debugger                                | Medium     | 5 API detections + hardware breakpoint scan      |
+| DLL injection                                  | Medium     | Module path analysis                             |
+| Tamper with token file                         | High       | RSA-SHA256 signature (requires private key)      |
+| Replay old token                               | High       | 60-second TTL                                    |
+| Hook ntdll to bypass NtQueryInformationProcess | High       | Hardware breakpoint detection + direct PEB reads |
+| Modify AuroraGuard in memory                   | High       | Watchdog bidirectional HMAC heartbeat            |
+| Process replacement                            | High       | Watchdog monitors PS1 liveness via pipe          |
 
-### Having Issues?
+### 7.2 Mitigation Measures
 
-If you encounter problems:
-
-1. **Check first**: Are all files properly extracted? Is the directory structure intact?
-2. **Key files**: Ensure `AURORA.Launcher-双击启动.exe` and `GAURORA.CHK.ENC` are in the same directory
-3. **Permission issues**: Try running as administrator
-4. **Antivirus**: Add the program directory to your antivirus whitelist
-
-### License Statement
-
-This software is for **personal learning and research use only**. Commercial use is prohibited.
+1. **Defense in Depth**: Even if one layer is bypassed, subsequent layers still detect
+2. **Cryptographic Binding**: RSA token binds the hash manifest to the build-time Nonce
+3. **Time Windowing**: 60-second TTL prevents token replay
+4. **Bidirectional Verification**: Watchdog verifies PS1; PS1 proves integrity via HMAC response
+5. **Exception Tolerance**: All detection functions return safe defaults (false/no threat) on error
 
 ***
 
-> **Document Version**: V1.1.24.1
-> **Date**: 2026-05-27
-> **Author**: AURORA VelociRaptor-GR Dev PRJ.
-> **License**: For personal learning and research use only
+## 8. Contributing
 
+**Build Environment**:
+
+```powershell
+# Build command
+.\build.ps1
+
+# Skip signing (testing only)
+.\build.ps1 -SkipSigning
+```
+
+**Code Conventions**:
+
+- C# portions: .NET Framework 4.x, C# 5.0 syntax (compatible with PS1 Add-Type)
+- PowerShell portions: Windows PowerShell 5.1 (not cross-platform PowerShell Core)
+- Embedded C#: Use `@"..."@` here-strings; reference assemblies via `-ReferencedAssemblies`
+- Security code: All Native API calls must have try-catch and finally resource release
+
+**Debugging Methods**:
+
+- Console window: Set `CreateNoWindow = false` to view output
+- Diagnostic logs: `%TEMP%\aurora_guard_diag.log`
+- Isolated security guard test: Call `[AuroraGuard]::GetDetectionReason()` directly in PS1
+
+**Updating Integrity Hashes**:
+
+After modifying core scripts, recompute SHA256 and update the `_expected` dictionary. Use build.ps1 to automate this process.
+
+***
+
+*AURORA VelociRaptor-GR Dev PRJ. — 2026.06.01*
