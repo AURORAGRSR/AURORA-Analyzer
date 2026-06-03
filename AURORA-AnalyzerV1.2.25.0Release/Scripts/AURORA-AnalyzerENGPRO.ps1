@@ -6235,6 +6235,7 @@ try {
 
     # Silent mode check
     if (-not $Silent) {
+        Write-Host "/// AURORA Analyzer Release Version ///" -ForegroundColor DarkCyan
         Write-Host "/// AURORA 2026 VelociRaptor-GR All rights reserved ///" -ForegroundColor DarkCyan
         Write-Host "/// Windows System Event Log Export & Intelligent Analysis Tool ///" -ForegroundColor DarkCyan
         Write-Host "/// Please wait... Detecting current system date... ///" -ForegroundColor Cyan
@@ -7125,6 +7126,12 @@ try {
                 # User declined
                 Write-Host "`n⏭️ Smart analysis skipped." -ForegroundColor Yellow
                 Write-Host "   You can manually run AURORA-SmartEngine.ps1 later if needed." -ForegroundColor Gray
+                
+                # 🔧 Core Fix: Clear potentially残留 RequiresUserInput flags to prevent affecting subsequent completion prompts
+                $global:syncHash['RequiresUserInput'] = $false
+                $global:syncHash['InputType'] = $null
+                $global:syncHash['InputData'] = $null
+                $global:syncHash['UserInput'] = $null
             }
         }
         catch {

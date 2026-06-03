@@ -6724,6 +6724,7 @@ try {
 
     # 静默模式检查
     if (-not $Silent) {
+        Write-Host "/// AURORA Analyzer Release Version ///" -ForegroundColor DarkCyan
         Write-Host "/// AURORA 2026 VelociRaptor-GR 版权所有 ///" -ForegroundColor DarkCyan
         Write-Host "/// Windows 系统事件日志导出与智能分析工具 ///" -ForegroundColor DarkCyan
         Write-Host "///请稍后... 正在检测当前系统日期...///" -ForegroundColor Cyan
@@ -7747,6 +7748,12 @@ try {
                 # 用户取消
                 Write-Host "`n⏭️ 已跳过智能分析。" -ForegroundColor Yellow
                 Write-Host "   如需分析，可手动运行 AURORA-SmartEngine.ps1" -ForegroundColor Gray
+                
+                # 🔧 核心修复：清除可能残留的 RequiresUserInput 标志，防止影响后续完成提示
+                $global:syncHash['RequiresUserInput'] = $false
+                $global:syncHash['InputType'] = $null
+                $global:syncHash['InputData'] = $null
+                $global:syncHash['UserInput'] = $null
             }
         }
         catch {

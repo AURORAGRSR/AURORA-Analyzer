@@ -15,10 +15,10 @@ Param(
 # 🔐 RSA 公钥验证模块（构建时注入）
 # ==========================================
 $global:AURORA_PublicKeyXml = @'
-<RSAKeyValue><Modulus>tgVNVb4T8l8Vwujlvoh8fVJRWs2h0TDvHdKExPg/+9kuck8DD/7/4n8OcQi8sFbwkNIdmvIKfDLElpg00Nu58P+AAcUJC7VPaJhJhC+MuMkeacaq1zt3/+q8tnTJdh9lp5LAPVuES8r/2m5S5Q1/UAnL6Gh0ONvUICy3/om8kcHT8HvXzliMfGInAjlwlWDcBDNgyeUrjUjP2u513ASUre2TmVLBMULnjkePSV8ieV9y7lkXrTj1Ktj2CYjFucVhGXjq80Xr1DtIN7M45sC3N/UeY3zzos9Os0wNfhiy7wn47asy+mHZRAieB9Y7pD8B39uPTZAUah2gl+idjXfzSQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>
+<RSAKeyValue><Modulus>zw7/eEh8kfQPYYHwBODzQEQ608cACQCt38HXCXgnWMwDeFW+mzFC3FRs7rkL3e8p0DhElWhqWtNNO4E+uyfa77/Iu4hgGkP87mB0j9MBRfcqMQTY6Y71ZXNV1RnlpTLu69IytCqSXB4hEivWOXwoR01Sy7e6xned0ddhQ46iwv6W0BUa6mGFtpxKi+IlwqosxuY/CyWQE3N8Tx9Kgkw88zsdNelajA+12iIHri4aHs0MYWMq9iSwncFAEJNqFnytSizxhs9YinhJtWhtX+xFb6vvbLMFQUVKkte0noazveSeqKUKJO5k6VCgdFZh+QfCUJQPMj7sLyjgu5p7LTlYKQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>
 '@
 
-$global:AURORA_SessionSalt = [Convert]::FromBase64String('lco2bnLclh/BeGYLpYyvndS13AU9wg4r5ZRVAqYNMvo=')
+$global:AURORA_SessionSalt = [Convert]::FromBase64String('sH+odd2urqwzvQEsdr4wtqESQ3TFKwj2PcBAkR10xOg=')
 
 $global:AURORA_AesSalt = [System.Text.Encoding]::UTF8.GetBytes('AU_SESSION_2026_SALT_V1')
 
@@ -499,7 +499,7 @@ public class AuroraGuard
     {
         { "Scripts\\AURORA-SmartEngine.ps1", "e9469957bb76a31b8ecdcbadc9af6bb1c4333bedc4190b3524b412d0bf8a0c8e" },
         { "Scripts\\AURORA-CoreEngine.ps1", "5498a40541a6f20a518e59f294bef279d9a60f6ab5355cc6f7dfbd6401babf07" },
-        { "Scripts\\AURORA-AnalyzerCHSPRO.ps1", "d84924005f74f907f8639a98a27fafdf10561758a3e4c91ccc360141d49b30b4" },
+        { "Scripts\\AURORA-AnalyzerCHSPRO.ps1", "ce79669e0153391e9c7fcb062aa1c7fe5e0d4d4fab6e74abe9da2438763d3947" },
         { "Scripts\\AURORA-ProgressManager.ps1", "cc43e4368cf1bacafcdbd95b86216b12170685a18808de0278a21f6696a803d4" },
         { "Scripts\\AURORA-GUI-Functions.ps1", "d1bd5a9856d5e209e5acbca1abbdef203bc3a4a93699565d0d27794805483437" },
         { "Scripts\\AURORA-RepairTools.ps1", "aee0f77e9bd4555e68ffd6b913291a96c2967439fe1a852a7d92103c9debe116" },
@@ -3882,20 +3882,22 @@ public class AuroraResultModal : Control
             _closeHoverProg = Math.Max(0f, Math.Min(1f, _closeHoverProg + (_isCloseHovered ? btnSpeed : -btnSpeed)));
             _closePressProg = Math.Max(0f, Math.Min(1f, _closePressProg + (_isClosePressed ? btnSpeed : -btnSpeed)));
             
-            // UWP标题切换动画
-            float textSpeed = 0.08f;
-            if (_titleTransitionState == TextTransitionState.FadingOut) {
-                _titleTransitionProgress = Math.Min(1.0f, _titleTransitionProgress + textSpeed);
-                if (_titleTransitionProgress >= 1.0f) {
-                    _titleTransitionState = TextTransitionState.FadingIn;
-                    _titleCurrent = _titleNext;
-                    _titleTransitionProgress = 0f;
-                }
-            } else if (_titleTransitionState == TextTransitionState.FadingIn) {
-                _titleTransitionProgress = Math.Min(1.0f, _titleTransitionProgress + textSpeed);
-                if (_titleTransitionProgress >= 1.0f) {
-                    _titleTransitionState = TextTransitionState.Idle;
-                    _titleTransitionProgress = 0f;
+            // UWP标题切换动画 - 等待入场动效完成后再播放
+            if (s.FadeState == ModalFadeState.Idle || s.FadeState == ModalFadeState.FadingOut) {
+                float textSpeed = 0.08f;
+                if (_titleTransitionState == TextTransitionState.FadingOut) {
+                    _titleTransitionProgress = Math.Min(1.0f, _titleTransitionProgress + textSpeed);
+                    if (_titleTransitionProgress >= 1.0f) {
+                        _titleTransitionState = TextTransitionState.FadingIn;
+                        _titleCurrent = _titleNext;
+                        _titleTransitionProgress = 0f;
+                    }
+                } else if (_titleTransitionState == TextTransitionState.FadingIn) {
+                    _titleTransitionProgress = Math.Min(1.0f, _titleTransitionProgress + textSpeed);
+                    if (_titleTransitionProgress >= 1.0f) {
+                        _titleTransitionState = TextTransitionState.Idle;
+                        _titleTransitionProgress = 0f;
+                    }
                 }
             }
 
@@ -4382,32 +4384,34 @@ public class AuroraDecisionModal : Control
         {
             if (s.FadeState == ModalFadeState.Hidden) { this.Visible = false; return; }
 
-            // 1. 标题 UWP 文字滑动逻辑
-            float textSpeed = 0.08f;
-            if (_titleTransitionState == TextTransitionState.FadingOut) {
-                _titleTransitionProgress = Math.Min(1.0f, _titleTransitionProgress + textSpeed);
-                if (_titleTransitionProgress >= 1.0f) {
-                    _titleTransitionState = TextTransitionState.FadingIn;
-                    _titleCurrent = _titleNext;
-                    _titleTransitionProgress = 0f;
+            // 1. 标题 UWP 文字滑动逻辑 - 等待入场动效完成后再播放
+            if (s.FadeState == ModalFadeState.Idle || s.FadeState == ModalFadeState.FadingOut) {
+                float textSpeed = 0.08f;
+                if (_titleTransitionState == TextTransitionState.FadingOut) {
+                    _titleTransitionProgress = Math.Min(1.0f, _titleTransitionProgress + textSpeed);
+                    if (_titleTransitionProgress >= 1.0f) {
+                        _titleTransitionState = TextTransitionState.FadingIn;
+                        _titleCurrent = _titleNext;
+                        _titleTransitionProgress = 0f;
+                    }
+                } else if (_titleTransitionState == TextTransitionState.FadingIn) {
+                    _titleTransitionProgress = Math.Min(1.0f, _titleTransitionProgress + textSpeed);
+                    if (_titleTransitionProgress >= 1.0f) {
+                        _titleTransitionState = TextTransitionState.Idle;
+                        _titleTransitionProgress = 0f;
+                    }
                 }
-            } else if (_titleTransitionState == TextTransitionState.FadingIn) {
-                _titleTransitionProgress = Math.Min(1.0f, _titleTransitionProgress + textSpeed);
-                if (_titleTransitionProgress >= 1.0f) {
-                    _titleTransitionState = TextTransitionState.Idle;
-                    _titleTransitionProgress = 0f;
-                }
-            }
-            
-            // 2. 内容文字 UWP 滑动逻辑
-            if (_transitionState == TextTransitionState.FadingOut) {
-                _transitionProgress = Math.Min(1.0f, _transitionProgress + textSpeed);
-                if (_transitionProgress >= 1.0f) { _transitionState = TextTransitionState.FadingIn; _transitionProgress = 0f; }
-            } else if (_transitionState == TextTransitionState.FadingIn) {
-                _transitionProgress = Math.Min(1.0f, _transitionProgress + textSpeed);
-                if (_transitionProgress >= 1.0f) {
-                    _transitionState = TextTransitionState.Idle;
-                    _actionName = _nextActionName; _riskLevel = _nextRiskLevel; _transitionProgress = 0f;
+                
+                // 2. 内容文字 UWP 滑动逻辑
+                if (_transitionState == TextTransitionState.FadingOut) {
+                    _transitionProgress = Math.Min(1.0f, _transitionProgress + textSpeed);
+                    if (_transitionProgress >= 1.0f) { _transitionState = TextTransitionState.FadingIn; _transitionProgress = 0f; }
+                } else if (_transitionState == TextTransitionState.FadingIn) {
+                    _transitionProgress = Math.Min(1.0f, _transitionProgress + textSpeed);
+                    if (_transitionProgress >= 1.0f) {
+                        _transitionState = TextTransitionState.Idle;
+                        _actionName = _nextActionName; _riskLevel = _nextRiskLevel; _transitionProgress = 0f;
+                    }
                 }
             }
 
@@ -4873,6 +4877,8 @@ public class AuroraExportedLogsModal : Control
     private string _exportPath = "";
     private string[] _fileNames = new string[0];
     private string _language = "CHS";
+    private bool _isCompletionPrompt = false;
+    private string _completionPromptPath = "";
     
     // ====== 全局透明度状态 ======
     
@@ -5027,6 +5033,21 @@ public class AuroraExportedLogsModal : Control
         _fileNames = fileNames;
     }
     
+    // ====== 完成提示模式 ======
+    public bool IsCompletionPrompt { get { return _isCompletionPrompt; } }
+    
+    public void ShowCompletionPrompt(string exportPath, string lang) {
+        _language = lang;
+        _completionPromptPath = exportPath;
+        _isCompletionPrompt = true;
+        FadeInModal();
+    }
+    
+    public void ResetCompletionMode() {
+        _isCompletionPrompt = false;
+        _completionPromptPath = "";
+    }
+    
     private float EaseOutCubic(float t) { return 1f - (float)Math.Pow(1f - t, 3); }
 
     private Color ColorLerp(Color c1, Color c2, float amount) {
@@ -5038,10 +5059,17 @@ public class AuroraExportedLogsModal : Control
     }
     
     private string GetTitleText() {
+        if (_isCompletionPrompt) {
+            return _language == "CHS" ? "✅ 分析完成" : "✅ Analysis Complete";
+        }
         return _language == "CHS" ? "📂 发现已导出的日志文件" : "📂 Exported Log Files Detected";
     }
     
     private string GetFileCountText() {
+        if (_isCompletionPrompt) {
+            return _language == "CHS" ? "所有分析任务已完成，结果已保存至 UserLogs 文件夹" : 
+                                       "All analysis tasks completed. Results saved to UserLogs folder.";
+        }
         if (_language == "CHS") {
             return string.Format("在 UserLogs 文件夹中发现 {0} 个已导出的日志文件（{1} 分钟前）", _fileCount, _fileAge);
         } else {
@@ -5058,16 +5086,26 @@ public class AuroraExportedLogsModal : Control
     }
     
     private string GetQuestionText() {
+        if (_isCompletionPrompt) {
+            return _language == "CHS" ? "是否打开输出文件夹查看结果？" : 
+                                       "Open output folder to view results?";
+        }
         return _language == "CHS" ? 
             "是否使用这些已导出的文件进行分析？" : 
             "Use these exported files for analysis?";
     }
     
     private string GetUseButtonText() {
+        if (_isCompletionPrompt) {
+            return _language == "CHS" ? "是，打开文件夹 [ENTER]" : "Yes, Open Folder [ENTER]";
+        }
         return _language == "CHS" ? "是，直接分析 [ENTER]" : "Yes, Analyze Now [ENTER]";
     }
     
     private string GetSkipButtonText() {
+        if (_isCompletionPrompt) {
+            return _language == "CHS" ? "否，关闭 [ESC]" : "No, Close [ESC]";
+        }
         return _language == "CHS" ? "否，重新提取实时日志 [ESC]" : "No, Extract Live Logs [ESC]";
     }
 
@@ -5094,7 +5132,8 @@ public class AuroraExportedLogsModal : Control
 
         int pW = 560;
         float unfoldEased = 1f - (float)Math.Pow(1f - _animState.GlobalAlpha, 3);
-        int currentHeight = Math.Max(4, (int)(280 * unfoldEased));
+        int panelBaseHeight = _isCompletionPrompt ? 220 : 280;
+        int currentHeight = Math.Max(4, (int)(panelBaseHeight * unfoldEased));
         int pX = (this.Width - pW) / 2;
         int pY = (this.Height - currentHeight) / 2;
         Rectangle pRect = new Rectangle(pX, pY, pW, currentHeight);
@@ -5127,26 +5166,28 @@ public class AuroraExportedLogsModal : Control
         int lineY = pY + 85;
         using (var contentFont = new Font("Microsoft YaHei UI", 10))
         using (var boldFont = new Font("Microsoft YaHei UI", 10, FontStyle.Bold)) {
-            // 文件数量
+            // 文件数量 / 完成提示
             string fileCountText = GetFileCountText();
             using (var brush = new SolidBrush(Color.FromArgb((int)(255 * _animState.GlobalAlpha), 200, 200, 255))) {
                 DrawTextWithEmoji(g, fileCountText, textX, lineY, brush, contentFont);
             }
             lineY += 25;
             
-            // 路径（截断显示，避免超出对话框）
-            string pathText = GetPathLabel() + _exportPath;
-            float maxWidth = pW - textX - 30; // 留出右侧边距
-            using (var brush = new SolidBrush(Color.FromArgb((int)(255 * _animState.GlobalAlpha), 180, 180, 180))) {
-                SizeF pathSize = g.MeasureString(pathText, contentFont);
-                if (pathSize.Width > maxWidth) {
-                    // 路径太长，只显示最后两级目录
-                    string shortPath = "...\\" + System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(_exportPath)) + "\\" + System.IO.Path.GetFileName(_exportPath);
-                    pathText = GetPathLabel() + shortPath;
+            if (!_isCompletionPrompt) {
+                // 路径（截断显示，避免超出对话框）—— 仅在非完成模式下显示
+                string pathText = GetPathLabel() + _exportPath;
+                float maxWidth = pW - textX - 30; // 留出右侧边距
+                using (var brush = new SolidBrush(Color.FromArgb((int)(255 * _animState.GlobalAlpha), 180, 180, 180))) {
+                    SizeF pathSize = g.MeasureString(pathText, contentFont);
+                    if (pathSize.Width > maxWidth) {
+                        // 路径太长，只显示最后两级目录
+                        string shortPath = "...\\" + System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(_exportPath)) + "\\" + System.IO.Path.GetFileName(_exportPath);
+                        pathText = GetPathLabel() + shortPath;
+                    }
+                    g.DrawString(pathText, contentFont, brush, new PointF(textX, lineY));
                 }
-                g.DrawString(pathText, contentFont, brush, new PointF(textX, lineY));
+                lineY += 22;
             }
-            lineY += 22;
             
             // 问题
             string questionText = GetQuestionText();
@@ -7124,6 +7165,20 @@ public class StarfieldPanel : Control
     private void OnMouseLeave(object sender, EventArgs e)
     {
         _mousePos = new Point(-1000, -1000);
+        
+        // 主动触发星座连线平滑淡出，避免鼠标离开窗口时连线直接消失
+        foreach (var c in _constellations)
+        {
+            foreach (var conn in c.Connections)
+            {
+                if (conn.Opacity > 0.01f)
+                {
+                    conn.FadingOut = true;  // 标记为淡出状态，触发每帧平滑衰减逻辑
+                    // 保持当前 ExistProgress，让淡出过程从当前透明度开始平滑过渡
+                    conn.Exists = false;
+                }
+            }
+        }
     }
 
     private void OnMouseClick(object sender, MouseEventArgs e)
@@ -7167,7 +7222,7 @@ public class StarfieldPanel : Control
             _constellations.Clear();
             // 筛选最亮的星星参与星座连线
             var brightStars = new List<Star>();
-            for (int i = 0; i < _stars.Count && brightStars.Count < 8; i++)  // 最多 8 颗
+            for (int i = 0; i < _stars.Count && brightStars.Count < 10; i++)  // 最多 10 颗
             {
                 if (_stars[i].BaseAlpha > 200 || _stars[i].GlowFactor > 0.6f)
                     brightStars.Add(_stars[i]);
@@ -7188,8 +7243,8 @@ public class StarfieldPanel : Control
                     float dx = brightStars[i].X - brightStars[j].X;
                     float dy = brightStars[i].Y - brightStars[j].Y;
                     float dist = (float)Math.Sqrt(dx * dx + dy * dy);
-                    // 只连接合理距离内的邻居（20~100px）
-                    if (dist >= 20f && dist <= 100f)
+                    // 只连接合理距离内的邻居（80~400px，星座连线更分散舒展）
+                    if (dist >= 80f && dist <= 400f)
                     {
                         neighbors.Add(new Tuple<float, Star>(dist, brightStars[j]));
                     }
@@ -7924,39 +7979,207 @@ public class StarfieldPanel : Control
         {
             X = x;
             Y = y;
-            // 从边缘向中心移动的方向
-            float centerX = 210f; // 假设中心位置
+            float centerX = 210f;
             float centerY = 95f;
             float angle = (float)Math.Atan2(centerY - y, centerX - x);
             float speed = 0.03f + (float)_rand.NextDouble() * 0.03f;
             VX = (float)Math.Cos(angle) * speed;
             VY = (float)Math.Sin(angle) * speed;
-            Alpha = _rand.Next(60, 120); // 降低透明度
-            Size = 0.3f + (float)_rand.NextDouble() * 1.0f; // 减小尺寸
+            Alpha = _rand.Next(60, 120);
+            Size = 0.3f + (float)_rand.NextDouble() * 1.0f;
         }
 
         public void Update(Rectangle bounds)
         {
             X += VX;
             Y += VY;
-            // 边界处理：当粒子到达中心区域后重新从边缘生成
             float centerX = bounds.Width / 2f;
             float centerY = bounds.Height / 2f;
             float distanceToCenter = (float)Math.Sqrt(Math.Pow(X - centerX, 2) + Math.Pow(Y - centerY, 2));
-            if (distanceToCenter < 50) // 到达中心区域
+            if (distanceToCenter < 50)
             {
-                // 从边缘随机位置重新生成
                 float angle = (float)(_rand.NextDouble() * Math.PI * 2);
                 float distance = (float)(_rand.NextDouble() * 50 + Math.Max(bounds.Width, bounds.Height) / 2);
                 X = centerX + (float)Math.Cos(angle) * distance;
                 Y = centerY + (float)Math.Sin(angle) * distance;
-                // 重新计算移动方向
                 angle = (float)Math.Atan2(centerY - Y, centerX - X);
                 float speed = 0.03f + (float)_rand.NextDouble() * 0.03f;
                 VX = (float)Math.Cos(angle) * speed;
                 VY = (float)Math.Sin(angle) * speed;
             }
         }
+    }
+}
+
+// ==========================================
+// =============== UWPText（自绘UWP标题控件） ===============
+// 特性：
+// - 自绘文本，整个控件区域都可响应鼠标（支持无边框拖拽穿透）
+// - 兼容 Start-UwpEnterAnimation / Start-UwpExitAnimation
+// - 支持文本切换时的UWP滑动淡入淡出动效
+// - 支持多行文本、左右对齐、前景色自定义
+
+public class UWPText : Control {
+    private string _text = "";
+    private string _nextText = "";
+    private string _pendingText = null;
+    private bool _hasPendingText = false;
+    private float _transitionProgress = 0f;
+    private bool _isTransitioning = false;
+    private int _transitionDurationMs = 300;
+    private DateTime _transitionStartTime;
+    private StringFormat _stringFormat;
+    private Font _font;
+    private Color _foreColor = Color.White;
+    private float _enterOffsetX = 0f;
+    private float _enterOffsetY = 0f;
+    private float _enterScale = 1f;
+    private int _enterAlpha = 255;
+    private bool _isInEnterAnimation = false;
+
+    public UWPText() {
+        this.DoubleBuffered = true;
+        this.SetStyle(ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint |
+                      ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
+        this.BackColor = Color.Transparent;
+        _stringFormat = new StringFormat();
+        _stringFormat.LineAlignment = StringAlignment.Center;
+        _stringFormat.Alignment = StringAlignment.Near;
+        _stringFormat.Trimming = StringTrimming.EllipsisCharacter;
+    }
+
+    public new string Text {
+        get { return _text; }
+        set {
+            if (_text != value) {
+                if (_isInEnterAnimation) {
+                    _pendingText = value;
+                    _hasPendingText = true;
+                } else {
+                    StartTextTransition(value);
+                }
+            }
+        }
+    }
+
+    public string TextOnly {
+        get { return _text; }
+        set { _text = value; }
+    }
+
+    public new Font Font {
+        get { return _font ?? base.Font; }
+        set { _font = value; base.Font = value; }
+    }
+
+    public new Color ForeColor {
+        get { return _foreColor; }
+        set { _foreColor = value; }
+    }
+
+    public StringAlignment TextAlign {
+        get { return _stringFormat.Alignment; }
+        set { _stringFormat.Alignment = value; }
+    }
+
+    public void StartTextTransition(string newText) {
+        _nextText = newText;
+        _transitionProgress = 0f;
+        _isTransitioning = true;
+        _transitionStartTime = DateTime.Now;
+        this.Invalidate();
+    }
+
+    public void SetEnterAnimationState(float offsetX, float offsetY, float scale, int alpha) {
+        _enterOffsetX = offsetX;
+        _enterOffsetY = offsetY;
+        _enterScale = scale;
+        _enterAlpha = alpha;
+        _isInEnterAnimation = true;
+        this.Invalidate();
+    }
+
+    public void ResetEnterAnimationState() {
+        _enterOffsetX = 0f;
+        _enterOffsetY = 0f;
+        _enterScale = 1f;
+        _enterAlpha = 255;
+        _isInEnterAnimation = false;
+        this.Invalidate();
+
+        if (_hasPendingText) {
+            StartTextTransition(_pendingText);
+            _pendingText = null;
+            _hasPendingText = false;
+        }
+    }
+
+    protected override void OnPaint(PaintEventArgs e) {
+        Graphics g = e.Graphics;
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+        g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+
+        if (_isTransitioning) {
+            DrawTransitionText(g);
+        } else {
+            DrawStaticText(g);
+        }
+    }
+
+    private void DrawStaticText(Graphics g) {
+        if (string.IsNullOrEmpty(_text) || _enterAlpha <= 0) return;
+
+        g.TranslateTransform(_enterOffsetX, _enterOffsetY);
+        g.ScaleTransform(_enterScale, _enterScale);
+
+        int alpha = Math.Min(255, _enterAlpha);
+        using (var brush = new SolidBrush(Color.FromArgb(alpha, _foreColor))) {
+            RectangleF rect = new RectangleF(0, 0, this.Width / _enterScale, this.Height / _enterScale);
+            g.DrawString(_text, _font ?? this.Font, brush, rect, _stringFormat);
+        }
+    }
+
+    private void DrawTransitionText(Graphics g) {
+        float elapsed = (float)(DateTime.Now - _transitionStartTime).TotalMilliseconds;
+        _transitionProgress = Math.Min(1f, elapsed / _transitionDurationMs);
+
+        if (_transitionProgress >= 1f) {
+            _text = _nextText;
+            _nextText = "";
+            _isTransitioning = false;
+            DrawStaticText(g);
+            return;
+        }
+
+        float easedIn = 1f - (float)Math.Pow(1f - _transitionProgress, 3);
+        float easedOut = (float)Math.Pow(1f - _transitionProgress, 3);
+
+        // 绘制旧文本（淡出 + 向上滑动）
+        if (!string.IsNullOrEmpty(_text) && easedOut > 0.01f) {
+            int oldAlpha = (int)(255 * _enterAlpha / 255f * easedOut);
+            float slideY = -20f * (1f - easedOut);
+            using (var brush = new SolidBrush(Color.FromArgb(oldAlpha, _foreColor))) {
+                RectangleF rect = new RectangleF(0, slideY, this.Width, this.Height);
+                g.DrawString(_text, _font ?? this.Font, brush, rect, _stringFormat);
+            }
+        }
+
+        // 绘制新文本（淡入 + 向下滑动）
+        if (!string.IsNullOrEmpty(_nextText) && easedIn > 0.01f) {
+            int newAlpha = (int)(255 * _enterAlpha / 255f * easedIn);
+            float slideY = 20f * (1f - easedIn);
+            using (var brush = new SolidBrush(Color.FromArgb(newAlpha, _foreColor))) {
+                RectangleF rect = new RectangleF(0, slideY, this.Width, this.Height);
+                g.DrawString(_nextText, _font ?? this.Font, brush, rect, _stringFormat);
+            }
+        }
+
+        this.Invalidate();
+    }
+
+    protected override void Dispose(bool disposing) {
+        if (_stringFormat != null) _stringFormat.Dispose();
+        base.Dispose(disposing);
     }
 }
 
@@ -8234,7 +8457,7 @@ $splash.Controls.Add($starfieldBg)
 
 # Logo 标签 —— 直接加到 StarfieldPanel
 $logoLabel = New-Object System.Windows.Forms.Label
-$logoLabel.Text = "AURORA 2026`nVelociRaptor-GR"
+$logoLabel.Text = "AURORA`nAnalyzer-V / RS"
 $logoLabel.Font = New-Object System.Drawing.Font("Segoe UI", 16, [System.Drawing.FontStyle]::Bold)
 $logoLabel.ForeColor = [System.Drawing.Color]::FromArgb(200, 220, 255)
 $logoLabel.Location = New-Object System.Drawing.Point(50, 30)  # X=50, Y=30
@@ -8627,15 +8850,16 @@ function Show-SessionRestoreDialog {
     $restoreBackground.Enabled = $true
     $restoreBackground.TextAlignment = [System.Drawing.StringAlignment]::Center
     
-    # 标题标签（直接放在 StarfieldPanel 上）
-    $restoreTitleLabel = New-Object System.Windows.Forms.Label
-    $restoreTitleLabel.Text = $res.Subtitle
+    # 标题标签（UWP自绘控件）- 走 UWP 飞入动画 + 自动文本切换
+    $restoreTitleLabel = New-Object UWPText
+    $restoreTitleLabel.TextOnly = $res.Subtitle
     $restoreTitleLabel.Font = Get-EmojiFont -Size 18 -Style ([System.Drawing.FontStyle]::Bold)
     $restoreTitleLabel.ForeColor = [System.Drawing.Color]::FromArgb(0, 255, 255)
     $restoreTitleLabel.BackColor = [System.Drawing.Color]::Transparent
     $restoreTitleLabel.Size = New-Object System.Drawing.Size(400, 45)
     $restoreTitleLabel.Location = New-Object System.Drawing.Point(20, 20)
-    $restoreTitleLabel.TextAlign = 'MiddleLeft'
+    $restoreTitleLabel.TextAlign = [System.Drawing.StringAlignment]::Near
+    $restoreTitleLabel.Add_MouseDown($dragAction)
     
     $restoreInfoLabel = New-Object System.Windows.Forms.Label
     $restoreInfoLabel.Text = if ($currentLanguage -eq 'CHS') { "您可以选择恢复之前的进度，或者重新开始新会话" } else { "You can choose to resume previous progress or start a new session" }
@@ -8646,15 +8870,16 @@ function Show-SessionRestoreDialog {
     $restoreInfoLabel.Location = New-Object System.Drawing.Point(20, 65)
     $restoreInfoLabel.TextAlign = 'TopLeft'
     
-    # 会话信息标题
-    $sessionInfoTitle = New-Object System.Windows.Forms.Label
-    $sessionInfoTitle.Text = $res.SessionInfo
+    # 会话信息标题（UWP自绘控件）- 走 UWP 飞入动画 + 自动文本切换
+    $sessionInfoTitle = New-Object UWPText
+    $sessionInfoTitle.TextOnly = $res.SessionInfo
     $sessionInfoTitle.Font = New-Object System.Drawing.Font("Microsoft YaHei UI", 11, [System.Drawing.FontStyle]::Bold)
     $sessionInfoTitle.ForeColor = [System.Drawing.Color]::FromArgb(0, 255, 255)
     $sessionInfoTitle.BackColor = [System.Drawing.Color]::Transparent
     $sessionInfoTitle.Size = New-Object System.Drawing.Size(690, 30)
     $sessionInfoTitle.Location = New-Object System.Drawing.Point(30, 130)
-    $sessionInfoTitle.TextAlign = 'MiddleLeft'
+    $sessionInfoTitle.TextAlign = [System.Drawing.StringAlignment]::Near
+    $sessionInfoTitle.Add_MouseDown($dragAction)
     
     # 分隔线
     $infoSep = New-Object System.Windows.Forms.Label
@@ -8673,30 +8898,32 @@ function Show-SessionRestoreDialog {
     $sessionInfoContent.Size = New-Object System.Drawing.Size(690, 115)
     $sessionInfoContent.Location = New-Object System.Drawing.Point(30, 165)
     
-    # 恢复选项标题
-    $restoreOptionTitle = New-Object System.Windows.Forms.Label
-    $restoreOptionTitle.Text = $res.Restore
+    # 恢复选项标题（UWP自绘控件）- 走 UWP 飞入动画 + 自动文本切换
+    $restoreOptionTitle = New-Object UWPText
+    $restoreOptionTitle.TextOnly = $res.Restore
     $restoreOptionTitle.Font = New-Object System.Drawing.Font("Microsoft YaHei UI", 11, [System.Drawing.FontStyle]::Bold)
     $restoreOptionTitle.ForeColor = [System.Drawing.Color]::FromArgb(0, 255, 255)
     $restoreOptionTitle.BackColor = [System.Drawing.Color]::Transparent
     $restoreOptionTitle.Size = New-Object System.Drawing.Size(690, 30)
     $restoreOptionTitle.Location = New-Object System.Drawing.Point(30, 305)
-    $restoreOptionTitle.TextAlign = 'MiddleLeft'
+    $restoreOptionTitle.TextAlign = [System.Drawing.StringAlignment]::Near
+    $restoreOptionTitle.Add_MouseDown($dragAction)
     
     $restoreOptionDesc = New-Object AuroraConsoleBox
     $restoreOptionDesc.Text = $res.RestoreDesc
     $restoreOptionDesc.Size = New-Object System.Drawing.Size(690, 80)
     $restoreOptionDesc.Location = New-Object System.Drawing.Point(30, 335)
     
-    # 重新开始选项标题
-    $restartOptionTitle = New-Object System.Windows.Forms.Label
-    $restartOptionTitle.Text = $res.Restart
+    # 重新开始选项标题（UWP自绘控件）- 走 UWP 飞入动画 + 自动文本切换
+    $restartOptionTitle = New-Object UWPText
+    $restartOptionTitle.TextOnly = $res.Restart
     $restartOptionTitle.Font = New-Object System.Drawing.Font("Microsoft YaHei UI", 11, [System.Drawing.FontStyle]::Bold)
     $restartOptionTitle.ForeColor = [System.Drawing.Color]::FromArgb(200, 200, 200)
     $restartOptionTitle.BackColor = [System.Drawing.Color]::Transparent
     $restartOptionTitle.Size = New-Object System.Drawing.Size(690, 30)
     $restartOptionTitle.Location = New-Object System.Drawing.Point(30, 420)
-    $restartOptionTitle.TextAlign = 'MiddleLeft'
+    $restartOptionTitle.TextAlign = [System.Drawing.StringAlignment]::Near
+    $restartOptionTitle.Add_MouseDown($dragAction)
     
     $restartOptionDesc = New-Object AuroraConsoleBox
     $restartOptionDesc.Text = $res.RestartDesc
@@ -8821,6 +9048,7 @@ function Show-SessionRestoreDialog {
     $restoreForm.CancelButton = $restartButton
     
     # ====== 新增：在窗体显示前，先隐藏所有参与动效的控件，彻底杜绝闪烁 ======
+    # 所有控件都参与飞入动画，UWPText 标题控件在动画结束后才显示文本
     $animControls = @($restoreTitleLabel, $restoreInfoLabel, $sessionInfoTitle, $infoSep, $sessionInfoContent, $restoreOptionTitle, $restoreOptionDesc, $restartOptionTitle, $restartOptionDesc, $restoreButton, $restartButton)
     foreach ($c in $animControls) { if ($null -ne $c) { $c.Visible = $false } }
     
@@ -8830,12 +9058,13 @@ function Show-SessionRestoreDialog {
         
         $restoreForm.SuspendLayout()
         
+        # === UWP 飞入动画：标题同步入场 ===
         Start-UwpEnterAnimation -Control $restoreTitleLabel -TargetLocation $restoreTitleLabel.Location -ParentForm $restoreForm -DurationMs 450 -OffsetY 40 -DelayMs 50
-        Start-UwpEnterAnimation -Control $restoreInfoLabel -TargetLocation $restoreInfoLabel.Location -ParentForm $restoreForm -DurationMs 450 -OffsetY 40 -DelayMs 100
+        Start-UwpEnterAnimation -Control $restoreInfoLabel -TargetLocation $restoreInfoLabel.Location -ParentForm $restoreForm -DurationMs 450 -OffsetY 40 -DelayMs 80
         
         Start-UwpEnterAnimation -Control $sessionInfoTitle -TargetLocation $sessionInfoTitle.Location -ParentForm $restoreForm -DurationMs 400 -OffsetY 50 -DelayMs 150
         Start-UwpEnterAnimation -Control $infoSep -TargetLocation $infoSep.Location -ParentForm $restoreForm -DurationMs 400 -OffsetY 50 -DelayMs 150
-        Start-UwpEnterAnimation -Control $sessionInfoContent -TargetLocation $sessionInfoContent.Location -ParentForm $restoreForm -DurationMs 400 -OffsetY 50 -DelayMs 150
+        Start-UwpEnterAnimation -Control $sessionInfoContent -TargetLocation $sessionInfoContent.Location -ParentForm $restoreForm -DurationMs 400 -OffsetY 50 -DelayMs 170
         
         Start-UwpEnterAnimation -Control $restoreOptionTitle -TargetLocation $restoreOptionTitle.Location -ParentForm $restoreForm -DurationMs 400 -OffsetY 50 -DelayMs 200
         Start-UwpEnterAnimation -Control $restoreOptionDesc -TargetLocation $restoreOptionDesc.Location -ParentForm $restoreForm -DurationMs 400 -OffsetY 50 -DelayMs 200
@@ -8887,6 +9116,7 @@ function Show-ElevationDialog {
             AdminFeatures = "✅ 包含普通模式所有功能`n✅ 完整日志访问（系统/应用/安全/安装）`n✅ 系统修复与优化操作`n✅ 深度智能诊断`n✅ 自主修复建议`n✅ 完整系统健康评估"
             ElevateButton = "🛡️ 切换到管理员模式（推荐）"
             ContinueButton = "继续使用普通模式"
+            ExitButton = "退出程序"
             StatusText = "请选择运行模式"
         }
         ENG = @{
@@ -8900,6 +9130,7 @@ function Show-ElevationDialog {
             AdminFeatures = "✅ All features in Standard Mode`n✅ Full log access (System/Application/Security/Setup)`n✅ System repair & optimization operations`n✅ Deep smart diagnosis`n✅ Auto-healing recommendations`n✅ Complete system health assessment"
             ElevateButton = "🛡️ Switch to Administrator Mode (Recommended)"
             ContinueButton = "Continue with Standard Mode"
+            ExitButton = "Exit Program"
             StatusText = "Please select execution mode"
         }
     }
@@ -8930,15 +9161,16 @@ function Show-ElevationDialog {
     $elevateBackground.Enabled = $true
     $elevateBackground.TextAlignment = [System.Drawing.StringAlignment]::Center
     
-    # 标题标签（直接放在 StarfieldPanel 上）
-    $permTitleLabel = New-Object System.Windows.Forms.Label
-    $permTitleLabel.Text = $res.Subtitle
+    # 标题标签（UWP自绘控件）- 走 UWP 飞入动画 + 自动文本切换
+    $permTitleLabel = New-Object UWPText
+    $permTitleLabel.TextOnly = $res.Subtitle
     $permTitleLabel.Font = Get-EmojiFont -Size 18 -Style ([System.Drawing.FontStyle]::Bold)
     $permTitleLabel.ForeColor = [System.Drawing.Color]::FromArgb(100, 200, 255)
     $permTitleLabel.BackColor = [System.Drawing.Color]::Transparent
     $permTitleLabel.Size = New-Object System.Drawing.Size(400, 45)
     $permTitleLabel.Location = New-Object System.Drawing.Point(20, 20)
-    $permTitleLabel.TextAlign = 'MiddleLeft'
+    $permTitleLabel.TextAlign = [System.Drawing.StringAlignment]::Near
+    $permTitleLabel.Add_MouseDown($dragAction)
     
     $permInfoLabel = New-Object System.Windows.Forms.Label
     $permInfoLabel.Text = $res.Info
@@ -8949,15 +9181,16 @@ function Show-ElevationDialog {
     $permInfoLabel.Location = New-Object System.Drawing.Point(20, 65)
     $permInfoLabel.TextAlign = 'TopLeft'
     
-    # 普通模式标题
-    $normalTitle = New-Object System.Windows.Forms.Label
-    $normalTitle.Text = $res.NormalMode
+    # 普通模式标题（UWP自绘控件）- 走 UWP 飞入动画 + 自动文本切换
+    $normalTitle = New-Object UWPText
+    $normalTitle.TextOnly = $res.NormalMode
     $normalTitle.Font = Get-EmojiFont -Size 12 -Style ([System.Drawing.FontStyle]::Bold)
     $normalTitle.ForeColor = [System.Drawing.Color]::FromArgb(100, 255, 150)
     $normalTitle.BackColor = [System.Drawing.Color]::Transparent
     $normalTitle.Size = New-Object System.Drawing.Size(450, 35)
     $normalTitle.Location = New-Object System.Drawing.Point(30, 125)
-    $normalTitle.TextAlign = 'MiddleLeft'
+    $normalTitle.TextAlign = [System.Drawing.StringAlignment]::Near
+    $normalTitle.Add_MouseDown($dragAction)
     
     # 分隔线
     $normalSep = New-Object System.Windows.Forms.Label
@@ -8977,15 +9210,16 @@ function Show-ElevationDialog {
     $normalLimited.Size = New-Object System.Drawing.Size(360, 210)
     $normalLimited.Location = New-Object System.Drawing.Point(365, 165)
     
-    # 管理员模式标题
-    $adminTitle = New-Object System.Windows.Forms.Label
-    $adminTitle.Text = $res.AdminMode
+    # 管理员模式标题（UWP自绘控件）- 走 UWP 飞入动画 + 自动文本切换
+    $adminTitle = New-Object UWPText
+    $adminTitle.TextOnly = $res.AdminMode
     $adminTitle.Font = Get-EmojiFont -Size 12 -Style ([System.Drawing.FontStyle]::Bold)
     $adminTitle.ForeColor = [System.Drawing.Color]::FromArgb(255, 220, 150)
     $adminTitle.BackColor = [System.Drawing.Color]::Transparent
     $adminTitle.Size = New-Object System.Drawing.Size(450, 35)
     $adminTitle.Location = New-Object System.Drawing.Point(30, 400)
-    $adminTitle.TextAlign = 'MiddleLeft'
+    $adminTitle.TextAlign = [System.Drawing.StringAlignment]::Near
+    $adminTitle.Add_MouseDown($dragAction)
     
     # 分隔线
     $adminSep = New-Object System.Windows.Forms.Label
@@ -9000,19 +9234,25 @@ function Show-ElevationDialog {
     $adminFeatures.Size = New-Object System.Drawing.Size(690, 150)
     $adminFeatures.Location = New-Object System.Drawing.Point(30, 440)
     
+    # 退出按钮 - 使用 TechButton
+    $exitButton = New-Object TechButton
+    $exitButton.Text = $res.ExitButton
+    $exitButton.SetBounds(20, 621, 230, 48)
+    
     # 切换到管理员模式按钮 - 使用 TechButton
     $elevateButton = New-Object TechButton
     $elevateButton.Text = $res.ElevateButton
-    $elevateButton.SetBounds(20, 621, 340, 48)
+    $elevateButton.SetBounds(260, 621, 230, 48)
     
     # 继续使用普通模式按钮 - 使用 TechButton
     $continueButton = New-Object TechButton
     $continueButton.Text = $res.ContinueButton
-    $continueButton.SetBounds(390, 621, 340, 48)
+    $continueButton.SetBounds(500, 621, 230, 48)
     
     # 按钮点击事件处理 - 带 UWP 退出动画
-    $elevateButton.Add_Click({
+    $exitButton.Add_Click({
         try {
+            $exitButton.Enabled = $false
             $elevateButton.Enabled = $false
             $continueButton.Enabled = $false
             
@@ -9026,6 +9266,44 @@ function Show-ElevationDialog {
             $exitAnimations += Start-UwpExitAnimation -Control $adminTitle -DurationMs 300 -OffsetY 40 -StaggerDelay 90
             $exitAnimations += Start-UwpExitAnimation -Control $adminSep -DurationMs 300 -OffsetY 40 -StaggerDelay 90
             $exitAnimations += Start-UwpExitAnimation -Control $adminFeatures -DurationMs 300 -OffsetY 40 -StaggerDelay 120
+            $exitAnimations += Start-UwpExitAnimation -Control $exitButton -DurationMs 300 -OffsetY 40 -StaggerDelay 150
+            $exitAnimations += Start-UwpExitAnimation -Control $elevateButton -DurationMs 300 -OffsetY 40 -StaggerDelay 150
+            $exitAnimations += Start-UwpExitAnimation -Control $continueButton -DurationMs 300 -OffsetY 40 -StaggerDelay 180
+            
+            for ($i = 0; $i -lt 25; $i++) {
+                [System.Windows.Forms.Application]::DoEvents()
+                Start-Sleep -Milliseconds 10
+            }
+            
+            Start-MainWindowExitAnimation -Form $elevateForm
+            
+            for ($i = 0; $i -lt 50; $i++) {
+                [System.Windows.Forms.Application]::DoEvents()
+                Start-Sleep -Milliseconds 10
+            }
+        } catch {}
+        $elevateForm.DialogResult = 'Cancel'
+        $elevateForm.Close()
+    })
+    
+    # 按钮点击事件处理 - 带 UWP 退出动画
+    $elevateButton.Add_Click({
+        try {
+            $exitButton.Enabled = $false
+            $elevateButton.Enabled = $false
+            $continueButton.Enabled = $false
+            
+            $exitAnimations = @()
+            $exitAnimations += Start-UwpExitAnimation -Control $permTitleLabel -DurationMs 300 -OffsetY 30 -StaggerDelay 0
+            $exitAnimations += Start-UwpExitAnimation -Control $permInfoLabel -DurationMs 300 -OffsetY 30 -StaggerDelay 30
+            $exitAnimations += Start-UwpExitAnimation -Control $normalTitle -DurationMs 300 -OffsetY 40 -StaggerDelay 60
+            $exitAnimations += Start-UwpExitAnimation -Control $normalSep -DurationMs 300 -OffsetY 40 -StaggerDelay 60
+            $exitAnimations += Start-UwpExitAnimation -Control $normalFeatures -DurationMs 300 -OffsetY 40 -StaggerDelay 60
+            $exitAnimations += Start-UwpExitAnimation -Control $normalLimited -DurationMs 300 -OffsetY 40 -StaggerDelay 90
+            $exitAnimations += Start-UwpExitAnimation -Control $adminTitle -DurationMs 300 -OffsetY 40 -StaggerDelay 90
+            $exitAnimations += Start-UwpExitAnimation -Control $adminSep -DurationMs 300 -OffsetY 40 -StaggerDelay 90
+            $exitAnimations += Start-UwpExitAnimation -Control $adminFeatures -DurationMs 300 -OffsetY 40 -StaggerDelay 120
+            $exitAnimations += Start-UwpExitAnimation -Control $exitButton -DurationMs 300 -OffsetY 40 -StaggerDelay 150
             $exitAnimations += Start-UwpExitAnimation -Control $elevateButton -DurationMs 300 -OffsetY 40 -StaggerDelay 150
             $exitAnimations += Start-UwpExitAnimation -Control $continueButton -DurationMs 300 -OffsetY 40 -StaggerDelay 180
             
@@ -9047,6 +9325,7 @@ function Show-ElevationDialog {
     
     $continueButton.Add_Click({
         try {
+            $exitButton.Enabled = $false
             $elevateButton.Enabled = $false
             $continueButton.Enabled = $false
             
@@ -9060,6 +9339,7 @@ function Show-ElevationDialog {
             $exitAnimations += Start-UwpExitAnimation -Control $adminTitle -DurationMs 300 -OffsetY 40 -StaggerDelay 90
             $exitAnimations += Start-UwpExitAnimation -Control $adminSep -DurationMs 300 -OffsetY 40 -StaggerDelay 90
             $exitAnimations += Start-UwpExitAnimation -Control $adminFeatures -DurationMs 300 -OffsetY 40 -StaggerDelay 120
+            $exitAnimations += Start-UwpExitAnimation -Control $exitButton -DurationMs 300 -OffsetY 40 -StaggerDelay 150
             $exitAnimations += Start-UwpExitAnimation -Control $elevateButton -DurationMs 300 -OffsetY 40 -StaggerDelay 150
             $exitAnimations += Start-UwpExitAnimation -Control $continueButton -DurationMs 300 -OffsetY 40 -StaggerDelay 180
             
@@ -9090,6 +9370,7 @@ function Show-ElevationDialog {
     $elevateBackground.Controls.Add($adminTitle)
     $elevateBackground.Controls.Add($adminSep)
     $elevateBackground.Controls.Add($adminFeatures)
+    $elevateBackground.Controls.Add($exitButton)
     $elevateBackground.Controls.Add($elevateButton)
     $elevateBackground.Controls.Add($continueButton)
     
@@ -9111,16 +9392,18 @@ function Show-ElevationDialog {
     $adminFeatures.Add_MouseDown($dragAction)
     
     # 键盘导航
-    $elevateButton.TabIndex = 0
-    $continueButton.TabIndex = 1
+    $exitButton.TabIndex = 0
+    $elevateButton.TabIndex = 1
+    $continueButton.TabIndex = 2
     $elevateForm.AcceptButton = $elevateButton
-    $elevateForm.CancelButton = $continueButton
+    $elevateForm.CancelButton = $exitButton
     
-    # 底部状态文本
-    Update-StarfieldStatusText -Panel $elevateBackground -NewText $res.StatusText
+    # 底部状态文本 - 延迟到 Add_Shown 中与标题同步设置
+    # Update-StarfieldStatusText -Panel $elevateBackground -NewText $res.StatusText
     
     # ====== 新增：在窗体显示前，先隐藏所有参与动效的控件，彻底杜绝闪烁 ======
-    $animControls = @($permTitleLabel, $permInfoLabel, $normalTitle, $normalSep, $normalFeatures, $normalLimited, $adminTitle, $adminSep, $adminFeatures, $elevateButton, $continueButton)
+    # 所有控件都参与飞入动画，UWPText 标题控件在动画结束后才显示文本
+    $animControls = @($permTitleLabel, $permInfoLabel, $normalTitle, $normalSep, $normalFeatures, $normalLimited, $adminTitle, $adminSep, $adminFeatures, $exitButton, $elevateButton, $continueButton)
     foreach ($c in $animControls) { if ($null -ne $c) { $c.Visible = $false } }
     
     $elevateForm.Add_Shown({
@@ -9129,20 +9412,27 @@ function Show-ElevationDialog {
         
         $elevateForm.SuspendLayout()
         
+        # === UWP 飞入动画：标题与状态文本同步入场 ===
+        # 主标题飞入 + 底部状态文本同时触发，标题使用 UWPText 的 _pendingText 机制在动画结束后自动显示文本
         Start-UwpEnterAnimation -Control $permTitleLabel -TargetLocation $permTitleLabel.Location -ParentForm $elevateForm -DurationMs 450 -OffsetY 40 -DelayMs 50
-        Start-UwpEnterAnimation -Control $permInfoLabel -TargetLocation $permInfoLabel.Location -ParentForm $elevateForm -DurationMs 450 -OffsetY 40 -DelayMs 100
+        Update-StarfieldStatusText -Panel $elevateBackground -NewText $res.StatusText
         
+        Start-UwpEnterAnimation -Control $permInfoLabel -TargetLocation $permInfoLabel.Location -ParentForm $elevateForm -DurationMs 450 -OffsetY 40 -DelayMs 80
+        
+        # 普通模式标题 + 分隔线 + 内容 - 第二组同步
         Start-UwpEnterAnimation -Control $normalTitle -TargetLocation $normalTitle.Location -ParentForm $elevateForm -DurationMs 400 -OffsetY 50 -DelayMs 150
         Start-UwpEnterAnimation -Control $normalSep -TargetLocation $normalSep.Location -ParentForm $elevateForm -DurationMs 400 -OffsetY 50 -DelayMs 150
         Start-UwpEnterAnimation -Control $normalFeatures -TargetLocation $normalFeatures.Location -ParentForm $elevateForm -DurationMs 400 -OffsetY 50 -DelayMs 150
-        Start-UwpEnterAnimation -Control $normalLimited -TargetLocation $normalLimited.Location -ParentForm $elevateForm -DurationMs 400 -OffsetY 50 -DelayMs 150
+        Start-UwpEnterAnimation -Control $normalLimited -TargetLocation $normalLimited.Location -ParentForm $elevateForm -DurationMs 400 -OffsetY 50 -DelayMs 170
         
+        # 管理员模式标题 + 分隔线 + 内容 - 第三组同步
         Start-UwpEnterAnimation -Control $adminTitle -TargetLocation $adminTitle.Location -ParentForm $elevateForm -DurationMs 400 -OffsetY 50 -DelayMs 200
         Start-UwpEnterAnimation -Control $adminSep -TargetLocation $adminSep.Location -ParentForm $elevateForm -DurationMs 400 -OffsetY 50 -DelayMs 200
-        Start-UwpEnterAnimation -Control $adminFeatures -TargetLocation $adminFeatures.Location -ParentForm $elevateForm -DurationMs 400 -OffsetY 50 -DelayMs 200
+        Start-UwpEnterAnimation -Control $adminFeatures -TargetLocation $adminFeatures.Location -ParentForm $elevateForm -DurationMs 400 -OffsetY 50 -DelayMs 220
         
-        Start-UwpEnterAnimation -Control $elevateButton -TargetLocation $elevateButton.Location -ParentForm $elevateForm -DurationMs 400 -OffsetY 50 -DelayMs 250
-        Start-UwpEnterAnimation -Control $continueButton -TargetLocation $continueButton.Location -ParentForm $elevateForm -DurationMs 400 -OffsetY 50 -DelayMs 250
+        Start-UwpEnterAnimation -Control $exitButton -TargetLocation $exitButton.Location -ParentForm $elevateForm -DurationMs 400 -OffsetY 50 -DelayMs 260
+        Start-UwpEnterAnimation -Control $elevateButton -TargetLocation $elevateButton.Location -ParentForm $elevateForm -DurationMs 400 -OffsetY 50 -DelayMs 290
+        Start-UwpEnterAnimation -Control $continueButton -TargetLocation $continueButton.Location -ParentForm $elevateForm -DurationMs 400 -OffsetY 50 -DelayMs 320
         
         foreach ($c in $animControls) { if ($null -ne $c) { $c.Visible = $true } }
         $elevateForm.ResumeLayout()
@@ -9171,6 +9461,8 @@ function Show-ElevationDialog {
     # 返回用户选择
     if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
         return "Elevate"
+    } elseif ($result -eq [System.Windows.Forms.DialogResult]::Cancel) {
+        return "Exit"
     } else {
         return "Continue"
     }
@@ -9394,18 +9686,18 @@ function ShowMainForm {
     }
 
     # ====== 视图 1：语言选择（3个元素）======
-    # 标题
-    $titleLabel = New-Object System.Windows.Forms.Label
-    $titleLabel.Text = "请根据当前系统环境选择语言版本"
+    # 标题（UWP自绘控件）
+    $titleLabel = New-Object UWPText
+    $titleLabel.TextOnly = "请根据当前系统环境选择语言版本"
     $titleLabel.Location = New-Object System.Drawing.Point(60, 45)
     $titleLabel.Size = New-Object System.Drawing.Size(280, 45)
     $titleLabel.Font = New-Object System.Drawing.Font("Microsoft YaHei UI", 12, [System.Drawing.FontStyle]::Bold)
     $titleLabel.ForeColor = [System.Drawing.Color]::FromArgb(255, 255, 255)
     $titleLabel.BackColor = [System.Drawing.Color]::Transparent
-    $titleLabel.TextAlign = [System.Drawing.ContentAlignment]::MiddleCenter
-    $titleLabel.AutoSize = $false
+    $titleLabel.TextAlign = [System.Drawing.StringAlignment]::Center
     $titleLabel.Visible = $false
     $titleLabel.Anchor = 'None'
+    $titleLabel.Add_MouseDown($dragAction)
     $background.Controls.Add($titleLabel)
 
     $btnEng = CreateButton -Text "English" -TargetTop 180
@@ -9418,17 +9710,17 @@ function ShowMainForm {
     $btnExit.TabIndex = 2
 
     # ====== 视图 2：模式选择（4个元素）======
-    $styleTitleLabel = New-Object System.Windows.Forms.Label
-    $styleTitleLabel.Text = "请选择模式 / Select Mode"
+    $styleTitleLabel = New-Object UWPText
+    $styleTitleLabel.TextOnly = "请选择模式 / Select Mode"
     $styleTitleLabel.Location = New-Object System.Drawing.Point(40, 45)
     $styleTitleLabel.Size = New-Object System.Drawing.Size(320, 45)
     $styleTitleLabel.Font = New-Object System.Drawing.Font("Microsoft YaHei UI", 12, [System.Drawing.FontStyle]::Bold)
     $styleTitleLabel.ForeColor = [System.Drawing.Color]::FromArgb(255, 255, 255)
     $styleTitleLabel.BackColor = [System.Drawing.Color]::Transparent
-    $styleTitleLabel.TextAlign = [System.Drawing.ContentAlignment]::MiddleCenter
-    $styleTitleLabel.AutoSize = $false
+    $styleTitleLabel.TextAlign = [System.Drawing.StringAlignment]::Center
     $styleTitleLabel.Visible = $false
     $styleTitleLabel.Anchor = 'None'
+    $styleTitleLabel.Add_MouseDown($dragAction)
     $background.Controls.Add($styleTitleLabel)
 
     $btnSmart = CreateButton -Text "智能诊断与自主修复模式"  -TargetTop 110
@@ -10583,16 +10875,16 @@ function ShowProMode {
     $proBackground.Controls.Add($TaskHUD)
     $TaskHUD.BringToFront() # 确保在星空和控制台的最上层
 
-    # 标题
-    $proTitleLabel = New-Object System.Windows.Forms.Label
-    $proTitleLabel.Text = $Title
+    # 标题（UWP自绘控件）- 走 UWP 飞入动画 + 自动文本切换
+    $proTitleLabel = New-Object UWPText
+    $proTitleLabel.TextOnly = $Title
     $proTitleLabel.Location = New-Object System.Drawing.Point(50, 15)
     $proTitleLabel.Size = New-Object System.Drawing.Size(650, 35)
     $proTitleLabel.Font = New-Object System.Drawing.Font("Microsoft YaHei UI", 14, [System.Drawing.FontStyle]::Bold)
     $proTitleLabel.ForeColor = [System.Drawing.Color]::FromArgb(255, 255, 255)
     $proTitleLabel.BackColor = [System.Drawing.Color]::Transparent
-    $proTitleLabel.TextAlign = [System.Drawing.ContentAlignment]::MiddleCenter
-    $proTitleLabel.AutoSize = $false
+    $proTitleLabel.TextAlign = [System.Drawing.StringAlignment]::Center
+    $proTitleLabel.Add_MouseDown($proDragAction)
     $proBackground.Controls.Add($proTitleLabel)
 
     # ====== 核心升级：动态私有字体加载引擎（带优雅降级）======
@@ -10658,14 +10950,16 @@ function ShowProMode {
 
     # ====== 下面的交互区：终端指令输入 (废弃 inputPanel，实现无边框悬浮) ======
     
-    # 1. 指示标签
-    $inputPanelLabel = New-Object System.Windows.Forms.Label
-    if ($Language -eq "CHS") { $inputPanelLabel.Text = ">>> 终端指令输入" } else { $inputPanelLabel.Text = ">>> Terminal Input" }
+    # 1. 指示标签（UWP自绘控件）- 走 UWP 飞入动画 + 自动文本切换
+    $inputPanelLabel = New-Object UWPText
+    if ($Language -eq "CHS") { $inputPanelLabel.TextOnly = ">>> 终端指令输入" } else { $inputPanelLabel.TextOnly = ">>> Terminal Input" }
     $inputPanelLabel.Location = New-Object System.Drawing.Point(50, 570)
     $inputPanelLabel.Size = New-Object System.Drawing.Size(250, 20)
     $inputPanelLabel.Font = New-Object System.Drawing.Font("Consolas", 9, [System.Drawing.FontStyle]::Bold)
     $inputPanelLabel.ForeColor = [System.Drawing.Color]::FromArgb(100, 180, 255)
     $inputPanelLabel.BackColor = [System.Drawing.Color]::Transparent
+    $inputPanelLabel.TextAlign = [System.Drawing.StringAlignment]::Near
+    $inputPanelLabel.Add_MouseDown($proDragAction)
     $proBackground.Controls.Add($inputPanelLabel)
 
     # 2. 半透明输入框 (Aurora 风格)
@@ -10810,17 +11104,30 @@ function ShowProMode {
             } else {
                 $global:syncHash.LogOutput += "`n✅ User confirmed smart diagnostic analysis...`n"
             }
-        } else {
-            # 普通高危操作授权
-            $global:syncHash.Authorized = $true
-            $global:syncHash.RequiresAuthorization = $false  # 强制清除请求标记，防止 UI 轮询重入
             
-            # 💥 新增：添加调试日志
+            # 🔧 修复：智能分析授权之后也要重置 IsModalShowing 和 Tag
+            $DecisionModal.FadeOutModal()
+            Start-Sleep -Milliseconds 150
+            $script:IsModalShowing = $false
+            $DecisionModal.Tag = $null
+            
             if ($Language -eq "CHS") {
-                $global:syncHash.LogOutput += "`n✅ 用户已授权，继续执行修复...`n"
+                $global:syncHash.LogOutput += "✅ 智能分析授权对话框已关闭，状态已重置`n"
             } else {
-                $global:syncHash.LogOutput += "`n✅ User authorized, continuing execution...`n"
+                $global:syncHash.LogOutput += "✅ Smart analysis authorization dialog closed, state reset`n"
             }
+            return
+        }
+        
+        # 普通高危操作授权
+        $global:syncHash.Authorized = $true
+        $global:syncHash.RequiresAuthorization = $false  # 强制清除请求标记，防止 UI 轮询重入
+        
+        # 💥 新增：添加调试日志
+        if ($Language -eq "CHS") {
+            $global:syncHash.LogOutput += "`n✅ 用户已授权，继续执行修复...`n"
+        } else {
+            $global:syncHash.LogOutput += "`n✅ User authorized, continuing execution...`n"
         }
         
         # Phase 2.3 核心优化：触发 EventWaitHandle 信号（事件驱动）
@@ -10862,33 +11169,46 @@ function ShowProMode {
             } else {
                 $global:syncHash.LogOutput += "`n⏭️ User skipped smart diagnostic analysis...`n"
             }
-        } else {
-            # 普通高危操作跳过
-            $global:syncHash.Authorized = $false  # 💥 核心修复：设置 Authorized = false
-            $global:syncHash.RequiresAuthorization = $false
-            $global:syncHash.PendingCommand = $null
+            
+            # 🔧 修复：智能分析跳过之后也要重置 IsModalShowing 和 Tag
+            $DecisionModal.FadeOutModal()
+            Start-Sleep -Milliseconds 150
+            $script:IsModalShowing = $false
+            $DecisionModal.Tag = $null
             
             if ($Language -eq "CHS") {
-                $global:syncHash.LogOutput += "`n⚠️ 用户拒绝授权，操作已取消...`n"
+                $global:syncHash.LogOutput += "✅ 智能分析跳过对话框已关闭，状态已重置 (IsModalShowing=false)`n"
             } else {
-                $global:syncHash.LogOutput += "`n⚠️ User denied authorization, operation cancelled...`n"
+                $global:syncHash.LogOutput += "✅ Smart analysis skip dialog closed, state reset (IsModalShowing=false)`n"
             }
-            
-            # Phase 2.3 核心优化：触发 EventWaitHandle 信号（事件驱动）
-            if ($global:syncHash.AuthorizationEventName) {
-                try {
-                    $eventWaitHandle = [System.Threading.EventWaitHandle]::OpenExisting($global:syncHash.AuthorizationEventName)
-                    $eventWaitHandle.Set()  # 触发信号，唤醒等待的 Runspace
-                    $eventWaitHandle.Dispose()
-                } catch {
-                    # 事件不存在或已关闭，忽略
-                }
-            }
-            
-            # 菜单重新打印由后台脚本处理，这里只更新状态文本
-            $statusText = if ($Language -eq "CHS") { "等待输入" } else { "Waiting for input" }
-            Update-StarfieldStatusText -Panel $proBackground -NewText $statusText
+            return
         }
+        
+        # 普通高危操作跳过
+        $global:syncHash.Authorized = $false  # 💥 核心修复：设置 Authorized = false
+        $global:syncHash.RequiresAuthorization = $false
+        $global:syncHash.PendingCommand = $null
+        
+        if ($Language -eq "CHS") {
+            $global:syncHash.LogOutput += "`n⚠️ 用户拒绝授权，操作已取消...`n"
+        } else {
+            $global:syncHash.LogOutput += "`n⚠️ User denied authorization, operation cancelled...`n"
+        }
+        
+        # Phase 2.3 核心优化：触发 EventWaitHandle 信号（事件驱动）
+        if ($global:syncHash.AuthorizationEventName) {
+            try {
+                $eventWaitHandle = [System.Threading.EventWaitHandle]::OpenExisting($global:syncHash.AuthorizationEventName)
+                $eventWaitHandle.Set()  # 触发信号，唤醒等待的 Runspace
+                $eventWaitHandle.Dispose()
+            } catch {
+                # 事件不存在或已关闭，忽略
+            }
+        }
+        
+        # 菜单重新打印由后台脚本处理，这里只更新状态文本
+        $statusText = if ($Language -eq "CHS") { "等待输入" } else { "Waiting for input" }
+        Update-StarfieldStatusText -Panel $proBackground -NewText $statusText
         
         # 💥 核心修复：延迟重置 IsModalShowing，确保动画完成
         # 先隐藏控件，然后等待动画完成后再重置标志
@@ -10966,6 +11286,24 @@ function ShowProMode {
     
     # ====== 绑定 AuroraExportedLogsModal 事件 ======
     $ExportedLogsModal.add_OnUse({
+        # 🔧 完成提示模式：打开 UserLogs 文件夹
+        if ($ExportedLogsModal.IsCompletionPrompt) {
+            $exportPath = [System.IO.Path]::Combine($scriptDir, "..\UserLogs")
+            if (Test-Path $exportPath) {
+                Start-Process explorer.exe -ArgumentList $exportPath
+                if ($Language -eq "CHS") {
+                    $global:syncHash.LogOutput += "📂 正在打开输出文件夹...`n"
+                } else {
+                    $global:syncHash.LogOutput += "📂 Opening output folder...`n"
+                }
+            }
+            $script:IsModalShowing = $false
+            $ExportedLogsModal.Tag = $null
+            $ExportedLogsModal.ResetCompletionMode()
+            $ExportedLogsModal.FadeOutModal()
+            return
+        }
+        
         # 用户选择使用已导出的日志
         $script:IsModalShowing = $false
         $ExportedLogsModal.Tag = $null
@@ -10982,6 +11320,21 @@ function ShowProMode {
     }.GetNewClosure())
     
     $ExportedLogsModal.add_OnSkip({
+        # 🔧 完成提示模式：仅关闭对话框
+        if ($ExportedLogsModal.IsCompletionPrompt) {
+            $script:IsModalShowing = $false
+            $ExportedLogsModal.Tag = $null
+            $ExportedLogsModal.ResetCompletionMode()
+            $ExportedLogsModal.FadeOutModal()
+            
+            if ($Language -eq "CHS") {
+                $global:syncHash.LogOutput += "⏭️ 用户选择不打开文件夹`n"
+            } else {
+                $global:syncHash.LogOutput += "⏭️ User chose not to open folder`n"
+            }
+            return
+        }
+        
         # 用户选择跳过，使用实时日志
         $script:IsModalShowing = $false
         $ExportedLogsModal.Tag = $null
@@ -11182,6 +11535,7 @@ function ShowProMode {
             
             # 设置互斥锁
             $script:IsModalShowing = $true
+            $RestoreModal.Tag = "Shown"
             
             # 更新恢复对话框信息（从 PRO 脚本传递的数据）
             $RestoreModal.UpdateInfo(
@@ -11554,6 +11908,46 @@ function ShowProMode {
             
             # 3. 处理完成状态
             if ($global:syncHash.ScriptDone) {
+                # 🔧 核心修复 1/2：在恢复 UI 状态之前，强制清除可能残留的 RequiresUserInput 标志
+                if ($global:syncHash.RequiresUserInput -eq $true -or $global:syncHash.InputType -eq "UseExportedLogs") {
+                    if ($Language -eq "CHS") {
+                        $global:syncHash.LogOutput += "⚠️ [ScriptDone] 检测到残留的 RequiresUserInput/InputType 标志，强制清除...`n"
+                    } else {
+                        $global:syncHash.LogOutput += "⚠️ [ScriptDone] Detected残留 RequiresUserInput/InputType flags, forcing clear...`n"
+                    }
+                    $global:syncHash.RequiresUserInput = $false
+                    $global:syncHash.InputType = $null
+                    $global:syncHash.InputData = $null
+                    $global:syncHash.UserInput = $null
+                }
+                
+                # 🔧 调试：记录 IsModalShowing 状态
+                if ($Language -eq "CHS") {
+                    if ($script:IsModalShowing -eq $true) {
+                        # 🔧 核心修复 3/3：检查是否有 Modal 真正在显示
+                        $hasShowingModal = ($RestoreModal.Tag -eq "Shown" -or 
+                                           $DecisionModal.Tag -eq "Shown" -or 
+                                           $DecisionModal.Tag -eq "SmartAnalysis_Shown" -or 
+                                           $ExportedLogsModal.Tag -eq "Shown")
+                        
+                        if (-not $hasShowingModal) {
+                            $script:IsModalShowing = $false
+                        }
+                    }
+                } else {
+                    if ($script:IsModalShowing -eq $true) {
+                        # 🔧 Core Fix 3/3: Check if any Modal is actually showing
+                        $hasShowingModal = ($RestoreModal.Tag -eq "Shown" -or 
+                                           $DecisionModal.Tag -eq "Shown" -or 
+                                           $DecisionModal.Tag -eq "SmartAnalysis_Shown" -or 
+                                           $ExportedLogsModal.Tag -eq "Shown")
+                        
+                        if (-not $hasShowingModal) {
+                            $script:IsModalShowing = $false
+                        }
+                    }
+                }
+                
                 # 恢复 UI 状态，例如启用开始按钮
                 $global:syncHash.ScriptDone = $false # 重置状态
                 $timestamp = [datetime]::Now.ToString('HH:mm:ss')
@@ -11582,6 +11976,16 @@ function ShowProMode {
                 $actionButton.Tag = "Close"
                 $actionButton.Enabled = $true
                 $actionButton.Invalidate()  # 强制重绘以显示新文字
+                
+                # 🔧 显示完成提示：是否打开 UserLogs 文件夹
+                # 注意：完成提示模式不检查 Tag，只检查 IsModalShowing 状态
+                if ($script:IsModalShowing -ne $true) {
+                    $script:IsModalShowing = $true
+                    $userLogsPath = [System.IO.Path]::Combine($scriptDir, "..\UserLogs")
+                    $ExportedLogsModal.ShowCompletionPrompt($userLogsPath, $Language)
+                    $ExportedLogsModal.BringToFront()
+                } else {
+                }
             }
 
             # ====== 新增：AuroraTaskHUD 状态更新 ======
@@ -12145,7 +12549,12 @@ function global:Start-UwpEnterAnimation {
     
     $Control.Location = New-Object System.Drawing.Point($startX, $startY)
     $Control.Size = $startSize
-    $Control.ForeColor = [System.Drawing.Color]::FromArgb(0, $originalForeColor.R, $originalForeColor.G, $originalForeColor.B)
+    # 特殊处理 UWPText 控件 - 使用自带动画状态
+    if ($Control.GetType().Name -eq 'UWPText') {
+        $Control.SetEnterAnimationState(0, 0, $StartScale, 0)
+    } else {
+        $Control.ForeColor = [System.Drawing.Color]::FromArgb(0, $originalForeColor.R, $originalForeColor.G, $originalForeColor.B)
+    }
     
     # 核心修复：先隐藏控件！完全杜绝原地的"第一帧闪烁"
     $Control.Visible = $false
@@ -12185,7 +12594,12 @@ function global:Start-UwpEnterAnimation {
         if ($progress -ge 1.0) {
             $data.Control.Location = $data.TargetLocation
             $data.Control.Size = $data.OriginalSize
-            $data.Control.ForeColor = $data.OriginalForeColor
+            # 特殊处理 UWPText 控件
+            if ($data.Control.GetType().Name -eq 'UWPText') {
+                $data.Control.ResetEnterAnimationState()
+            } else {
+                $data.Control.ForeColor = $data.OriginalForeColor
+            }
             $currentTimer.Stop()
             $currentTimer.Dispose()
             return
@@ -12208,7 +12622,12 @@ function global:Start-UwpEnterAnimation {
         $data.Control.Size = New-Object System.Drawing.Size($newWidth, $newHeight)
 
         $alpha = [int][Math]::Min(255, 255 * $eased)
-        $data.Control.ForeColor = [System.Drawing.Color]::FromArgb($alpha, $data.OriginalForeColor.R, $data.OriginalForeColor.G, $data.OriginalForeColor.B)
+        # 特殊处理 UWPText 控件 - 使用自带动画状态
+        if ($data.Control.GetType().Name -eq 'UWPText') {
+            $data.Control.SetEnterAnimationState(0, $currentY - $data.TargetLocation.Y, $scale, $alpha)
+        } else {
+            $data.Control.ForeColor = [System.Drawing.Color]::FromArgb($alpha, $data.OriginalForeColor.R, $data.OriginalForeColor.G, $data.OriginalForeColor.B)
+        }
     }.GetNewClosure())
     $timer.Start()
     
@@ -12276,7 +12695,12 @@ function global:Start-UwpExitAnimation {
         $data.Control.Size = New-Object System.Drawing.Size($newWidth, $newHeight)
 
         $alpha = [int][Math]::Max(0, 255 * $eased)
-        $data.Control.ForeColor = [System.Drawing.Color]::FromArgb($alpha, $data.OriginalForeColor.R, $data.OriginalForeColor.G, $data.OriginalForeColor.B)
+        # 特殊处理 UWPText 控件
+        if ($data.Control.GetType().Name -eq 'UWPText') {
+            $data.Control.SetEnterAnimationState(0, ($data.OriginalLocation.Y + ($data.OriginalSize.Height / 2) - $targetCenterY) * (1 - $eased), $scale, $alpha)
+        } else {
+            $data.Control.ForeColor = [System.Drawing.Color]::FromArgb($alpha, $data.OriginalForeColor.R, $data.OriginalForeColor.G, $data.OriginalForeColor.B)
+        }
     }.GetNewClosure())
     $timer.Start()
 
@@ -12579,6 +13003,9 @@ try {
             } else {
                 Write-Host "⚠️ 提权失败或被取消，将继续以普通用户模式运行" -ForegroundColor Yellow
             }
+        } elseif ($choice -eq 'Exit') {
+            Write-Host " 用户选择退出程序" -ForegroundColor Yellow
+            exit 0
         } else {
             Write-Host "ℹ️ 用户选择继续使用普通模式" -ForegroundColor Gray
         }
