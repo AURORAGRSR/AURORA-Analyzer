@@ -1680,7 +1680,7 @@ function Load-KnowledgeBase {
     #>
     try {
         # 知识图谱文件路径（在 Data 目录）
-        $kbPath = [System.IO.Path]::Combine($PSScriptRoot, "..\Data\AURORA-TechData.json")
+        $kbPath = [System.IO.Path]::Combine($PSScriptRoot, "..\..\Data\AURORA-TechData.json")
         
         # 检查文件是否存在
         if (-not (Test-Path -Path $kbPath)) {
@@ -6982,6 +6982,9 @@ catch {
     Invoke-SafeExit -ExitCode 1
 }
 #endregion
+
+
+
 
 
 
