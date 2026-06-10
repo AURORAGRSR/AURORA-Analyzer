@@ -92,8 +92,8 @@ function Save-PROProgress {
         ExtraData      = $AdditionalData
     }
     
-    # 保存进度
-    Save-ProgressSafe -SessionData $sessionData
+    # 调用 Save-SessionProgress 保存到 SessionCache/active 目录
+    Save-SessionProgress -SessionId $SessionId -Stage $description -Progress $progress -AdditionalData $AdditionalData
 }
 
 # ==========================================
@@ -137,34 +137,3 @@ function Get-PROCheckpointProgress {
 }
 
 # 注意：此文件通过 dot-source 导入，不是 PowerShell 模块，因此不需要 Export-ModuleMember
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

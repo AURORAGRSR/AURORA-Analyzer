@@ -607,33 +607,3 @@ try {
     [System.Windows.Forms.MessageBox]::Show("发生错误: $($_.Exception.Message)", "错误", "OK", "Error")
     Invoke-SafeExit -ExitCode 1
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

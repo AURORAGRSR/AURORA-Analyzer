@@ -330,33 +330,3 @@ function Show-SessionRestoreDialog {
     
     return $result
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

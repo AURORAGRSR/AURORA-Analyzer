@@ -191,8 +191,9 @@ function Write-AuroraStructuredLog {
     .SYNOPSIS
         写入结构化日志
     .DESCRIPTION
-        统一的结构化日志函数，支持控制台输出和 CSV 文件持久化（PS 5.1 兼容）。
+        统一的结构化日志函数，支持 CSV 文件持久化（PS 5.1 兼容）。
         支持日志级别过滤和日志文件轮转。
+        注意：此函数仅负责文件写入，控制台输出由 Write-AuroraLog 处理。
     .PARAMETER Message
         日志消息
     .PARAMETER Level
@@ -216,20 +217,7 @@ function Write-AuroraStructuredLog {
         return
     }
     
-    $timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffzzz"
-    
-    # Console output
-    if ($script:AuroraLogConfig.EnableConsole) {
-        $consoleMsg = "[$timestamp] [$Level] [$Source] $Message"
-        if (Get-Variable -Name "syncHash" -Scope Global -ErrorAction SilentlyContinue) {
-            $global:syncHash.LogOutput += "$consoleMsg`n"
-        } else {
-            $colorMap = @{ Debug = "DarkGray"; Info = "White"; Warning = "Yellow"; Error = "Red"; Success = "Green" }
-            Write-Host $consoleMsg -ForegroundColor $colorMap[$Level]
-        }
-    }
-    
-    # File output (CSV - PS 5.1 compatible)
+    # File output only (console output is handled by Write-AuroraLog)
     if ($script:AuroraLogConfig.EnableFileLog) {
         try {
             $logDir = $script:AuroraLogConfig.LogDirectory
@@ -237,6 +225,7 @@ function Write-AuroraStructuredLog {
                 New-Item -ItemType Directory -Path $logDir -Force | Out-Null
             }
             
+            $timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffzzz"
             $logFile = Join-Path $logDir "aurora_$(Get-Date -Format 'yyyyMMdd').log"
             $logEntry = [PSCustomObject]@{
                 Timestamp = $timestamp
@@ -821,34 +810,3 @@ function Write-AuroraTelemetry {
         $global:syncHash.TelemetryEvents += $Event
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

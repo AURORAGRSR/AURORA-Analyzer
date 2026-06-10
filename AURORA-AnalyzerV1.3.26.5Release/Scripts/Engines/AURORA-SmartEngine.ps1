@@ -1126,12 +1126,13 @@ try {
     # 检测逻辑：无论是从 PRO 模式还是 GUI 直接进入，都检测已导出的 CSV
     if ($FromPRO -or $FromGUI) {
         if ($ExportedLogPath) {
+            $ExportedLogPath = [System.IO.Path]::GetFullPath($ExportedLogPath)
             Write-SmartLog ($L["PRO_Detect"] -f $ExportedLogPath)
         } else {
             # 自动检测默认导出路径（UserLogs 目录）
-            $defaultExportPath = Join-Path $PSScriptRoot "..\..\UserLogs"
+            $defaultExportPath = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\..\UserLogs"))
             if (Test-Path $defaultExportPath) {
-                $ExportedLogPath = $defaultExportPath
+                $ExportedLogPath = [System.IO.Path]::GetFullPath($defaultExportPath)
                 Write-SmartLog ($L["PRO_Detect"] -f $ExportedLogPath)
             }
         }
@@ -1326,12 +1327,12 @@ try {
     $global:syncHash.CurrentActivity = $L["Phase3"]
     Write-SmartLog $L["KB_Load"] "Compiling Knowledge Base..."
     
-    $kbPath = Join-Path $PSScriptRoot "..\..\Data\AURORA-TechData.json"
+    $kbPath = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\..\Data\AURORA-TechData.json"))
     if (-not (Test-Path $kbPath)) { throw "Missing Knowledge Base: AURORA-TechData.json" }
     
     # Phase 1.3 核心优化：知识图谱预编译缓存（CliXML 序列化）
     # 缓存内容：flatRules + eventIdIndex + sourceIndex
-    $cachePath = Join-Path $PSScriptRoot "..\..\Data\AURORA-TechData.cache.clixml"
+    $cachePath = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\..\Data\AURORA-TechData.cache.clixml"))
     $useCache = $false
     
     # 检查缓存有效性
@@ -1661,33 +1662,3 @@ try {
     $global:syncHash.ScriptDone = $true
     $global:syncHash.IsRunning = $false
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

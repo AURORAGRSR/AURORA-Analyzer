@@ -10,11 +10,25 @@
 # ====== 提权重启功能 ======
 function Restart-WithAdmin {
     try {
-        $scriptPath = $PSCommandPath
+        # 🔴 关键修复：使用 $global:MainScriptPath 而不是 $PSCommandPath
+        # 因为 Restart-WithAdmin 在 View-AdminElevation.ps1 中定义，$PSCommandPath 返回的是 View-AdminElevation.ps1 的路径
+        # 而我们需要的是 AURORA-AnalyzerLauncherGUI.ps1 的路径
+        $scriptPath = $global:MainScriptPath
+        if (-not $scriptPath -or -not (Test-Path $scriptPath)) {
+            # 回退方案：通过相对路径计算
+            $scriptPath = Join-Path (Split-Path -Parent (Split-Path -Parent $PSScriptRoot)) "Scripts\AURORA-AnalyzerLauncherGUI.ps1"
+        }
         
-        $arguments = "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$scriptPath`""
+        $arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$scriptPath`""
         if ($IsLaunchedByExe) {
             $arguments += " -LaunchedByExe"
+        }
+        
+        # 传递语言参数
+        if ($script:selectedLanguage) {
+            $arguments += " -Language $($script:selectedLanguage)"
+        } elseif ($env:AURORA_LANGUAGE) {
+            $arguments += " -Language $($env:AURORA_LANGUAGE)"
         }
         
         # 🔐 P0修复（AURORA-SEC-2026-001）：生成提权安全令牌
@@ -122,33 +136,3 @@ function Restart-WithAdmin {
         return $false
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

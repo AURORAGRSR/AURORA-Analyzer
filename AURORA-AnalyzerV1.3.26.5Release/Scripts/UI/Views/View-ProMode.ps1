@@ -894,8 +894,9 @@ function ShowProMode {
                     $aes.Padding = [System.Security.Cryptography.PaddingMode]::PKCS7
                     
                     $encryptor = $aes.CreateEncryptor()
-                    # 💥 核心修复：加密包含脚本路径的验证信息，而不是单纯的 nonce
-                    $plainText = "AURORA-AnalyzerLauncherGUI.ps1:$elevationToken"  # 包含脚本路径
+                    # 💥 核心修复：加密包含脚本路径和文件哈希列表的验证信息，确保提权重启后完整性检查可用
+                    $hashList = $global:PassedHashListFromExe
+                    $plainText = "AURORA-AnalyzerLauncherGUI.ps1:${elevationToken}:${hashList}"  # 包含脚本路径和哈希列表
                     $plainBytes = [System.Text.Encoding]::UTF8.GetBytes($plainText)
                     $cipherBytes = $encryptor.TransformFinalBlock($plainBytes, 0, $plainBytes.Length)
                     
@@ -1616,33 +1617,3 @@ function ShowProMode {
     [Environment]::SetEnvironmentVariable("AURORA_WD_PIPE", $null)
     [Environment]::SetEnvironmentVariable("AURORA_WD_SESSION", $null)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

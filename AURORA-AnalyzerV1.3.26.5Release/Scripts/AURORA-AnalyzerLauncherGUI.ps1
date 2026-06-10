@@ -15,7 +15,8 @@ Param(
     [string]$TokenPath,           # 提权时传递的令牌路径
     [string]$ExeVerified,         # 提权时传递的 EXE 验证标志
     [string]$HashPath,            # 提权时传递的哈希列表路径
-    [string]$ElevationTokenPath   # P0修复：提权安全令牌路径（AURORA-SEC-2026-001）
+    [string]$ElevationTokenPath,   # P0修复：提权安全令牌路径（AURORA-SEC-2026-001）
+    [string]$Language              # 界面语言（CHS/ENG），提权时传递
 )
 
 # ==========================================
@@ -34,6 +35,9 @@ $scriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyI
 
 # 🔴 关键修复：在模块加载前定义 $rootDir，供 AURORA-GUI-Functions.ps1 使用
 $rootDir = Split-Path -Parent $scriptDir
+
+# 🔴 关键修复：保存主脚本路径，供 Restart-WithAdmin 函数使用（因为 $PSCommandPath 在点号导入的脚本中返回的是定义文件的路径）
+$global:MainScriptPath = Join-Path $scriptDir "AURORA-AnalyzerLauncherGUI.ps1"
 
 # ==========================================
 # Security Module (moved to separate file)
@@ -103,6 +107,9 @@ if ($PSBoundParameters.ContainsKey('HashPath') -and $HashPath) {
 }
 if ($PSBoundParameters.ContainsKey('ElevationTokenPath') -and $ElevationTokenPath) {
     [Environment]::SetEnvironmentVariable("AURORA_ELEVATION_TOKEN_PATH", $ElevationTokenPath)
+}
+if ($PSBoundParameters.ContainsKey('Language') -and $Language) {
+    [Environment]::SetEnvironmentVariable("AURORA_LANGUAGE", $Language)
 }
 
 # 检测是否由 EXE 启动
@@ -182,11 +189,16 @@ if ($ElevationTokenPath -and (Test-Path $ElevationTokenPath)) {
                     $elevAes.Padding = [System.Security.Cryptography.PaddingMode]::PKCS7
 
                     $elevPlainBytes = $elevAes.CreateDecryptor().TransformFinalBlock($elevCipher, 0, $elevCipher.Length)
-                    $elevDecryptedHashList = [System.Text.Encoding]::UTF8.GetString($elevPlainBytes).TrimEnd("`r", "`n")
+                    $elevPlainText = [System.Text.Encoding]::UTF8.GetString($elevPlainBytes).TrimEnd("`r", "`n")
 
-                    if ($elevDecryptedHashList -and $elevDecryptedHashList.Contains("AURORA-AnalyzerLauncherGUI.ps1")) {
+                    # 解析三部分内容：scriptPath:elevationToken:hashList
+                    $elevParts2 = $elevPlainText -split ':', 3
+                    if ($elevParts2.Count -ge 2 -and $elevParts2[0] -eq "AURORA-AnalyzerLauncherGUI.ps1") {
                         $IsLaunchedByExe = $true
-                        $global:PassedHashListFromExe = $elevDecryptedHashList
+                        # 提取哈希列表（第三部分）
+                        if ($elevParts2.Count -ge 3) {
+                            $global:PassedHashListFromExe = $elevParts2[2]
+                        }
                         Write-Host "[安全] 提权令牌验证通过（令牌时效：$elevAge 秒）" -ForegroundColor Green
                     } else {
                         Write-Host "[安全] 提权令牌解密内容无效" -ForegroundColor Red
@@ -1094,22 +1106,3 @@ if ($script:debuggerWmiWatcher -ne $null) {
     } catch { Write-AuroraLog "WMI事件取消注册失败: $($_.Exception.Message)" -Level "Warning" }
 }
 $AURORA_WATCHDOG_ACTIVE = $false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

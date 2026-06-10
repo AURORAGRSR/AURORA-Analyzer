@@ -19,7 +19,7 @@ param()
 #region 全局变量
 
 $script:BackupDir = if ($PSScriptRoot) {
-    Join-Path $PSScriptRoot "SessionCache\backup"
+    Join-Path $PSScriptRoot "..\SessionCache\backup"
 } else {
     Join-Path $env:TEMP "AURORA-Backups"
 }
@@ -473,34 +473,3 @@ function Test-BackupIntegrity {
 # 函数在全局作用域中自动可用
 
 #endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

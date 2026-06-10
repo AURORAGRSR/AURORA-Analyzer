@@ -543,33 +543,3 @@ public class LoopAnimation : Animation
 
 # 导出程序集路径，供后续 Add-Type 使用
 $global:AURORA_Animation_Assembly = $engineDll
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

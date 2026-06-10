@@ -40,6 +40,8 @@ Param(
     [ValidateSet("Critical", "Error", "Warning", "Information", "Verbose")]
     [string]$Level,
     
+    [switch]$DebugMode,
+    
     [datetime]$StartTime,
     
     [datetime]$EndTime,
@@ -582,6 +584,12 @@ try {
     }
 } catch { Write-Debug "Non-critical operation failed: $($_.Exception.Message)" }
 $ErrorActionPreference = 'Stop'
+if ($DebugMode) {
+    $DebugPreference = 'Continue'
+    Write-Host "[DEBUG] 调试模式已启用" -ForegroundColor DarkGray
+} else {
+    $DebugPreference = 'SilentlyContinue'
+}
 $PSDefaultParameterValues['*:Encoding'] = 'UTF8'
 
 #region 功能函数
@@ -788,7 +796,7 @@ function Get-ResourceOptimizedStrategy {
         # 资源状态评估
         $memoryUsage = Get-MemoryUsage
         $systemLoad = Get-SystemLoad
-        $cpuInfos = Get-CimInstance Win32_Processor
+        $cpuInfos = Get-CimInstance -ClassName Win32_Processor -OperationTimeoutSec 30 -ErrorAction Stop
         $cpuCores = if ($cpuInfos -is [array]) {
             $cpuInfos | Measure-Object -Property NumberOfCores -Sum | Select-Object -ExpandProperty Sum
         } else {
@@ -874,7 +882,7 @@ function Get-ResourceOptimizedStrategy {
         }
     }
     catch {
-        Write-Debug "Error in Get-ResourceOptimizedStrategy: $($_.Exception.Message)"
+        Write-Warning "Get-ResourceOptimizedStrategy 发生异常: $($_.Exception.Message)"
         # 返回默认策略
         return @{
             "PerformanceLevel" = "MediumPerformance"
@@ -955,7 +963,7 @@ function Get-IntelligentCacheStrategy {
         }
     }
     catch {
-        Write-Debug "Error in Get-IntelligentCacheStrategy: $($_.Exception.Message)"
+        Write-Warning "Get-IntelligentCacheStrategy 发生异常: $($_.Exception.Message)"
         # 返回默认缓存策略
         return @{
             "Compression" = $DataSizeKB -gt 20000
@@ -1025,7 +1033,7 @@ function Optimize-FileOperations {
         }
     }
     catch {
-        Write-Debug "Error in Optimize-FileOperations: $($_.Exception.Message)"
+        Write-Warning "Optimize-FileOperations 发生异常: $($_.Exception.Message)"
         # 返回默认文件操作参数
         return @{
             "BufferSize" = 65536  # 64KB缓冲区
@@ -1065,8 +1073,8 @@ function Get-DiskPerformance {
     try {
         $diskInfo = @{}
         
-        # 获取磁盘基本信息
-        $disks = Get-CimInstance Win32_DiskDrive | Where-Object { $_.MediaType -eq "Fixed hard disk media" }
+        # 获取磁盘基本信息（添加超时保护，防止WMI挂起导致闪退）
+        $disks = Get-CimInstance -ClassName Win32_DiskDrive -OperationTimeoutSec 30 -ErrorAction Stop | Where-Object { $_.MediaType -eq "Fixed hard disk media" }
         
         if ($disks) {
             $diskInfo.Drives = @()
@@ -1104,7 +1112,7 @@ function Get-DiskPerformance {
                     
                     # 方法3：通过响应时间判断（备用方法）
                     if (-not $driveInfo.IsSSD) {
-                        $perfData = Get-CimInstance Win32_PerfFormattedData_PerfDisk_PhysicalDisk | Where-Object { $_.Name -like "*$($disk.DeviceID.Replace('\\.\\', ''))*" }
+                        $perfData = Get-CimInstance -ClassName Win32_PerfFormattedData_PerfDisk_PhysicalDisk -OperationTimeoutSec 15 -ErrorAction Stop | Where-Object { $_.Name -like "*$($disk.DeviceID.Replace('\\.\\', ''))*" }
                         if ($perfData -and $perfData.AvgDiskSecPerTransfer -lt 0.005) {
                             $driveInfo.IsSSD = $true
                         }
@@ -1119,7 +1127,7 @@ function Get-DiskPerformance {
         
         # 获取总体磁盘性能
         try {
-            $diskPerf = Get-CimInstance Win32_PerfFormattedData_PerfDisk_PhysicalDisk | Where-Object { $_.Name -eq "_Total" }
+            $diskPerf = Get-CimInstance -ClassName Win32_PerfFormattedData_PerfDisk_PhysicalDisk -OperationTimeoutSec 15 -ErrorAction Stop | Where-Object { $_.Name -eq "_Total" }
             if ($diskPerf) {
                 $diskInfo.TotalPerformance = @{
                     AvgDiskSecPerTransfer = $diskPerf.AvgDiskSecPerTransfer
@@ -1131,7 +1139,7 @@ function Get-DiskPerformance {
                 }
             }
         } catch {
-            Write-Debug "Error getting disk performance: $($_.Exception.Message)"
+            Write-Warning "Get-DiskPerformance: 获取磁盘性能数据时出错: $($_.Exception.Message)"
         }
         
         # 计算磁盘性能分数
@@ -1163,7 +1171,7 @@ function Get-DiskPerformance {
         
         return $diskInfo
     } catch {
-        Write-Debug "Error in Get-DiskPerformance: $($_.Exception.Message)"
+        Write-Warning "Get-DiskPerformance 发生异常: $($_.Exception.Message)"
         # 返回默认磁盘信息
         return @{
             Score = 40
@@ -1194,9 +1202,12 @@ function Get-SystemPerformanceScore {
             Write-Host $script:Loc['Perf_Average'] -ForegroundColor Red
         }
     #>
+    param(
+        [switch]$Silent
+    )
     try {
-        # 获取CPU信息
-        $cpuInfos = Get-CimInstance Win32_Processor | Select-Object Name, NumberOfCores, MaxClockSpeed
+        # 获取CPU信息（添加超时保护）
+        $cpuInfos = Get-CimInstance -ClassName Win32_Processor -OperationTimeoutSec 30 -ErrorAction Stop | Select-Object Name, NumberOfCores, MaxClockSpeed
         
         # 处理多个处理器的情况
         if ($cpuInfos -is [array]) {
@@ -1215,7 +1226,7 @@ function Get-SystemPerformanceScore {
         
         # 获取实时CPU频率
         try {
-            $cpuPerformance = Get-CimInstance Win32_PerfFormattedData_Counters_ProcessorInformation | 
+            $cpuPerformance = Get-CimInstance -ClassName Win32_PerfFormattedData_Counters_ProcessorInformation -OperationTimeoutSec 15 -ErrorAction Stop | 
                 Where-Object {$_.Name -eq "_Total"} | 
                 Select-Object -ExpandProperty PercentProcessorPerformance
             
@@ -1227,7 +1238,7 @@ function Get-SystemPerformanceScore {
         }
         
         # 获取内存信息
-        $memoryInfo = Get-CimInstance Win32_ComputerSystem | Select-Object TotalPhysicalMemory
+        $memoryInfo = Get-CimInstance -ClassName Win32_ComputerSystem -OperationTimeoutSec 30 -ErrorAction Stop | Select-Object TotalPhysicalMemory
         $totalMemoryGB = [math]::Round($memoryInfo.TotalPhysicalMemory / 1GB, 2)
         
         # 获取磁盘性能信息
@@ -1384,7 +1395,7 @@ function Get-OptimalChunkSize {
         }
         
         # 计算最佳并行度（仅用于显示）
-        $cpuInfos = Get-CimInstance Win32_Processor
+        $cpuInfos = Get-CimInstance -ClassName Win32_Processor -OperationTimeoutSec 30 -ErrorAction Stop
         
         # 处理多个处理器的情况
         if ($cpuInfos -is [array]) {
@@ -1516,19 +1527,19 @@ function Show-CacheInfo {
     #>
     param([object]$CacheItem)
     
-    Write-AuroraLog $script:Loc['Cache_Info'] -Level "Info"
-    Write-AuroraLog ($script:Loc['Cache_Created'] -f $CacheItem.Time.ToString('yyyy-MM-dd HH:mm:ss')) -Level "Success"
-    Write-AuroraLog ($script:Loc['Cache_DataCount'] -f $CacheItem.Data.Count) -Level "Success"
+    Write-Host $script:Loc['Cache_Info'] -ForegroundColor Cyan
+    Write-Host ($script:Loc['Cache_Created'] -f $CacheItem.Time.ToString('yyyy-MM-dd HH:mm:ss')) -ForegroundColor Green
+    Write-Host ($script:Loc['Cache_DataCount'] -f $CacheItem.Data.Count) -ForegroundColor Green
     if ($CacheItem.OriginalSize) {
-        Write-AuroraLog ($script:Loc['Cache_OriginalSize'] -f [Math]::Round($CacheItem.OriginalSize, 2)) -Level "Success"
+        Write-Host ($script:Loc['Cache_OriginalSize'] -f [Math]::Round($CacheItem.OriginalSize, 2)) -ForegroundColor Green
     }
     if ($CacheItem.CompressedSize) {
-        Write-AuroraLog ($script:Loc['Cache_CompressedSize'] -f [Math]::Round($CacheItem.CompressedSize, 2)) -Level "Success"
+        Write-Host ($script:Loc['Cache_CompressedSize'] -f [Math]::Round($CacheItem.CompressedSize, 2)) -ForegroundColor Green
     }
     if ($CacheItem.CompressionRatio) {
-        Write-AuroraLog ($script:Loc['Cache_CompressionRatio'] -f $CacheItem.CompressionRatio) -Level "Success"
+        Write-Host ($script:Loc['Cache_CompressionRatio'] -f $CacheItem.CompressionRatio) -ForegroundColor Green
     }
-    Write-AuroraLog ($script:Loc['Cache_ExpiryTime'] -f $CacheItem.Time.AddMinutes($script:cacheExpiryMinutes).ToString('yyyy-MM-dd HH:mm:ss')) -Level "Warning"
+    Write-Host ($script:Loc['Cache_ExpiryTime'] -f $CacheItem.Time.AddMinutes($script:cacheExpiryMinutes).ToString('yyyy-MM-dd HH:mm:ss')) -ForegroundColor Yellow
 }
 
 # 获取缓存使用选择函数
@@ -1637,7 +1648,7 @@ function Test-CacheIntegrity {
 }
 
 # 根据系统内存动态调整最大缓存项数
-$os = Get-CimInstance Win32_OperatingSystem
+$os = Get-CimInstance -ClassName Win32_OperatingSystem -OperationTimeoutSec 30 -ErrorAction Stop
 $totalMemoryGB = [math]::Round($os.TotalVisibleMemorySize / 1MB / 1024, 2)
 
 if ($totalMemoryGB -lt 8) {
@@ -1667,20 +1678,14 @@ function Load-KnowledgeBase {
         加载知识图谱文件
     .DESCRIPTION
         从JSON文件加载知识图谱数据并创建索引以加快查询速度
-    .RETURNS
-        布尔值，表示加载是否成功
-    .EXAMPLE
-        # 示例：加载知识图谱
-        $loadSuccess = Load-KnowledgeBase
-        if ($loadSuccess) {
-            Write-Host $script:Loc['KB_LoadSuccess'] -ForegroundColor Green
-        } else {
-            Write-Host $script:Loc['KB_LoadFail'] -ForegroundColor Red
-        }
+    .PARAMETER Silent
+        静默模式，不输出控制台消息
     #>
+    param([switch]$Silent)
+    
     try {
         # 知识图谱文件路径（在 Data 目录）
-        $kbPath = [System.IO.Path]::Combine($PSScriptRoot, "..\..\Data\AURORA-TechData.json")
+        $kbPath = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, "..\..\Data\AURORA-TechData.json"))
         
         # 检查文件是否存在
         if (-not (Test-Path -Path $kbPath)) {
@@ -1693,12 +1698,14 @@ function Load-KnowledgeBase {
         $script:knowledgeBase = $jsonContent | ConvertFrom-Json -ErrorAction Stop
         
         # 创建索引以加快查询速度
-        New-KnowledgeBaseIndex
+        New-KnowledgeBaseIndex -Silent:$Silent
         
         $script:knowledgeBaseLoaded = $true
         $script:knowledgeBaseLastLoaded = Get-Date
         
-        Write-Host ($script:Loc['KB_LoadedCount'] -f $script:knowledgeBase.categories.Count) -ForegroundColor Green
+        if (-not $Silent) {
+            Write-Host ($script:Loc['KB_LoadedCount'] -f $script:knowledgeBase.categories.Count) -ForegroundColor Green
+        }
         return $true
     } catch {
         Write-Host ($script:Loc['KB_LoadError'] -f $_.Exception.Message) -ForegroundColor Red
@@ -1713,11 +1720,11 @@ function New-KnowledgeBaseIndex {
         为知识图谱创建索引
     .DESCRIPTION
         基于事件ID、源和关键词创建索引以加快查询速度
-    .EXAMPLE
-        # 示例：创建知识图谱索引
-        New-KnowledgeBaseIndex
-        Write-Host $script:Loc['KB_IndexCreated'] -ForegroundColor Green
+    .PARAMETER Silent
+        静默模式，不输出控制台消息
     #>
+    param([switch]$Silent)
+    
     try {
         # 重置索引
         $script:knowledgeBaseIndex = @{
@@ -1760,7 +1767,9 @@ function New-KnowledgeBaseIndex {
             }
         }
         
-        Write-Host $script:Loc['KB_IndexCreateSuccess'] -ForegroundColor Green
+        if (-not $Silent) {
+            Write-Host $script:Loc['KB_IndexCreateSuccess'] -ForegroundColor Green
+        }
     } catch {
         Write-Host ($script:Loc['KB_IndexCreateError'] -f $_.Exception.Message) -ForegroundColor Red
     }
@@ -2274,7 +2283,7 @@ function Get-MemoryUsage {
     )
     
     try {
-        $os = Get-CimInstance Win32_OperatingSystem
+        $os = Get-CimInstance -ClassName Win32_OperatingSystem -OperationTimeoutSec 30 -ErrorAction Stop
         $totalMemory = $os.TotalVisibleMemorySize / 1MB
         $freeMemory = $os.FreePhysicalMemory / 1MB
         $usedMemory = $totalMemory - $freeMemory
@@ -2350,7 +2359,7 @@ function Get-SystemLoad {
         Write-Host ($script:Loc['Perf_SystemLoad'] -f $systemLoad) -ForegroundColor Yellow
     #>
     try {
-        $cpu = Get-CimInstance Win32_Processor | Select-Object -ExpandProperty LoadPercentage
+        $cpu = Get-CimInstance -ClassName Win32_Processor -OperationTimeoutSec 15 -ErrorAction Stop | Select-Object -ExpandProperty LoadPercentage
         return $cpu
     } catch {
         # 出错时返回默认值
@@ -2391,7 +2400,7 @@ function Get-OptimalParallelism {
         }
         
         # 获取CPU信息，包括逻辑核心数（超线程）
-        $cpuInfos = Get-CimInstance Win32_Processor
+        $cpuInfos = Get-CimInstance -ClassName Win32_Processor -OperationTimeoutSec 30 -ErrorAction Stop
         
         # 处理多个处理器的情况
         if ($cpuInfos -is [array]) {
@@ -2408,7 +2417,7 @@ function Get-OptimalParallelism {
         $memoryUsage = Get-MemoryUsage
         
         # 获取内存信息
-        $memoryInfo = Get-CimInstance Win32_ComputerSystem
+        $memoryInfo = Get-CimInstance -ClassName Win32_ComputerSystem -OperationTimeoutSec 30 -ErrorAction Stop
         $totalMemoryGB = [math]::Round($memoryInfo.TotalPhysicalMemory / 1GB, 2)
         
         # 获取磁盘性能信息
@@ -3008,7 +3017,7 @@ function Set-CachedLogData {
         # 只有当缓存策略允许压缩时，才考虑其他因素
         if ($cacheStrategy.Compression) {
             # 获取可用内存
-            $os = Get-CimInstance Win32_OperatingSystem
+            $os = Get-CimInstance -ClassName Win32_OperatingSystem -OperationTimeoutSec 30 -ErrorAction Stop
             $totalMemory = $os.TotalVisibleMemorySize / 1MB
             $freeMemory = $os.FreePhysicalMemory / 1MB
             $availableMemory = $freeMemory
@@ -3482,19 +3491,111 @@ function Get-RunspacePool {
             Write-Warning ($script:Loc['Parallel_ThreadWarning'] -f $ThreadCount, $maxThreads)
         }
         
-        # 检查是否需要创建新的RunspacePool
-        if (!$script:runspacePoolCreated -or $script:runspacePool -eq $null -or $script:runspacePool.IsDisposed) {
-            # 创建新的RunspacePool
-            $script:runspacePool = [RunspaceFactory]::CreateRunspacePool(1, $ThreadCount)
-            $script:runspacePool.Open()
-            $script:runspacePoolCreated = $true
-            Write-Debug "已创建新的RunspacePool，线程数: $ThreadCount"
+        # 注意：为避免跨任务复用已释放的 RunspacePool 导致闪退，
+        # 改为每次都创建全新的独立池，不再复用全局池
+        # 安全关闭全局旧池（如果存在）—— 用 try/catch 防止 Dispose 崩溃
+        if ($script:runspacePool -ne $null) {
+            try { $script:runspacePool.Close() } catch { Write-Debug "RunspacePool.Close() 异常: $($_.Exception.Message)" }
+            try { $script:runspacePool.Dispose() } catch { Write-Debug "RunspacePool.Dispose() 异常: $($_.Exception.Message)" }
         }
+        
+        $script:runspacePool = $null
+        $script:runspacePoolCreated = $false
+        
+        # 创建全新的 RunspacePool
+        $script:runspacePool = [RunspaceFactory]::CreateRunspacePool(1, $ThreadCount)
+        $script:runspacePool.Open()
+        $script:runspacePoolCreated = $true
+        Write-Debug "已创建新的RunspacePool，线程数: $ThreadCount"
         
         return $script:runspacePool
     } catch {
         Write-Error ($script:Loc['Parallel_RunspaceCreateError'] -f $_.Exception.Message)
         return $null
+    }
+}
+
+# 并发任务执行函数：高危事件扫描（解决 ScriptBlock 作用域问题）
+function Invoke-HighRiskScanTask {
+    <#
+    .SYNOPSIS
+        执行单个 scope 的高危事件扫描任务
+    .DESCRIPTION
+        从 Invoke-ParallelTask 的 ScriptBlock 中抽取出独立函数，
+        解决 ScriptBlock 内联代码在并行调用上下文中的作用域/序列化问题。
+    #>
+    param(
+        $scopeData,
+        $performanceScore,
+        $optimalChunkSize,
+        $logScanningStrategy,
+        $cacheStrategy
+    )
+    
+    Write-Host "[TPL任务] 开始执行，日志类型: $($scopeData.LogType)" -ForegroundColor DarkGray
+    
+    try {
+        Write-Host "[TPL任务] 参数验证通过，开始调用 Get-HighRiskEvents..." -ForegroundColor DarkGray
+        
+        # 高危事件扫描
+        $highRiskEvents = Get-HighRiskEvents `
+            -StartTime $scopeData.StartTime `
+            -EndTime $scopeData.EndTime `
+            -LogType $scopeData.LogType `
+            -EventId $scopeData.EventId `
+            -ProviderName $scopeData.ProviderName `
+            -Level $scopeData.Level `
+            -PerformanceScore $performanceScore `
+            -OptimalChunkSize $optimalChunkSize `
+            -LogScanningStrategy $logScanningStrategy `
+            -CacheStrategy $cacheStrategy `
+            -ForceRescan:$true `
+            -Silent:$true
+        
+        Write-Host "[TPL任务] Get-HighRiskEvents 调用完成，获取 $($highRiskEvents.Count) 条事件" -ForegroundColor DarkGray
+        
+        # 统计事件类型
+        $critical = 0
+        $errors = 0
+        $warnings = 0
+        
+        foreach ($event in $highRiskEvents) {
+            if ($event.Level -eq 1) {
+                $critical++
+            } elseif ($event.Level -eq 2) {
+                $errors++
+            } elseif ($event.Level -eq 3) {
+                $warnings++
+            }
+        }
+        
+        Write-Host "[TPL任务] 事件统计完成: 严重=$critical, 错误=$errors, 警告=$warnings" -ForegroundColor DarkGray
+        
+        return @{
+            Scope = $scopeData
+            HighRiskCount = $critical + $errors + $warnings
+            CriticalCount = $critical
+            ErrorCount = $errors
+            WarningCount = $warnings
+            TotalCount = $highRiskEvents.Count
+            Success = $true
+        }
+    }
+    catch {
+        Write-Host "[TPL任务] 发生异常: $($_.Exception.Message)" -ForegroundColor Red
+        if ($_.ScriptStackTrace) {
+            Write-Host $_.ScriptStackTrace -ForegroundColor Yellow
+        }
+        return @{
+            Scope = $scopeData
+            HighRiskCount = 0
+            CriticalCount = 0
+            ErrorCount = 0
+            WarningCount = 0
+            TotalCount = 0
+            Success = $false
+            ErrorMessage = $_.Exception.Message
+        }
     }
 }
 
@@ -3584,7 +3685,9 @@ function Invoke-ParallelTask {
         foreach ($task in $Tasks) {
             try {
                 # 执行任务
+                Write-Host "[TPL] 开始执行任务..." -ForegroundColor DarkGray
                 $result = & $task.ScriptBlock @($task.Parameters)
+                Write-Host "[TPL] 任务执行完成" -ForegroundColor DarkGray
                 
                 # 添加结果到线程安全集合
                 if ($result) {
@@ -3592,8 +3695,25 @@ function Invoke-ParallelTask {
                 }
             }
             catch {
-                # 忽略单个任务的错误
-                Write-Debug "执行任务时出错: $($_.Exception.Message)"
+                # 记录任务执行错误 - 注意：$task 可能没有 LogType 属性
+                $taskName = if ($task.LogType) { $task.LogType } else { "Unknown" }
+                $errorMsg = "执行任务 [$taskName] 时出错: $($_.Exception.Message)"
+                Write-Host $errorMsg -ForegroundColor Red
+                if ($_.ScriptStackTrace) {
+                    Write-Host $_.ScriptStackTrace -ForegroundColor Yellow
+                }
+                
+                # 添加错误结果
+                $results.Add(@{
+                    LogType = $taskName
+                    Success = $false
+                    ErrorMessage = $_.Exception.Message
+                    HighRiskCount = 0
+                    CriticalCount = 0
+                    ErrorCount = 0
+                    WarningCount = 0
+                    TotalCount = 0
+                })
             }
             finally {
                 # 更新进度
@@ -3644,22 +3764,31 @@ function Close-RunspacePool {
     )
     
     try {
-        if ($script:runspacePoolCreated -and $script:runspacePool -ne $null -and !$script:runspacePool.IsDisposed) {
-            $script:runspacePool.Close()
-            $script:runspacePool.Dispose()
-            $script:runspacePoolCreated = $false
-            $script:runspacePool = $null
+        if ($script:runspacePoolCreated -and $script:runspacePool -ne $null) {
+            # 注意：.IsDisposed 访问可能抛出 ObjectDisposedException，需要用 try/catch 保护
+            $isDisposed = $false
+            try {
+                $isDisposed = $script:runspacePool.IsDisposed
+            } catch {
+                $isDisposed = $true
+            }
             
-            if (-not $Silent) {
-                Write-Debug "RunspacePool已成功关闭并释放"
+            if (-not $isDisposed) {
+                $script:runspacePool.Close()
+                $script:runspacePool.Dispose()
+                $script:runspacePoolCreated = $false
+                $script:runspacePool = $null
+                
+                if (-not $Silent) {
+                    Write-Debug "RunspacePool已成功关闭并释放"
+                }
+                return $true
             }
-            return $true
-        } else {
-            if (-not $Silent) {
-                Write-Debug "RunspacePool不存在或已被释放，无需关闭"
-            }
-            return $false
         }
+        if (-not $Silent) {
+            Write-Debug "RunspacePool不存在或已被释放，无需关闭"
+        }
+        return $false
     } catch {
         if (-not $Silent) {
             Write-Error ($script:Loc['Parallel_RunspaceCloseError'] -f $_.Exception.Message)
@@ -4716,11 +4845,13 @@ function Get-HighRiskEvents {
     }
     
     try {
-        # 使用传入的性能分数和最佳分块大小，如果没有传入则计算
-        if ($PerformanceScore -eq 0) {
-            $performanceScore = Get-SystemPerformanceScore
+        # 使用传入的性能分数和最佳分块大小；始终从参数初始化局部变量避免空值降级调用
+        $performanceScore = $PerformanceScore
+        if ($performanceScore -eq 0) {
+            $performanceScore = Get-SystemPerformanceScore -Silent:$Silent
         }
-        if ($OptimalChunkSize -eq 0) {
+        $optimalChunkSize = $OptimalChunkSize
+        if ($optimalChunkSize -eq 0) {
             $optimalChunkSize = Get-OptimalChunkSize -PerformanceScore $performanceScore -LogType $LogType
         }
         
@@ -4765,8 +4896,8 @@ function Get-HighRiskEvents {
             $logScanningStrategy = Get-ResourceOptimizedStrategy -PerformanceScore $performanceScore -TaskType "LogScanning"
         }
 
-        # 获取CPU核心数
-        $cpuInfos = Get-CimInstance Win32_Processor
+        # 获取CPU核心数（添加超时保护）
+        $cpuInfos = Get-CimInstance -ClassName Win32_Processor -OperationTimeoutSec 30 -ErrorAction Stop
         $cpuCores = if ($cpuInfos -is [array]) {
             $cpuInfos | Measure-Object -Property NumberOfCores -Sum | Select-Object -ExpandProperty Sum
         } else {
@@ -4813,8 +4944,10 @@ function Get-HighRiskEvents {
         $totalBatches = $batches.Count
         $processedBatches = 0
         
-        # 获取或创建全局RunspacePool
-        $runspacePool = Get-RunspacePool -ThreadCount $threadCount
+        # 注意：由于 Get-HighRiskEvents 可能被 Parallel.ForEach 并发调用，
+        # 必须使用本地 RunspacePool，不能复用全局池，避免竞态条件闪退
+        $localRunspacePool = [RunspaceFactory]::CreateRunspacePool(1, $threadCount)
+        $localRunspacePool.Open()
         
         $jobs = @()
         
@@ -4891,7 +5024,7 @@ function Get-HighRiskEvents {
             }
             
             $powershell = [PowerShell]::Create()
-            $powershell.RunspacePool = $runspacePool
+            $powershell.RunspacePool = $localRunspacePool
             $powershell.AddScript($scriptBlock).AddArgument($batch.Chunks).AddArgument($cacheLogType).AddArgument($EventId).AddArgument($ProviderName).AddArgument($Level)
             
             $job = $powershell.BeginInvoke()
@@ -4941,8 +5074,9 @@ function Get-HighRiskEvents {
             Start-Sleep -Milliseconds 100
         }
         
-        # 关闭RunspacePool
-        Close-RunspacePool -Silent $true
+        # 关闭本地RunspacePool（避免与Parallel.ForEach中其他任务竞争全局池）
+        try { $localRunspacePool.Close() } catch { Write-Debug "本地RunspacePool.Close() 异常: $($_.Exception.Message)" }
+        try { $localRunspacePool.Dispose() } catch { Write-Debug "本地RunspacePool.Dispose() 异常: $($_.Exception.Message)" }
         
         # 扫描完成后，更新总高危事件数为实际发现的事件数
         $totalEventCount = $allEvents.Count
@@ -4979,8 +5113,6 @@ function Get-HighRiskEvents {
                 Write-Host $script:Loc['KB_BatchDone'] -ForegroundColor Green
             }
         }
-        
-        # 注意：不再关闭RunspacePool，留作后续使用
         
         # 将结果存入缓存
         if (!$cacheStrategy) {
@@ -5060,8 +5192,11 @@ function Get-FullSystemLog {
         return $highRiskCachedData
     }
     
+    # 使用不带事件数量的简洁 Activity 标题（用于 GUI 进度条）
+    $fullLogActivity = "【完整 $LogType 日志读取完成】"
+    
     if (-not $Silent) {
-        Write-CustomProgress -Activity ($script:Loc['FullLog_ReadComplete'] -f $LogType, '') -Status $script:Loc['Progress_Initializing'] -PercentComplete 0
+        Write-CustomProgress -Activity $fullLogActivity -Status $script:Loc['Progress_Initializing'] -PercentComplete 0
         # 强制刷新输出缓冲区
         [System.Console]::Out.Flush()
     }
@@ -5070,7 +5205,7 @@ function Get-FullSystemLog {
     $totalEventCount = $TotalEventCount
     if ($totalEventCount -eq 0) {
         if (-not $Silent) {
-            Write-CustomProgress -Activity ($script:Loc['FullLog_ReadComplete'] -f $LogType, '') -Status $script:Loc['Progress_GettingTotalLogs'] -PercentComplete 20
+            Write-CustomProgress -Activity $fullLogActivity -Status $script:Loc['Progress_GettingTotalLogs'] -PercentComplete 20
             # 强制刷新输出缓冲区
             [System.Console]::Out.Flush()
         }
@@ -5118,14 +5253,14 @@ function Get-FullSystemLog {
         
         if (-not $Silent) {
             # 显示获取总日志数的进度
-            Write-CustomProgress -Activity ($script:Loc['FullLog_ReadComplete'] -f $LogType, '') -Status ($script:Loc['Progress_GotTotalLogs'] -f $totalEventCount) -PercentComplete 40
+            Write-CustomProgress -Activity $fullLogActivity -Status ($script:Loc['Progress_GotTotalLogs'] -f $totalEventCount) -PercentComplete 40
             # 强制刷新输出缓冲区
             [System.Console]::Out.Flush()
         }
     } else {
         # 使用传入的总日志数，显示确认信息
         if (-not $Silent) {
-            Write-CustomProgress -Activity ($script:Loc['FullLog_ReadComplete'] -f $LogType, '') -Status ($script:Loc['Progress_UsingTotalLogs'] -f $totalEventCount) -PercentComplete 40
+            Write-CustomProgress -Activity $fullLogActivity -Status ($script:Loc['Progress_UsingTotalLogs'] -f $totalEventCount) -PercentComplete 40
             # 强制刷新输出缓冲区
             [System.Console]::Out.Flush()
         }
@@ -5162,7 +5297,7 @@ function Get-FullSystemLog {
         
         # 直接获取所有事件
         if (-not $Silent) {
-            Write-CustomProgress -Activity ($script:Loc['FullLog_ReadComplete'] -f $LogType, '') -Status $script:Loc['Progress_DirectFetch'] -PercentComplete 60
+            Write-CustomProgress -Activity $fullLogActivity -Status $script:Loc['Progress_DirectFetch'] -PercentComplete 60
             # 强制刷新输出缓冲区
             [System.Console]::Out.Flush()
         }
@@ -5215,9 +5350,9 @@ function Get-FullSystemLog {
         # 基于实际采集的事件数计算最终进度
         if ($totalEventCount -gt 0) {
             $finalPercent = [Math]::Min(100, [Math]::Round(($all.Count / $totalEventCount) * 100))
-            Write-CustomProgress -Activity ($script:Loc['FullLog_ReadComplete'] -f $LogType, '') -Status "已采集 $($all.Count)/$totalEventCount 条事件 | 读取完成" -PercentComplete $finalPercent
+            Write-CustomProgress -Activity $fullLogActivity -Status "已采集 $($all.Count)/$totalEventCount 条事件 | 读取完成" -PercentComplete $finalPercent
         } else {
-            Write-CustomProgress -Activity ($script:Loc['FullLog_ReadComplete'] -f $LogType, '') -Status "已采集 $($all.Count) 条事件 | 读取完成" -PercentComplete 100
+            Write-CustomProgress -Activity $fullLogActivity -Status "已采集 $($all.Count) 条事件 | 读取完成" -PercentComplete 100
         }
         # 强制刷新输出缓冲区
         [System.Console]::Out.Flush()
@@ -5293,7 +5428,7 @@ function New-LogReport {
     $Events = $validEvents
 
     # 优化：预计算系统信息，减少重复调用
-    $osInfo = (Get-CimInstance Win32_OperatingSystem).Caption
+    $osInfo = (Get-CimInstance -ClassName Win32_OperatingSystem -OperationTimeoutSec 30 -ErrorAction Stop).Caption
     $computerName = $env:COMPUTERNAME
     $exportTime = (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
     
@@ -5625,6 +5760,9 @@ function New-LogReport {
                     $currentBatch++
                     $batchStartTime = Get-Date
                     
+                    # 用于收集CSV行的变量
+                    $csvLines = @()
+                    
                     # 处理当前批次
                     $processedBatch = $batch | ForEach-Object {
                         $totalProcessed++
@@ -5664,25 +5802,25 @@ function New-LogReport {
                             $msg
                         } else { $script:Loc['Placeholder_NoMessage'] }
                     
-                    # 确保CSV格式正确
-                    $message = $message -replace '"', '""'
-                    $csvLine = '"' + $timeCreated + '","' + $id + '","' + $levelDisplayName + '","' + $providerName + '","' + $message + '"'
-                    
-                    # 添加到批处理
-                    $batch += $csvLine
-                    
-                    # 批处理满时写入
-                    if ($batch.Count -eq $batchSize) {
-                        $streamWriter.Write(($batch -join "`n"))
-                        $streamWriter.WriteLine()
-                        $batch = @()
-                    }
+                        # 确保CSV格式正确
+                        $message = $message -replace '"', '""'
+                        $csvLine = '"' + $timeCreated + '","' + $id + '","' + $levelDisplayName + '","' + $providerName + '","' + $message + '"'
+                        
+                        # 添加到CSV行集合
+                        $csvLines += $csvLine
+                        
+                        # 当收集的行数达到批次大小时写入
+                        if ($csvLines.Count -eq $batchSize) {
+                            $streamWriter.Write(($csvLines -join "`n"))
+                            $streamWriter.WriteLine()
+                            $csvLines = @()
+                        }
                     }
                 }
                 
                 # 写入剩余数据
-                if ($batch.Count -gt 0) {
-                    $streamWriter.Write(($batch -join "`n"))
+                if ($csvLines.Count -gt 0) {
+                    $streamWriter.Write(($csvLines -join "`n"))
                     $streamWriter.WriteLine()
                 }
             }
@@ -5888,9 +6026,9 @@ function New-LogReport {
         [System.Console]::Out.Flush()
         # 添加换行，确保已导出消息单独占一行
         Write-Host $script:Loc['Report_Exported'] -ForegroundColor Cyan
-        Write-Host ($script:Loc['Report_CSVPath'] -f $csvPath) -ForegroundColor Cyan
-        Write-Host ($script:Loc['Report_JSONPath'] -f $jsonPath) -ForegroundColor Cyan
-        Write-Host ($script:Loc['Report_XMLPath'] -f $xmlPath) -ForegroundColor Cyan
+        Write-Host ($script:Loc['Report_CSVPath'] -f (Resolve-Path $csvPath -ErrorAction SilentlyContinue).Path) -ForegroundColor Cyan
+        Write-Host ($script:Loc['Report_JSONPath'] -f (Resolve-Path $jsonPath -ErrorAction SilentlyContinue).Path) -ForegroundColor Cyan
+        Write-Host ($script:Loc['Report_XMLPath'] -f (Resolve-Path $xmlPath -ErrorAction SilentlyContinue).Path) -ForegroundColor Cyan
     }
     catch {
         Write-Host ($script:Loc['Report_SaveFail'] -f $_.Exception.Message) -ForegroundColor Red
@@ -5927,7 +6065,7 @@ try {
     # --- 解析输出路径 ---
     if ([string]::IsNullOrWhiteSpace($OutputPath)) {
         # 使用脚本所在目录的父目录（根目录）作为默认输出路径
-        $outDir = [System.IO.Path]::Combine($PSScriptRoot, "..\..\UserLogs")
+        $outDir = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, "..\..\UserLogs"))
     } else {
         # 增强路径验证，防止路径注入攻击
         try {
@@ -6211,7 +6349,10 @@ try {
     
     Write-Host ($script:Loc['Scope_Validated'] -f $scopes.Count) -ForegroundColor Green
 
+    Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━ 评估系统性能 ━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor DarkGray
+
     # === 新逻辑：先评估系统性能，再扫描高危事件 ===
+    Write-Verbose "[DEBUG] 开始性能评估阶段"
     if (-not $Silent) {
         Write-Host $script:Loc['Perf_Evaluating'] -ForegroundColor Cyan
     }
@@ -6221,18 +6362,30 @@ try {
         $global:syncHash['CurrentStatus'] = $script:Loc['Stage_AssessingPerformance']
     }
     # 评估系统性能并计算最佳分块大小
+    Write-Verbose "[DEBUG] 调用 Get-SystemPerformanceScore..."
     $performanceScore = Get-SystemPerformanceScore
+    Write-Verbose "[DEBUG] 性能分数: $performanceScore"
     $optimalChunkSize = Get-OptimalChunkSize -PerformanceScore $performanceScore -LogType $scopes[0].LogType
     
     # 获取资源优化策略
+    Write-Verbose "[DEBUG] 调用 Get-ResourceOptimizedStrategy..."
     $logScanningStrategy = Get-ResourceOptimizedStrategy -PerformanceScore $performanceScore -TaskType "LogScanning"
     $reportGenerationStrategy = Get-ResourceOptimizedStrategy -PerformanceScore $performanceScore -TaskType "ReportGeneration"
     
     # 获取智能缓存策略
+    Write-Verbose "[DEBUG] 调用 Get-IntelligentCacheStrategy..."
     $cacheStrategy = Get-IntelligentCacheStrategy -PerformanceScore $performanceScore -DataSizeKB 10000
     
     # 获取文件操作优化参数
+    Write-Verbose "[DEBUG] 调用 Optimize-FileOperations..."
     $fileOperationParams = Optimize-FileOperations -PerformanceScore $performanceScore
+    
+    # 预加载知识图谱（避免TPL任务中重复加载消息泄露）
+    if (-not $script:knowledgeBaseLoaded) {
+        Load-KnowledgeBase
+    }
+    
+    Write-Verbose "[DEBUG] 性能评估完成"
     
     if (-not $Silent) {
         Write-Host $script:Loc['Perf_ResourceStrategy'] -ForegroundColor Cyan
@@ -6264,43 +6417,63 @@ try {
     $useCacheChoices = @{}  # 记录每个日志类型的缓存选择
 
     # === Phase 3.4 核心优化：多日志类型并发导出 ===
-    # 当有多个 scope 时，使用 Runspace 并发处理
+    Write-Host "━━━━━━━━━━━━━━━━━━━━━━ 扫描高危事件 + 导出 ━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor DarkGray
+
+    # 当有多个 scope 时，使用 Invoke-ParallelTask 并发处理高危事件扫描阶段
     $concurrentMode = ($scopes.Count -gt 1) -and (-not $Silent.IsPresent)
+    
+    # 初始化统计变量，防止跨作用域数据污染
+    $totalHigh = 0
+    $critical = 0
+    $errors = 0
+    $warnings = 0
+    $totalEventCount = 0
     
     if ($concurrentMode) {
         Write-Host $script:Loc['Concurrent_Start'] -ForegroundColor Green
         Write-Host ($script:Loc['Concurrent_LogCount'] -f $scopes.Count) -ForegroundColor Cyan
         Write-Host ($script:Loc['Concurrent_Speedup'] -f [Math]::Min($scopes.Count, 3)) -ForegroundColor Cyan
         
-        # Phase 3.4 核心优化：并发执行多个日志类型的导出
-        # 使用已有的 Invoke-ParallelTask 函数（L3757）
-        $maxThreads = [Math]::Min($scopes.Count, 3)  # 最多 3 个并发线程
+        # Phase 3.4 核心优化：并发执行多个日志类型的高危事件扫描
+        $maxThreads = [Math]::Min($scopes.Count, 3)
         Write-Host ($script:Loc['Concurrent_MaxThreads'] -f $maxThreads) -ForegroundColor Cyan
         
-        # 为每个 scope 创建任务
+        # 为每个 scope 创建并发任务
         $tasks = foreach ($scope in $scopes) {
             @{
-                LogType = $scope.LogType
-                StartTime = $scope.StartTime
-                EndTime = $scope.EndTime
-                EventId = $scope.EventId
-                ProviderName = $scope.ProviderName
-                Level = $scope.Level
-                ExportChoice = $exportChoice
-                TrendAnalysisChoice = $trendAnalysisChoice
+                # ScriptBlock 调用独立的脚本级函数，消除作用域/序列化风险
+                ScriptBlock = {
+                    param($scopeData, $performanceScore, $optimalChunkSize, $logScanningStrategy, $cacheStrategy)
+                    Invoke-HighRiskScanTask $scopeData $performanceScore $optimalChunkSize $logScanningStrategy $cacheStrategy
+                }
+                # Parameters 是传递给 ScriptBlock 的参数数组
+                Parameters = @(
+                    $scope,
+                    $performanceScore,
+                    $optimalChunkSize,
+                    $logScanningStrategy,
+                    $cacheStrategy
+                )
             }
         }
         
         Write-Host $script:Loc['Concurrent_Launching'] -ForegroundColor Cyan
-        $parallelResults = Invoke-ParallelTask -Tasks $tasks -MaxThreads $maxThreads -PerformanceScore $performanceScore
+        $parallelResults = Invoke-ParallelTask -Tasks $tasks -ThreadCount $maxThreads -Silent:$false
         
         # 处理并行结果
         Write-Host $script:Loc['Concurrent_Merging'] -ForegroundColor Cyan
         foreach ($result in $parallelResults) {
-            if ($result.Success) {
-                # 标记该 scope 已由并行任务处理
+            if ($result -and $result.Success) {
+                # 将结果存入 scope 对象，供后续循环使用
                 $scopeIndex = $scopes.IndexOf($result.Scope)
                 if ($scopeIndex -ge 0) {
+                    $scopes[$scopeIndex].HighRiskEvents = $result.HighRiskEvents
+                    $scopes[$scopeIndex].HighRiskStats = @{
+                        HighRiskCount = $result.HighRiskCount
+                        CriticalCount = $result.CriticalCount
+                        ErrorCount = $result.ErrorCount
+                        WarningCount = $result.WarningCount
+                    }
                     $scopes[$scopeIndex].ProcessedByParallelTask = $true
                 }
                 
@@ -6311,6 +6484,9 @@ try {
                 $warnings += $result.WarningCount
                 $totalEventCount += $result.TotalCount
             }
+            elseif ($result -and -not $result.Success) {
+                Write-Warning "并发处理 $($result.Scope.LogType) 失败: $($result.ErrorMessage)"
+            }
         }
         
         Write-Host $script:Loc['Concurrent_Done'] -ForegroundColor Green
@@ -6320,14 +6496,47 @@ try {
     for ($scopeIndex = 0; $scopeIndex -lt $scopes.Count; $scopeIndex++) {
         $scope = $scopes[$scopeIndex]
         
-        # Phase 3.4 并发模式：检查是否需要跳过（由并行任务处理）
-        if ($concurrentMode -and $scope.ProcessedByParallelTask) {
-            Write-Host ($script:Loc['Concurrent_Skipped'] -f $scope.LogType) -ForegroundColor Green
-            continue
+        # Phase 3.4 并发模式：如果已由并行任务处理，使用缓存的结果
+        # 注意：不再使用 continue，否则会导致导出、趋势分析等步骤全部被跳过！
+        $isParallelProcessed = $concurrentMode -and $scope.ProcessedByParallelTask
+        
+        if ($isParallelProcessed) {
+            # 从并行结果中恢复数据
+            if ($scope.HighRiskEvents) {
+                $highRiskEvents = $scope.HighRiskEvents
+                $totalHigh = $scope.HighRiskStats.HighRiskCount
+                $critical = $scope.HighRiskStats.CriticalCount
+                $errors = $scope.HighRiskStats.ErrorCount
+                $warnings = $scope.HighRiskStats.WarningCount
+            }
+            
+            # 获取总日志数
+            $totalEventCount = 0
+            $totalEventsCacheKey = Get-CacheKey -LogType "$($scope.LogType)-Full" -StartTime $scope.StartTime -EndTime $scope.EndTime -EventId $scope.EventId -ProviderName $scope.ProviderName -Level $scope.Level
+            $totalEventsData = Get-CachedLogData -CacheKey $totalEventsCacheKey -Silent $true
+            if ($totalEventsData) {
+                $totalEventCount = $totalEventsData.Count
+            } else {
+                try {
+                    $totalEvents = Get-WinEvent -FilterHashtable @{ LogName = $scope.LogType; StartTime = $scope.StartTime; EndTime = $scope.EndTime } -ErrorAction SilentlyContinue
+                    $totalEventCount = if ($totalEvents) { $totalEvents.Count } else { 0 }
+                } catch {
+                    $totalEventCount = 0
+                }
+            }
+            
+            Write-Host ($script:Loc['Concurrent_Skipped'] -f $scope.LogType) -ForegroundColor Cyan
+            
+            # 跳过扫描相关逻辑，直接进入后续处理
+            $skipHighRiskScan = $true
+            $skipHealthAssessment = $false
+        }
+        else {
+            $skipHighRiskScan = $false
         }
         
+        if (-not $skipHighRiskScan) {
         # === 【断点续传修复】高危事件扫描 ===
-        $skipHighRiskScan = $false
         
         if ($restoreMode -and $restoredSession.Progress -ge 60) {
             Write-Host ($script:Loc['Resume_SkipScan'] -f $restoredSession.Progress) -ForegroundColor Green
@@ -6462,6 +6671,7 @@ try {
         }
         }
         # === 【断点续传修复：高危事件扫描结束】===
+        }
 
         # === 【断点续传修复】系统健康评估 ===
         $skipHealthAssessment = $false
@@ -6968,33 +7178,47 @@ try {
     }
 }
 catch {
-    if (-not $Silent) {
-        Write-Host ($script:Loc['Final_Error'] -f $_.Exception.Message) -ForegroundColor Red
-        if ($_.Exception.Message -match '拒绝访问|Access is denied') {
-            Write-Host $script:Loc['Final_ErrorHint'] -ForegroundColor Yellow
-        }
-        # 仅在非 GUI 的独立控制台模式下，才要求按回车退出
-        if ($null -eq (Get-Variable -Name "syncHash" -Scope Global -ErrorAction SilentlyContinue)) {
-            Write-Host $script:Loc['Compat_PressEnter'] -ForegroundColor Gray
-            Read-Host | Out-Null
-        }
+    # 始终输出错误信息（不受 Silent 模式限制，防止闪退时无任何诊断信息）
+    $errorMessage = $_.Exception.Message
+    $errorStack = if ($_.ScriptStackTrace) { $_.ScriptStackTrace } else { "无堆栈跟踪" }
+    
+    Write-Host "========================================" -ForegroundColor Red
+    Write-Host " AURORA-Analyzer PRO 运行异常终止" -ForegroundColor Red
+    Write-Host "========================================" -ForegroundColor Red
+    Write-Host ($script:Loc['Final_Error'] -f $errorMessage) -ForegroundColor Red
+    Write-Host "异常堆栈: $errorStack" -ForegroundColor Yellow
+    
+    if ($errorMessage -match '拒绝访问|Access is denied') {
+        Write-Host $script:Loc['Final_ErrorHint'] -ForegroundColor Yellow
     }
+    
+    # 尝试写入崩溃日志文件，供事后分析
+    try {
+        $logDir = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, "..\..\UserLogs"))
+        if (-not (Test-Path $logDir)) { New-Item -Path $logDir -ItemType Directory -Force | Out-Null }
+        $crashLogPath = [System.IO.Path]::Combine($logDir, "CrashLog_$(Get-Date -Format 'yyyyMMdd_HHmmss').log")
+        $crashContent = @"
+AURORA-Analyzer PRO Crash Report
+================================
+时间: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
+异常消息: $errorMessage
+异常类型: $($_.Exception.GetType().FullName)
+脚本堆栈: $errorStack
+WMI状态: $((Get-CimInstance -ClassName Win32_ComputerSystem -OperationTimeoutSec 5 -ErrorAction SilentlyContinue | Out-String).Trim())
+================================
+"@
+        $crashContent | Out-File -FilePath $crashLogPath -Encoding UTF8 -ErrorAction SilentlyContinue
+        Write-Host "崩溃日志已保存至: $crashLogPath" -ForegroundColor Cyan
+    } catch {
+        # 日志写入失败也不能阻止退出
+    }
+    
+    # 仅在非 GUI 的独立控制台模式下，才要求按回车退出
+    if ($null -eq (Get-Variable -Name "syncHash" -Scope Global -ErrorAction SilentlyContinue)) {
+        Write-Host $script:Loc['Compat_PressEnter'] -ForegroundColor Gray
+        Read-Host | Out-Null
+    }
+    
     Invoke-SafeExit -ExitCode 1
 }
 #endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -121,10 +121,3 @@ function Assert-AuroraLaunchContext {
 
     return $isLaunchedByGUI
 }
-
-
-
-
-
-
-
