@@ -5,7 +5,7 @@
     从 AURORA-AnalyzerLauncherGUI.ps1 拆分的 GUI 辅助函数
     包含：字体辅助函数、目录完整性检测、进度条创建等
 .NOTES
-    版本：V1.3.26.5Release | 构建时间：2026.06.08
+    版本：V1.3.26.6Release | 构建时间：2026.06.08
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 

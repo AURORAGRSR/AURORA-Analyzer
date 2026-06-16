@@ -4,7 +4,7 @@
 .DESCRIPTION
     主语言选择窗口（固定尺寸 400x480，无边框）
 .NOTES
-    版本：V1.3.26.5Release | 构建时间：2026.06.08
+    版本：V1.3.26.6Release | 构建时间：2026.06.08
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 # ====== 主语言选择窗口（固定尺寸 400x480，无边框）======
@@ -173,23 +173,15 @@ function ShowMainForm {
         # 动画结束后执行窗口退出动画并关闭程序
         $exitTimer = Register-AuroraTimer (New-Object System.Windows.Forms.Timer)
         $exitTimer.Interval = 650 # 先等UWP退出动画完成
+        # 关键修复：将 Form 引用存入 Timer.Tag，彻底避免 PowerShell 嵌套闭包捕获失败导致 $null
+        $exitTimer.Tag = $Form
         $exitTimer.Add_Tick({
             $this.Stop()
             $this.Dispose()
             
-            # 完整播放退出动画（同步阻塞450ms）
             try {
-                Start-MainWindowExitAnimation -Form $Form
-                
-                # 等待退出动画完成后再退出程序
-                $finalTimer = Register-AuroraTimer (New-Object System.Windows.Forms.Timer)
-                $finalTimer.Interval = 500 # 等待主窗口退出动画完成
-                $finalTimer.Add_Tick({
-                    $this.Stop()
-                    $this.Dispose()
-                    [System.Environment]::Exit(0)
-                }.GetNewClosure())
-                $finalTimer.Start()
+                # 从 Tag 取回 Form（比闭包捕获更可靠），ExitOnComplete 让动效完成后自行终止进程
+                Start-MainWindowExitAnimation -Form $this.Tag -ExitOnComplete
             } catch {
                 [System.Environment]::Exit(0)
             }
@@ -515,10 +507,6 @@ function ShowMainForm {
     $btnExit.Add_Click({
         $btnExit.Enabled = $false
         
-        # ⚠️ 核心修复：显式将父作用域的 $form 赋值给局部变量
-        # 强制其进入当前作用域，这样才能被后续的 .GetNewClosure() 成功捕获，防止传入 $null
-        $targetForm = $form
-        
         # 定义简化的退出动画序列，不包含 btnSmart
         try {
             # 启动退出动画 - 关键：设置 StaggerDelay (延迟) 和 IsButton 标志
@@ -540,24 +528,15 @@ function ShowMainForm {
         # 动画结束后执行窗口退出动画并关闭程序
         $exitTimer = Register-AuroraTimer (New-Object System.Windows.Forms.Timer)
         $exitTimer.Interval = 650 # 先等UWP退出动画完成
+        # 关键修复：将 Form 引用存入 Timer.Tag，彻底避免 PowerShell 嵌套闭包捕获失败导致 $null
+        $exitTimer.Tag = $form
         $exitTimer.Add_Tick({
             $this.Stop()
             $this.Dispose()
             
-            # 完整播放退出动画（同步阻塞450ms）
             try {
-                # 💡 在这里使用成功捕获的 $targetForm
-                Start-MainWindowExitAnimation -Form $targetForm
-                
-                # 等待退出动画完成后再退出程序
-                $finalTimer = Register-AuroraTimer (New-Object System.Windows.Forms.Timer)
-                $finalTimer.Interval = 500 # 等待主窗口退出动画完成
-                $finalTimer.Add_Tick({
-                    $this.Stop()
-                    $this.Dispose()
-                    [System.Environment]::Exit(0)
-                }.GetNewClosure())
-                $finalTimer.Start()
+                # 从 Tag 取回 Form（比闭包捕获更可靠），ExitOnComplete 让动效完成后自行终止进程
+                Start-MainWindowExitAnimation -Form $this.Tag -ExitOnComplete
             } catch {
                 [System.Environment]::Exit(0)
             }

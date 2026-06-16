@@ -5,7 +5,7 @@
     消除 6 个脚本文件中重复的"禁止直接运行"检测逻辑。
     提供 GUI_Mode 检测、syncHash 检测、RSA 令牌验证的统一入口。
 .NOTES
-    版本：V1.3.26.5Release | 创建时间：2026-06-09
+    版本：V1.3.26.6Release | 创建时间：2026-06-09
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 

@@ -5,7 +5,7 @@
     UWP 动画辅助函数 - 完整稳定性修复
     包含控件状态保存和恢复系统
 .NOTES
-    版本：V1.3.26.5Release | 构建时间：2026.06.08
+    版本：V1.3.26.6Release | 构建时间：2026.06.08
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 # ===================================================================
@@ -501,7 +501,10 @@ function global:Start-MainWindowAnimation {
 # ===================================================================
 function global:Start-MainWindowExitAnimation {
     [CmdletBinding()]
-    param([System.Windows.Forms.Form]$Form)
+    param(
+        [System.Windows.Forms.Form]$Form,
+        [switch]$ExitOnComplete  # 仅在主窗口退出时启用，权限对话框等子窗口不应 Exit 进程
+    )
     
     $originalSize = $Form.Size
     $originalLocation = $Form.Location
@@ -522,6 +525,7 @@ function global:Start-MainWindowExitAnimation {
     $timer.Tag = @{
         Form = $Form; OriginalSize = $originalSize; OriginalLocation = $originalLocation
         BgPanel = $bgPanel; StartTime = [DateTime]::Now; DurationMs = 450
+        ExitOnComplete = $ExitOnComplete
     }
     
     # 核心修复：直接内联事件处理程序，避免闭包问题！
@@ -554,11 +558,15 @@ function global:Start-MainWindowExitAnimation {
         $data.Form.Location = New-Object System.Drawing.Point($newX, $newY)
         
         if ($t -ge 1.0) {
+            $this.Stop()
+            $this.Dispose()
             if ($null -ne $data.Form -and -not $data.Form.IsDisposed) {
                 try { $data.Form.Opacity = 0 } catch { Write-AuroraLog "表单退出动画失败: $($_.Exception.Message)" -Level "Warning" }
             }
-            $this.Stop()
-            $this.Dispose()
+            # 仅在主窗口退出时终止进程；子窗口（如权限对话框）退场后不应 Exit
+            if ($data.ExitOnComplete) {
+                [System.Environment]::Exit(0)
+            }
         }
     }.GetNewClosure())
     $timer.Start()

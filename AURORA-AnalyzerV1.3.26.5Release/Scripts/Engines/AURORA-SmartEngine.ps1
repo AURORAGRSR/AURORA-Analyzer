@@ -5,7 +5,7 @@
     智能诊断与自主修复模式核心引擎
     架构特性：单文件双语支持 (Bilingual) + 动态环境感知 + 极速并发匹配
 .NOTES
-    版本：V1.3.26.5Release | 构建时间：2026.06.08
+    版本：V1.3.26.6Release | 构建时间：2026.06.08
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 
