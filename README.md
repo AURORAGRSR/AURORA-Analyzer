@@ -2,7 +2,7 @@
 
 > **Windows Event Log Export & Smart Diagnostic Tool**
 >
-> Version: V1.3.26.7Release · Build Date: 2026.06.16 · Author: AURORA VelociRaptor-GR Dev PRJ.
+> Version: V1.3.26.7Release · Build Date: 2026.06.22 · Author: AURORA VelociRaptor-GR Dev PRJ.
 >
 > ⚠️ **WARNING**: This tool is for personal learning use only. Please comply with local laws and regulations.
 
