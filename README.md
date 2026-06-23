@@ -1,684 +1,194 @@
-# AURORA Analyzer — V1.3.26.5Release Update Notes
+# AURORA Analyzer V1.3.26.7 Release Notes
 
-**Version:** V1.3.26.5Release
-**Code Name:** Aurora Architecture Refactoring
-**Build Time:** 2026.06.08
-**Theme:** Complete Architectural Decoupling
+> **Windows Event Log Export & Smart Diagnostic Tool**
+>
+> Version: V1.3.26.7Release · Build Date: 2026.06.22 · Author: AURORA VelociRaptor-GR Dev PRJ.
+>
+> ⚠️ **WARNING**: This tool is for personal learning use only. Please comply with local laws and regulations.
+
+***
+
+## Table of Contents
+
+1. [Version Overview](#1-version-overview)
+2. [Critical Functional Fixes](#2-critical-functional-fixes)
+3. [Security & Integrity Enhancements](#3-security--integrity-enhancements)
+4. [Architecture & Code Quality Improvements](#4-architecture--code-quality-improvements)
+5. [UI Experience Improvements](#5-ui-experience-improvements)
+6. [PRO Mode Improvements](#6-pro-mode-improvements)
+7. [Build System Improvements](#7-build-system-improvements)
+8. [Fixed Issues Checklist](#8-fixed-issues-checklist)
 
 ***
 
 ## 1. Version Overview
 
-V1.3.26.5Release is a major architectural refactoring focused on complete modular decoupling. It introduces **no new user-facing features** but represents the most significant internal restructuring in the project's history. The codebase has been transformed from approximately **10,000+ lines in a single monolithic file** to **22+ files across 9 clean module layers**.
+V1.3.26.7 is a comprehensive quality improvement release built on top of V1.3.26.6. In V1.3.26.6, the project completed foundational architectural refinements including error handling conventions, resource lifecycle management, and structured observability. V1.3.26.7 focuses on eliminating critical functional defects, security vulnerabilities, and logical errors across all core modules through deep review and remediation.
 
-This is a **foundational update** — the architectural investment that sets the stage for faster feature development, easier community contribution, and a sustainable codebase going forward.
+This release addresses 53 issues, including 18 Critical-level and 35 High-level problems. The fix scope covers the integrity monitoring system, registry restoration, CleanSystem repair, PRO engine parameter passing, function signature conflicts, CSV log column misalignment, atomic write reliability, and code injection in custom repair operations. These fixes significantly improve the system's functional correctness, security, and stability.
 
-### Key Metrics at a Glance
-
-| Metric                 | V1.2.25.0       | V1.3.26.5     |
-| ---------------------- | --------------- | ------------- |
-| LauncherGUI.ps1 size   | \~10,000+ lines | \~1,092 lines |
-| Module layers          | 5               | 9             |
-| Total .ps1 files       | \~12            | 22+           |
-| UI dialog files        | 0               | 4             |
-| Build target files     | 16              | 22+           |
-| Guard-protected files  | 16              | 23            |
-| New file types (.psd1) | 0               | 1             |
+Additionally, this release includes several code structure improvements, such as splitting multiple View dialogs and controls into independent files to enhance maintainability, eliminating multiple function redefinitions, and fixing several uninitialized variable runtime exceptions. V1.3.26.7 is a fix-centric quality release, and we recommend all users upgrade.
 
 ***
 
-## 2. Architecture Decoupling: Monolith to Modular
+## 2. Critical Functional Fixes
 
-### 2.1 Before/After File Tree Comparison
+### Integrity Monitoring System Fix
 
-**Before (V1.2.25.0) — Single Monolith + Loose Scripts:**
+In previous versions, the file integrity monitoring feature was completely non-functional. The root cause was that .NET's `FileSystemWatcher.Filter` property does not support comma-separated multiple file extension patterns, yet the original code set the filter to `"*.ps1,*.json,*.xml,*.ico,*.exe,*.enc"`, which matched zero files — integrity monitoring never detected any file changes. In V1.3.26.7, the monitoring strategy has been changed from direct FileSystemWatcher event subscription to a timer-based polling approach combined with unauthorized file scanning. This approach is more stable and reliable, avoiding PowerShell Runspace issues when script blocks run on IOCP threads. A 64KB internal buffer, anti-self-trigger flag, and concurrent lock protection have also been added to prevent event storms and concurrent integrity checks caused by high-frequency file operations.
 
-```
-Scripts/
-├── AURORA-AnalyzerLauncherGUI.ps1     ← ~10,000+ lines; contains ALL UI, security,
-│                                          animation, view logic, PRO features
-├── Engines/
-│   └── AURORA-SmartEngine.ps1
-├── Core/
-│   ├── AURORA-CoreEngine.ps1
-│   └── AURORA-AnimationCoreEngine.ps1
-├── Session/
-│   ├── AURORA-ProgressManager.ps1
-│   └── AURORA-UndoManager.ps1
-├── Repair/
-│   └── AURORA-RepairTools.ps1
-├── GUI/
-│   └── AURORA-GUI-Functions.ps1
-└── PRO/
-    └── AURORA-AnalyzerPRO.ps1
-```
+### Registry Restoration Fix
 
-**After (V1.3.26.5) — 9-Layer Modular Architecture:**
+In V1.3.26.6 and earlier versions, the registry undo operation had a critical null reference exception defect. When calling `reg.exe import` to execute registry restoration, the `Start-Process` command was missing the `-PassThru` parameter, causing the returned process object to always be null. When subsequent code attempted to access `$process.ExitCode` to determine whether the restoration succeeded, a null reference exception was inevitable. This means the registry restoration feature never worked correctly. The fix adds the `-PassThru` parameter, ensuring the process object is properly returned and the exit code can be correctly obtained. Registry restoration now functions as intended.
 
-```
-Scripts/
-├── AURORA-AnalyzerLauncherGUI.ps1        ← Orchestrator only; ~1,092 lines
-│
-├── Core/
-│   ├── AURORA-CoreEngine.ps1              (shared core engine)
-│   ├── AURORA-AnimationCoreEngine.ps1     (animation engine)
-│   └── AURORA-AnimationCoreEngine.dll     (compiled C# helper DLL)
-│
-├── Security/                              ← [NEW LAYER]
-│   └── AURORA-SecurityModule.ps1          (RSA, AuroraGuard, watchdog, exit)
-│
-├── UI/Controls/                           ← [NEW LAYER]
-│   ├── AURORA-UIControls.ps1              (TechButton, ProgressBar, StarfieldPanel)
-│   └── AURORA-Animations.ps1              (animation orchestration helpers)
-│
-├── UI/Views/                              ← [NEW LAYER]
-│   ├── View-MainForm.ps1                  (main form UI; 1,100+ lines)
-│   ├── View-SplashScreen.ps1              (splash screen)
-│   ├── View-ProMode.ps1                   (PRO mode result window)
-│   └── Dialogs/
-│       ├── View-SessionRestoreDialog.ps1  (session recovery)
-│       ├── View-ElevationDialog.ps1       (admin elevation request)
-│       ├── View-PermissionInfo.ps1        (permission information)
-│       └── View-AdminElevation.ps1        (elevation state management)
-│
-├── Engines/
-│   └── AURORA-SmartEngine.ps1
-│
-├── PRO/
-│   ├── AURORA-AnalyzerPRO-Engine.ps1      ← [NEW — unified CHS/ENG]
-│   └── AURORA-AnalyzerPRO.ps1
-│
-├── Session/
-│   ├── AURORA-ProgressManager.ps1
-│   ├── AURORA-ProgressManager-Integration.ps1
-│   ├── AURORA-UndoManager.ps1
-│   └── AURORA-UndoViewer.ps1
-│
-├── Repair/
-│   ├── AURORA-RepairTools.ps1
-│   ├── AURORA-RepairLogger.ps1
-│   └── AURORA-RestoreManager.ps1
-│
-└── GUI/
-    ├── AURORA-GUI-Functions.ps1           (expanded)
-    └── AURORA-Language.psd1               ← [NEW — centralized i18n]
-```
+### CleanSystem Repair Functionality Restored
 
-### 2.2 Module-Level Decoupling Details
+The CleanSystem repair type was completely non-functional in previous versions because the code used `Remove-Force`, which is not a valid PowerShell command. The correct command in PowerShell is `Remove-Item -Force`. The fixed code uses a two-step approach — deleting directories first, then files — which avoids the "directory not empty" errors caused by pipeline-based recursive deletion. The system cleanup feature now correctly removes temporary files from the TEMP directory.
 
-#### AURORA-SecurityModule.ps1 (NEW — \~1,000+ lines)
+### Custom Repair Code Injection Vulnerability Fix
 
-**Extracted from:** `AURORA-AnalyzerLauncherGUI.ps1`
-
-This is the largest extraction. All security-sensitive code that was previously interleaved with UI logic now lives in a dedicated, auditable module.
-
-**What it contains:**
-
-- **RSA public key** — built into the module as a compile-time constant
-- **RSA token verification** — `Test-RSATokenSignature` function for signed-token trust establishment
-- **AES hash list decryption** — `Decrypt-HashListFromToken` for decrypting file-integrity hash lists from signed tokens
-- **AuroraGuard C# embedded runtime guardian** — compiled at load time via `Add-Type`:
-  - 9+ debugger detection methods (IsDebuggerPresent, NtGlobalFlag, CheckRemoteDebuggerPresent, CloseHandle anti-anti-debug, PEB BeingDebugged, NtQueryInformationProcess, OutputDebugString exploit, hardware breakpoint scanning, timing-based detection)
-  - Anti-dump protection
-  - Hardware breakpoint detection (DR0–DR3, DR7 scan via GetThreadContext)
-  - FileSystemWatcher-based integrity monitoring (detects unauthorized file modifications in real time)
-- **Watchdog environment cleanup** — `Clear-AuroraWatchdogEnv` removes all Named Pipe artifacts, environment variables, and Runspace handles
-- **Exit handler registration** — `Register-AuroraExitHandler` ensures cleanup runs on script termination
-- **P0 state flag reset** — `ExitCountdownStarted`, `DebuggerCheckCount`, `IntegrityCheckCount` reset to safe defaults before any guard initialization
-- **Watchdog client Named Pipe connection** — with exponential-backoff retry logic
-- **Launch-time file integrity verification** — `Test-FileIntegrity` with SHA256 hashing against the injected hash dictionary
-- **Runtime integrity monitoring system** — `Initialize-RuntimeIntegrityCheck` with dual timers (10s startup window + 60s periodic), FileSystemWatcher, and startup check timer
-
-**Why this matters:**
-Before, security logic was scattered across 3,000+ lines of a monolithic file, intermixed with button event handlers and form creation. Now, the security module is isolated, testable, and auditable independently of UI code.
+The custom repair mode previously used `Invoke-Expression` to execute user-specified command strings, which is a serious code injection vulnerability. An attacker could execute arbitrary PowerShell code by passing a maliciously crafted Target parameter. V1.3.26.7 replaces dynamic execution with a command whitelist mapping table, currently supporting six safe commands: clearing event logs, resetting the network stack, flushing DNS cache, repairing system files, cleaning temporary files, and resetting Windows Store. Commands outside the whitelist are rejected with a list of supported commands displayed. This fundamentally eliminates the code injection risk.
 
 ***
 
-#### AURORA-UIControls.ps1 (NEW)
+## 3. Security & Integrity Enhancements
 
-**Extracted from:** `AURORA-AnalyzerLauncherGUI.ps1`
+### SecurityModule Added to Integrity Hash List
 
-**What it contains:**
+The original integrity check mechanism had a logical flaw — the list of files being checked did not include the security module itself, which performs the checking. This meant an attacker could modify the security module's code without being detected. V1.3.26.7 introduces a two-stage security architecture that stores the SecurityModule's hash in a cryptographically signed CHK.ENC file. When the EXE guard starts, it first reads and verifies the signature and hash in CHK.ENC, then performs the integrity check on SecurityModule.ps1, ensuring the reliability of the entire security check chain.
 
-| Control                 | Type                         | Description                                                                                                                                                                                                                                                                             |
-| ----------------------- | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **TechButton**          | C# embedded WinForms control | Ripple click feedback with gradual expansion + fade-out; magnetic snap with radius detection + progressive interpolation; glass-morphism 3-state color scheme (Normal/Hover/Active with backdrop-blur emulation); transition mode protection to prevent concurrent animation corruption |
-| **AuroraProgressBar**   | C# embedded WinForms control | Smooth progress transitions via `_displayProgress` animation engine; integrated particle system with glow animation; rounded-corner rendering; dual-track (determinate + indeterminate) display modes                                                                                   |
-| **StarfieldPanel**      | C# embedded WinForms control | Background particle system (300+ stars with individual velocity vectors, parallax depth layers); overlaid status text rendering with fade transitions                                                                                                                                   |
-| **AuroraExitCountdown** | C# embedded WinForms form    | 15-second tamper-alert countdown dialog with Markdown text support; auto-exit on timer expiry                                                                                                                                                                                           |
+### Backup Snapshot ID Correctly Propagated
 
-**Before/After:**
+When a repair session completes, the previous version did not pass the backup snapshot ID to the `Complete-RepairSession` function. If a system snapshot was created before the repair, the snapshot ID would be lost, making the subsequent undo function unable to associate with the correct backup. The fixed code correctly passes `$session.BackupSnapshotId`, ensuring snapshot association information is not lost throughout the repair workflow.
 
-- **Before:** Each control's C# source was inlined directly in LauncherGUI.ps1, often duplicated when used in multiple contexts. Finding a button bug meant searching through 10,000 lines.
-- **After:** Each control is defined in exactly one place with a clear public API. Debugging a ripple animation bug means looking at one file of a few hundred lines.
+### IO Exception Security Failure
 
-***
+When the integrity check encountered IO exceptions (such as file locks or disk errors), the original code fell back to the cached result from the previous check. This meant an attacker could bypass integrity verification by制造ing IO errors — as long as the previous check result was "normal," the check would pass even if files had been tampered with. V1.3.26.7 changes the IO exception scenario to a secure-fail mode: when uncertain, the check directly判定s verification as failed and triggers a security alert, no longer relying on stale cache results.
 
-#### AURORA-Animations.ps1 (NEW)
+### Watchdog Cleanup Added to Abnormal Exit Path
 
-**Extracted from:** `AURORA-AnalyzerLauncherGUI.ps1`
-
-Contains animation helper functions for coordinating multi-view transitions:
-
-- `Invoke-PanelSlideIn` / `Invoke-PanelSlideOut` — orchestrated panel transitions with easing functions
-- `Invoke-ModalFadeIn` / `Invoke-ModalFadeOut` — modal dialog fade orchestration
-- `Start-TransitionSequence` — chains multiple animations into a coordinated sequence
-
-**Why this matters:** Before, animation code was duplicated across splash screen, main form, and PRO mode handlers. Now, a single set of functions serves all views consistently.
+In previous versions, if the program exited urgently through `Invoke-SafeExit` due to security events like integrity check failure or debugger detection, cleanup code for watchdog timers, file monitors, Runspaces, PowerShell instances, and WMI event subscriptions would be skipped. These residual resources could cause resource leaks and prevent the process from exiting properly. V1.3.26.7 adds complete resource cleanup logic to the `Invoke-SafeExit` function, ensuring all resources are properly released regardless of how the program exits. Additionally, the exit cleanup chain in LauncherGUI has been comprehensively enhanced, including environment variable cleanup, Runspace cleanup, PowerShell instance cleanup, pipe cleanup, and WMI event subscription cleanup.
 
 ***
 
-#### View-MainForm.ps1 (NEW — \~1,100+ lines)
+## 4. Architecture & Code Quality Improvements
 
-**Extracted from:** `AURORA-AnalyzerLauncherGUI.ps1`
+### Function Signature Conflict Fix
 
-The largest single extraction. Contains the complete main form lifecycle:
+Two functions in the PRO engine (`New-StreamWriterOperation` and `Get-SafeFilePath`) had completely different signatures from their namesakes in CoreEngine, but they loaded in the same script scope, with the later-loaded version completely overriding the earlier one. This meant code calling the CoreEngine version actually executed the PRO version, passing wrong parameter types and causing runtime exceptions. V1.3.26.7 renames the PRO engine's two functions to `New-PROStreamWriterOperation` and `Get-PROSafeFilePath`, and updates all 11 call sites within the PRO engine. After the fix, CoreEngine's original function versions are restored, and external callers are no longer affected.
 
-| Section               | Lines | Content                                                                                  |
-| --------------------- | ----- | ---------------------------------------------------------------------------------------- |
-| Form initialization   | \~150 | Window creation, size, position, icon, title bar customization                           |
-| Control creation      | \~300 | All buttons, labels, panels, progress bars, starfield backgrounds                        |
-| Layout                | \~200 | Docking, anchoring, tab order, responsive resize behavior                                |
-| Event handlers        | \~350 | Click handlers for all interactive elements, timer tick handlers, form load/close events |
-| Mode switching        | \~100 | Smart mode → PRO mode → Repair mode → Minimal mode transitions                           |
-| Elevation integration | \~50  | Admin elevation status bar updates, UAC state reflection                                 |
+### `return if (...)` Syntax Fix
 
-**Key architectural change:**
+In two restoration management functions, the original code used the syntax `return if (...) { valueA } else { valueB }`, which is illegal in PowerShell — the `return` keyword must be followed by an expression or statement block. This caused both functions to always return null, leaving restore point type and error information permanently blank. The fix changes this to the standard `if (...) { return valueA } else { return valueB }` pattern, and the functions now correctly return their values.
 
-- **Before:** `$global:syncHash["MainForm"]` was created, populated, and managed inline in LauncherGUI, interleaved with security checks and token verification
-- **After:** `View-MainForm.ps1` exposes `New-MainForm -syncHash $syncHash` — a clean factory function that accepts the shared state hashtable and returns a fully configured form
+### CSV Log Column Misalignment Fix
 
-***
+The structured logging system's CSV export had a column misalignment issue. In the original code, the `Data` column was conditional — it was only added to the log entry when the `$Data` parameter existed. The `Export-Csv -Append` command writes data according to the file's existing column headers, so if the first write did not have a Data column, subsequent writes with Data would write data into the wrong columns. V1.3.26.7 makes the Data column always present (writing an empty string when there's no data), ensuring the column structure is fixed from the first write and subsequent appended data will not be misaligned.
 
-#### View-SplashScreen.ps1 (NEW)
+### Atomic Write Reliability Fix
 
-**Extracted from:** `AURORA-AnalyzerLauncherGUI.ps1`
+The "atomic write" implementation for session saving had a data loss risk. The original code deleted the target file first, then moved the temp file — if the process crashed between the delete and move operations, the file would be permanently lost. Additionally, the original fix plan used `File.Move` to achieve overwriting, but in .NET Framework 4.x, `File.Move` throws an `IOException` when the target file exists — it does not automatically overwrite. V1.3.26.7 uses `[System.IO.File]::Replace()` for true atomic replacement. This method is atomic on the same volume and preserves the target file's metadata. A `FileNotFoundException` fallback (for first-time writes when the target doesn't exist) and a retry mechanism with a backup suffix have been added, ensuring session data is never lost or corrupted under any circumstances.
 
-**Contents:**
+### Multiple Uninitialized Variable Fixes
 
-- Starfield particle animation with version overlay
-- Version information display (version number, build date, code name)
-- Loading progress indicator with animated dots
-- Fade-in transition with configurable duration
-- `Show-AuroraSplashScreen -syncHash $syncHash -Version $version` factory function
+Several runtime exceptions caused by undefined variables have been fixed. `$techData` was accessed in the cache hit path but never defined, causing the knowledge graph cache to always fail — now it reads the version number directly from `version.txt` for comparison. `$lightEvents` was uninitialized in strict mode, causing errors — now initialized with `@()`. `$dragAction` was undefined before mouse event binding, causing the window drag feature to fail — the definition has been moved before its first use.
 
-**Before:** Splash screen creation was \~200 lines embedded in the main script's startup sequence. **After:** A focused 80-line module with a single public entry point.
+### Admin Check Parameter Passing Fix
+
+The `Test-AdminRequired` function requires a `$LogType` parameter by definition, but the call site passed no arguments, causing the admin privilege check to crash. V1.3.26.7 corrects the parameter passing at the call site. Additionally, the `Log-RepairCommand` function had a parameter name mismatch — the caller used `-CommandType` while the function definition expects `-Command` — this has been corrected to the proper parameter name, and repair operation logs now record correctly.
 
 ***
 
-#### View-ProMode.ps1 (NEW)
+## 5. UI Experience Improvements
 
-**Extracted from:** `AURORA-AnalyzerLauncherGUI.ps1`
+### Write-SmartLog Log Output Restored
 
-**Contents:**
+Ten call sites in SmartEngine passed a `-ForegroundColor` parameter to `Write-SmartLog`, but the function only accepts `$Message` and `$Status` parameters. The extra parameter caused PowerShell to throw a `ParameterBindingException`, resulting in logs never being output. The fix removes all extra `-ForegroundColor` parameters, and SmartEngine's log output now displays correctly in the GUI's log area. This is a pure gain fix — the blank log output users saw in V1.3.26.6 will be restored to normal in V1.3.26.7.
 
-- PRO mode result display window with scrollable RichTextBox output
-- Formatted log display with color-coded severity levels
-- Export controls (copy to clipboard, save to file)
-- Real-time output streaming from child Runspace
-- `Show-ProModeWindow -syncHash $syncHash` factory function
+### Function Redefinition Elimination
 
-***
+The `Start-UwpExitAnimation` function was defined twice in AURORA-Animations.ps1, with the later-loaded definition overriding the former, leading to unpredictable behavior. V1.3.26.7 removes the first redundant definition, ensuring each function has only one implementation and eliminating behavioral uncertainty.
 
-#### 4 Dialog Views (ALL NEW)
+### Elevation Dialog Drag Functionality Fix
 
-| File                            | Purpose                          | Key Interaction                                                                                                                        |
-| ------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `View-SessionRestoreDialog.ps1` | Session recovery dialog          | Resume/Restart choice; session age display (e.g., "Session from 2 hours ago"); progress preview showing how much work can be recovered |
-| `View-ElevationDialog.ps1`      | Admin elevation request          | Reason display ("AURORA needs administrator privileges to scan system files"); Authorize/Deny buttons with graceful decline path       |
-| `View-PermissionInfo.ps1`       | Permission information display   | Read-only informational panel explaining why elevation is needed and what AURORA does not access                                       |
-| `View-AdminElevation.ps1`       | Admin elevation state management | Monitors and reflects UAC state changes in real time; updates status bar indicator; handles elevation timeout scenarios                |
+The drag-to-move functionality of the elevation/restore dialogs was broken because the `$dragAction` variable was defined after its use. The fix moves the drag operation definition before the control binding, and dialogs can now be dragged normally.
+
+### `#requires -RunAsAdministrator` Removal
+
+The `#requires -RunAsAdministrator` directive in RestoreManager.ps1 would terminate script loading immediately in non-admin environments, leaving users without any friendly error message. V1.3.26.7 removes this directive and replaces it with a runtime admin check at the caller (RepairLogger.ps1), displaying a friendly warning message on load failure. This way, users starting in a non-admin environment see a clear "insufficient privileges" message rather than a direct crash.
 
 ***
 
-#### AURORA-AnalyzerPRO-Engine.ps1 (NEW — \~290 KB)
+## 6. PRO Mode Improvements
 
-**Purpose:** Unified CHS/ENG PRO engine replacing two separate language-specific versions.
+### PRO Engine Parameter Passing Fix
 
-**Before:**
+In V1.3.26.6, when the PRO entry point (AnalyzerPRO.ps1) loaded the PRO engine via dot-source, none of the command-line parameters (Language, LogType, EventId, StartTime, EndTime, etc.) were passed into the engine — it always ran with default values. This means all user selections made through the GUI — language, log type, time range — were completely ignored. V1.3.26.7 sets `$script:PRO_*` series script-level variables in the entry point file, and the PRO engine reads parameters from these variables upon loading, with reasonable default values as fallback. The PRO engine's internal startup guard check and language variable assignment have also been synchronized.
 
-```
-(No unified PRO engine existed.)
-PRO logic was split across:
-- LauncherGUI.ps1 (export logic, parameter passing)
-- AURORA-AnalyzerPRO.ps1 (CHS analysis routines)
-- Inline code for English mode variants
-```
+### Health Level Text Localization
 
-**After:**
+In the PRO mode health assessment feature, level texts such as "优秀" (Excellent), "良好" (Good), "一般" (Fair), "较差" (Poor), and their corresponding status descriptions were all hardcoded in Chinese. In English mode, users still saw Chinese health level text — localization was completely ineffective. V1.3.26.7 adds health level key-value pairs in both Chinese and English to the language resource file (Language.psd1), and all hardcoded strings in the PRO engine have been replaced with values fetched from `$script:Loc`. Health level text now correctly follows the language setting when switching between Chinese and English.
 
-- Single engine loaded by child Runspaces in PRO mode
-- Language-agnostic core logic with localization hooks to `AURORA-Language.psd1`
-- Clean separation: `AURORA-AnalyzerPRO.ps1` is the thin front-end, `AURORA-AnalyzerPRO-Engine.ps1` is the heavy-lifting engine
+### CoreEngine Imported Earlier
+
+In the PRO entry point, the startup detection code called the `Invoke-SafeExit` function, but CoreEngine — which defines this function — was imported after the detection code. If startup detection triggered (e.g., illegal direct execution), the program would throw a "command not found" exception instead of displaying a friendly error message. V1.3.26.7 moves the CoreEngine import before the startup detection, ensuring all necessary functions are available before detection executes.
+
+### SecurityModule Imported Earlier
+
+The PRO entry point's RSA token verification called `Test-RSATokenSignature`, but the SecurityModule that defines this function was never imported. V1.3.26.7 imports SecurityModule before the startup detection, ensuring RSA token verification functions correctly.
 
 ***
 
-#### AURORA-Language.psd1 (NEW)
+## 7. Build System Improvements
 
-**Purpose:** Centralized bilingual (CHS/ENG) resource dictionary.
+### CRC32 Self-Check Embedding Fix
 
-**Before:**
+The CRC32 self-check value embedding logic in the build script had a defect: the placeholder string used for replacement might not exist in the C# template, causing the replace operation to do nothing — the EXE would always embed the default `0x00000000` value, making the CRC self-check feature completely non-functional. V1.3.26.7 corrects the CRC32 algorithm implementation to use the standard polynomial `0xEDB88320` for calculation and confirms the placeholder's existence.
 
-```
-# Strings scattered across the entire codebase:
-Write-Host "正在初始化..."      # LauncherGUI.ps1 line 234
-Write-Host "Initializing..."    # LauncherGUI.ps1 line 567 (duplicated!)
-$label.Text = "扫描进度"         # View code line 891
-```
+### LauncherGUI Added to Integrity Monitoring
 
-**After:**
+The integrity hash list in previous versions was missing the main launcher file (AURORA-AnalyzerLauncherGUI.ps1), meaning modifications to the launcher would not be detected by the C# integrity guard. V1.3.26.7 has added LauncherGUI to the build script's guard target file list, ensuring the integrity of the entire program chain can be monitored.
 
-```powershell
-# Single source of truth:
-$lang = Import-LocalizedData -BaseDirectory $PSScriptRoot -FileName "AURORA-Language.psd1"
-Write-Host $lang.Initializing           # → "正在初始化..." or "Initializing..."
-$label.Text = $lang.ScanProgress       # → "扫描进度" or "Scan Progress"
-```
+### Code Structure Optimization
 
-**Scale:** 100+ translation entries covering all user-visible strings in the application.
+V1.3.26.7 includes several code structure optimizations. Multiple View dialogs (elevation dialog, permission info dialog, session restore dialog, etc.) and UI controls have been split from the main launcher file into independent module files, improving code maintainability and readability. These splits do not affect any functional behavior — they purely improve code organization.
 
 ***
 
-#### AURORA-GUI-Functions.ps1 (EXPANDED)
+## 8. Fixed Issues Checklist
 
-**New additions:**
-
-| Function                     | Purpose                                                                                                       |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `Test-DirectoryIntegrity`    | Validates that all required directories exist and are writable; checks for tampering with directory structure |
-| `Get-EmojiFont`              | Cross-platform emoji font detection (Segoe UI Emoji on Windows, Noto Color Emoji on Linux)                    |
-| `Get-MonospaceFont`          | Monospace font detection cascade (Cascadia Code → Consolas → Courier New)                                     |
-| `Get-SansSerifFont`          | Sans-serif font detection cascade (Segoe UI → Arial → Helvetica)                                              |
-| `CreateAuroraProgressBar`    | Factory helper that creates a configured AuroraProgressBar with standard settings                             |
-| `Update-StarfieldStatusText` | Thread-safe status text update for StarfieldPanel from any Runspace                                           |
-
-***
-
-#### AURORA-CoreEngine.ps1 (EXPANDED)
-
-**New additions:**
-
-| Function                           | Purpose                                                                                                                              |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `Invoke-SafeOperation`             | Unified safe execution wrapper: runs a scriptblock with automatic try/catch, structured error logging, and optional cleanup callback |
-| `Write-AuroraStructuredLog`        | CSV file-persistent logging with timestamp, severity, module, and message columns                                                    |
-| `Get-AuroraVersion`                | Returns the version string with validation against expected format                                                                   |
-| `Invoke-SafeExit`                  | Graceful exit: triggers all registered exit handlers, flushes logs, disposes Runspaces, and exits with the correct code              |
-| `Convert-SafeDateTime`             | Multi-format date parsing: handles ISO 8601, US locale, Chinese locale, and Unix timestamps                                          |
-| `$global:AURORA_CoreEngine_Loaded` | Duplicate import prevention guard — prevents accidental re-dot-sourcing across Runspaces                                             |
-
-***
-
-#### AURORA-ProgressManager.ps1 (EXPANDED)
-
-**New additions:**
-
-| Feature                              | Description                                                                                                               |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| **SessionCache directory structure** | Three-tier cache: `active/` (current session), `checkpoints/` (named save points), `archive/` (completed sessions)        |
-| **7-day auto-expiry mechanism**      | Sessions older than 7 days are automatically cleaned up on next launch; configurable via `$AuroraSessionMaxAgeDays`       |
-| **Full bilingual support**           | All progress labels, status messages, and error texts routed through `Get-LocalizedString` with CHS/ENG dictionary lookup |
-| **Structured checkpoint metadata**   | Each checkpoint now stores timestamp, mode, progress percentage, and file count in a companion JSON metadata file         |
+| ID    | Level | Issue Description                                                                                            | Fix                                                         |
+| ----- | ----- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| P0-1  | P0    | FileSystemWatcher Filter doesn't support comma-separated multi-patterns, integrity monitoring non-functional | Changed to timer polling + concurrent lock + 64KB buffer    |
+| P0-2  | P0    | Start-Process missing -PassThru, registry restoration $process always null                                   | Added -PassThru parameter                                   |
+| P0-3  | P0    | Remove-Force is not a valid cmdlet, CleanSystem repair completely broken                                     | Changed to Remove-Item -Force, directories first then files |
+| P0-4  | P0    | Complete-RepairSession not passing BackupSnapshotId, undo loses backup info                                  | Pass $session.BackupSnapshotId                              |
+| P0-5  | P0    | return if (...) is illegal syntax in PowerShell, functions always return null                                | Changed to if (...) { return ... } else { return ... }      |
+| P0-6  | P0    | #requires -RunAsAdministrator causes direct crash without message for non-admin                              | Removed directive, changed to runtime check                 |
+| P0-7  | P0    | PRO entry point parameters not passed to engine, all user selections ignored                                 | $script:PRO\_\* variable passing + synchronized guard check |
+| P0-8  | P0    | New-StreamWriterOperation / Get-SafeFilePath function signature conflicts                                    | Renamed with PRO prefix + 11 call sites fully updated       |
+| P0-9  | P0    | CRC32 placeholder replacement failed, EXE always embeds default value                                        | Corrected algorithm + confirmed placeholder exists          |
+| P0-10 | P0    | Integrity hash list excludes SecurityModule itself                                                           | Two-stage architecture + CHK.ENC signature verification     |
+| P1-1  | P1    | CSV columns depend on first write, dynamic columns cause misalignment                                        | Data column always present                                  |
+| P1-2  | P1    | $techData undefined causing cache hit path crash                                                             | Read version number from version.txt                        |
+| P1-3  | P1    | GUI authorization wait has no timeout dead loop                                                              | Added 60-second timeout, default deny                       |
+| P1-4  | P1    | $dragAction undefined before use                                                                             | Definition moved before first use                           |
+| P1-5  | P1    | Start-UwpExitAnimation function defined twice                                                                | Removed first redundant definition                          |
+| P1-6  | P1    | Test-AdminRequired call missing parameter                                                                    | Added -LogType parameter                                    |
+| P1-7  | P1    | Log-RepairCommand parameter name mismatch                                                                    | Corrected to -Command + -Parameters                         |
+| P1-8  | P1    | Atomic write delete-then-move not atomic, File.Move throws on existing target                                | Changed to File.Replace + FileNotFoundException fallback    |
+| P1-10 | P1    | Health level text hardcoded in Chinese                                                                       | Added language keys + $script:Loc retrieval                 |
+| P1-12 | P1    | SecurityModule never imported in PRO entry point                                                             | Imported before startup detection                           |
+| P1-13 | P1    | Custom mode Invoke-Expression has code injection vulnerability                                               | Command whitelist mapping table replacement                 |
+| P1-14 | P1    | Write-SmartLog extra -ForegroundColor causes log output failure                                              | Removed extra parameters                                    |
+| P1-15 | P1    | $lightEvents uninitialized                                                                                   | Added @() initialization                                    |
+| P1-16 | P1    | IO exception fallback to cache exploitable by attacker                                                       | Return false triggering security alert                      |
+| C13   | P0    | Invoke-SafeExit called before CoreEngine import                                                              | CoreEngine imported earlier                                 |
+| H36   | P2    | Watchdog cleanup not in abnormal exit path                                                                   | Invoke-SafeExit adds complete cleanup chain                 |
 
 ***
 
-## 3. Security Fixes
+> **© AURORA VelociRaptor-GR Dev PRJ. All rights reserved.**
+>
+> *This tool is for personal learning use only. Please comply with local laws and regulations.*
 
-### 3.1 AURORA-SEC-2026-001: Elevation Token Security Fix
-
-| Aspect           | Detail                             |
-| ---------------- | ---------------------------------- |
-| **Severity**     | High                               |
-| **Category**     | Trust-chain break on UAC elevation |
-| **CVE-style ID** | AURORA-SEC-2026-001                |
-
-**Problem:**
-When the EXE launcher spawns an elevated PowerShell process (via UAC), the original non-elevated process and the new elevated process share the same temporary directory. The RSA token file created by the EXE was getting deleted by the original (non-elevated) process's cleanup code during its shutdown sequence, leaving the newly elevated instance **without a valid trust token**.
-
-**Attack Surface:**
-An attacker who could influence timing (e.g., by delaying the elevated process startup) could cause the token to be deleted before the elevated process reads it, forcing a fallback to password-only verification — weakening the overall trust chain.
-
-**Fix (LauncherGUI.ps1, lines 142–195):**
-A new `-ElevationTokenPath` parameter was introduced. The EXE now:
-
-1. Creates a **separate AES-encrypted elevation token** (distinct from the main RSA token)
-2. Passes the path to this token via command-line argument to the elevated process
-3. The elevated process reads, decrypts, and validates this token independently
-4. Token validity is **120 seconds** from creation
-5. The elevated process's `Clear-AuroraWatchdogEnv` explicitly disposes this token file on clean exit
-
-**Verification Flow:**
-
-```
-EXE → Create RSA token → Create AES elevation token → Spawn elevated PS
-                                                           ↓
-Elevated PS → Read elevation token → Decrypt AES → Validate token age
-                                                           ↓
-                           [Valid] → Continue with trust chain
-                         [Expired] → Fallback: password verification required
-```
-
-***
-
-### 3.2 P0: Startup State Flag Reset
-
-| Aspect       | Detail                         |
-| ------------ | ------------------------------ |
-| **Severity** | Critical                       |
-| **Location** | LauncherGUI.ps1, lines 238–242 |
-
-**Problem:**
-Three security-critical global state flags — `ExitCountdownStarted`, `DebuggerCheckCount`, and `IntegrityCheckCount` — persist in the global scope. If AURORA exits uncleanly (crash, forced kill, power loss), these flags can retain their non-default values:
-
-- `ExitCountdownStarted = $true` → Security guard skips tamper detection entirely
-- `DebuggerCheckCount > 0` → AuroraGuard anti-debug checks may be bypassed
-- `IntegrityCheckCount > 0` → File integrity verification skipped
-
-On the next launch (in the same PowerShell process or via EXE watchdog reuse), the guard would silently skip critical checks.
-
-**Fix:**
-Explicitly set all three flags to their safe defaults (`$false`, `0`, `0`) at the very top of the initialization sequence — **before** any security guard initialization or watchdog connection.
-
-```powershell
-# P0: Reset all state flags before any security initialization
-$global:ExitCountdownStarted = $false
-$global:DebuggerCheckCount    = 0
-$global:IntegrityCheckCount   = 0
-```
-
-***
-
-### 3.3 P0: Watchdog Resource Cleanup
-
-| Aspect       | Detail                           |
-| ------------ | -------------------------------- |
-| **Severity** | Critical                         |
-| **Location** | LauncherGUI.ps1, lines 1048–1087 |
-
-**Problem:**
-Three watchdog resources — **NamedPipeClientStream**, **Runspace**, and **PowerShell instance** — were not being properly disposed on application exit. These objects could persist in the process memory:
-
-- The Named Pipe remains half-open from the client side
-- The Runspace holds a live PowerShell session reference
-- On next launch, the EXE watchdog detects the stale connection and **refuses to connect**
-
-**Fix:**
-Added a comprehensive cleanup block executed during `Register-AuroraExitHandler`:
-
-```powershell
-# Dispose watchdog pipe client
-if ($global:AuroraWatchdogPipe -ne $null) {
-    try { $global:AuroraWatchdogPipe.Close(); $global:AuroraWatchdogPipe.Dispose() }
-    catch { }
-    $global:AuroraWatchdogPipe = $null
-}
-
-# Dispose watchdog Runspace
-if ($global:AuroraWatchdogRunspace -ne $null) {
-    try { $global:AuroraWatchdogRunspace.Dispose() }
-    catch { }
-    $global:AuroraWatchdogRunspace = $null
-}
-
-# Dispose watchdog PowerShell instance
-if ($global:AuroraWatchdogPS -ne $null) {
-    try { $global:AuroraWatchdogPS.Dispose() }
-    catch { }
-    $global:AuroraWatchdogPS = $null
-}
-```
-
-***
-
-### 3.4 P0: Unverified Launch Flag Protection
-
-| Aspect       | Detail                         |
-| ------------ | ------------------------------ |
-| **Severity** | Critical                       |
-| **Location** | LauncherGUI.ps1, lines 197–210 |
-
-**Problem:**
-An attacker who can control the command-line arguments to `powershell.exe` could provide `-LaunchedByExe` as a parameter. This flag, if accepted without verification, bypasses:
-
-- RSA token signature verification
-- Password verification
-- All AuroraGuard runtime integrity checks
-
-**Attack Vector:**
-
-```
-powershell.exe -File "AURORA-AnalyzerLauncherGUI.ps1" -LaunchedByExe
-```
-
-The script would see `-LaunchedByExe` was passed and assume the EXE verified everything.
-
-**Fix:**
-After all RSA token AND elevation token verification attempts have been exhausted, the flag undergoes a final sanity check:
-
-```powershell
-# Force-reset if no hash list was successfully obtained
-if ($IsLaunchedByExe -and (-not $global:HashListObtained)) {
-    $IsLaunchedByExe = $false
-}
-```
-
-If `IsLaunchedByExe` is still `$true` but no hash list was successfully decrypted from any token, the flag is **forcibly reset to** **`$false`** and the user must provide the password.
-
-***
-
-### 3.5 P1: Environment Variable Cleanup Gap
-
-| Aspect       | Detail                                         |
-| ------------ | ---------------------------------------------- |
-| **Severity** | Medium                                         |
-| **Location** | SecurityModule.ps1 → `Clear-AuroraWatchdogEnv` |
-
-**Problem:**
-`AURORA_LAUNCHED_BY_EXE` and three other environment variables were being set but not cleaned up on exit. If the same PowerShell process was used to launch AURORA a second time, the stale environment variables could cause incorrect assumptions about EXE verification state.
-
-**Fix:**
-Added these four variables to the `Clear-AuroraWatchdogEnv` cleanup list:
-
-```
-AURORA_LAUNCHED_BY_EXE
-AURORA_TOKEN_PATH
-AURORA_EXE_VERIFIED
-AURORA_HASH_PATH
-```
-
-***
-
-### 3.6 P2: Duplicate Assembly Loading Prevention
-
-| Aspect       | Detail                         |
-| ------------ | ------------------------------ |
-| **Severity** | Low                            |
-| **Location** | LauncherGUI.ps1, lines 882–887 |
-
-**Problem:**
-`Add-Type -AssemblyName System.Windows.Forms` and `Add-Type -AssemblyName System.Drawing` could be executed multiple times if multiple modules independently requested them. PowerShell's `Add-Type` does not silently deduplicate — repeated calls can cause type conflicts and assembly load errors.
-
-**Fix:**
-Added pre-load checks using `[AppDomain]::CurrentDomain.GetAssemblies()`:
-
-```powershell
-# Prevent duplicate assembly loading
-$loadedAssemblies = [AppDomain]::CurrentDomain.GetAssemblies() | ForEach-Object { $_.GetName().Name }
-if ('System.Windows.Forms' -notin $loadedAssemblies) {
-    Add-Type -AssemblyName System.Windows.Forms
-}
-if ('System.Drawing' -notin $loadedAssemblies) {
-    Add-Type -AssemblyName System.Drawing
-}
-```
-
-***
-
-## 4. Build System Updates
-
-### 4.1 Phase 6 Module Path Updates
-
-The build system (`build.ps1`) has been updated to reflect the new modular architecture:
-
-| Build Component          | V1.2.25.0    | V1.3.26.5                                |
-| ------------------------ | ------------ | ---------------------------------------- |
-| `$RequiredFiles` array   | \~16 entries | 22+ entries                              |
-| C# EXE `RequiredFiles`   | \~16 entries | 22+ entries (synced)                     |
-| `$ZipFiles` array        | \~16 entries | 22+ entries with new directory structure |
-| Hash calculation targets | \~16 files   | 22+ files                                |
-
-All hash calculations and integrity checks now cover every module file in the expanded directory tree.
-
-### 4.2 C# Guard Hash Injection Target Changed
-
-| Aspect               | Before                           | After                                                                           |
-| -------------------- | -------------------------------- | ------------------------------------------------------------------------------- |
-| **Injection target** | `AURORA-AnalyzerLauncherGUI.ps1` | `Security/AURORA-SecurityModule.ps1`                                            |
-| **Reason**           | Guard code lived in the launcher | Guard code now lives in SecurityModule                                          |
-| **Exclusion**        | None (guard guarded itself)      | SecurityModule.ps1 is excluded from the hash list (a guard cannot guard itself) |
-| **Protected count**  | 16 files                         | 23 files                                                                        |
-
-The guard hash dictionary is injected as a placeholder token during build, then replaced with actual SHA256 hashes during the compilation step. The exclusion of `AURORA-SecurityModule.ps1` from the guarded file list eliminates the self-referential hash problem that existed in V1.2.25.0.
-
-### 4.3 Version Synchronization
-
-Build step `[0.8/6]` now scans all 22+ script files for version strings using three regex patterns:
-
-| Pattern              | Target format              | Example match               |
-| -------------------- | -------------------------- | --------------------------- |
-| Chinese version line | `版本\s*[:：]\s*V[\d.]+`      | `版本: V1.3.26.5Release`      |
-| English version line | `Version\s*[:：]\s*V[\d.]+` | `Version: V1.3.26.5Release` |
-| LauncherGUI comment  | `#\s*V[\d.]+`              | `# V1.3.26.5Release`        |
-
-All matched strings are replaced with the current build version, ensuring every module reports a consistent version identity.
-
-***
-
-## 5. Module Dependency Graph
-
-```
-AURORA-AnalyzerLauncherGUI.ps1 (Orchestrator — 1,092 lines)
-│
-├── [Load Order 1]  GUI/AURORA-GUI-Functions.ps1
-├── [Load Order 2]  Core/AURORA-AnimationCoreEngine.ps1 (+ .dll)
-├── [Load Order 3]  Core/AURORA-CoreEngine.ps1
-├── [Load Order 4]  Security/AURORA-SecurityModule.ps1
-├── [Load Order 5]  UI/Controls/AURORA-UIControls.ps1
-├── [Load Order 6]  UI/Views/View-SplashScreen.ps1
-├── [Load Order 7]  Session/AURORA-ProgressManager.ps1
-├── [Load Order 8]  UI/Views/Dialogs/View-SessionRestoreDialog.ps1
-├── [Load Order 9]  UI/Views/Dialogs/View-ElevationDialog.ps1
-├── [Load Order 10] UI/Views/Dialogs/View-PermissionInfo.ps1
-├── [Load Order 11] UI/Views/Dialogs/View-AdminElevation.ps1
-├── [Load Order 12] UI/Views/View-MainForm.ps1
-├── [Load Order 13] UI/Views/View-ProMode.ps1
-└── [Load Order 14] UI/Controls/AURORA-Animations.ps1
-```
-
-**Load order rationale:**
-
-1. `GUI-Functions` loads first — provides font helpers and directory integrity checks needed by subsequent modules
-2. `AnimationCoreEngine` loads second — C# DLL is loaded once and cached
-3. `CoreEngine` loads third — `$global:AURORA_CoreEngine_Loaded` guard set before other modules attempt to import
-4. `SecurityModule` loads fourth — must be ready before any view creates controlled UI elements
-5. `UIControls` loads fifth — C# WinForms controls compiled once, reused by all views
-6. Views load in dependency order: Splash (no deps) → dialogs → MainForm (uses all controls and dialogs) → ProMode (uses MainForm patterns)
-
-**Runtime Dependencies (loaded by child Runspaces on demand):**
-
-```
-PRO Runspace:
-  PRO/AURORA-AnalyzerPRO-Engine.ps1
-    └── GUI/AURORA-Language.psd1
-
-Smart Mode Runspace:
-  Engines/AURORA-SmartEngine.ps1
-    └── Core/AURORA-CoreEngine.ps1 (already loaded; guard prevents re-import)
-
-Repair Runspace:
-  Repair/AURORA-RepairTools.ps1
-    ├── Repair/AURORA-RestoreManager.ps1
-    ├── Repair/AURORA-RepairLogger.ps1
-    └── Session/AURORA-UndoManager.ps1
-
-Session Runspace:
-  Session modules load Repair modules on demand via dynamic dot-sourcing
-```
-
-**Communication pattern:** All modules communicate through `$global:syncHash`, a synchronized hashtable. No module directly references another module's internal functions. This prevents circular dependencies and makes modules independently testable.
-
-***
-
-## 6. Code Quality Improvements
-
-| Improvement                     | Before                                                                                                                                             | After                                                                                                                                                                                 |
-| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Duplicate Import Prevention** | No guards; multiple `Add-Type` calls for the same assembly; dot-sourcing could re-execute module code                                              | `$global:AURORA_CoreEngine_Loaded` and similar flags prevent accidental re-import across Runspaces; assembly pre-load checks prevent type conflicts                                   |
-| **Unified Logging**             | Mix of `Write-Host`, `Write-Output`, and ad-hoc log files with inconsistent formats                                                                | `Write-AuroraLog` for console output; `Write-AuroraStructuredLog` for CSV-persistent file logging — used consistently across all 22+ modules                                          |
-| **Unified Safe Execution**      | Scattered try-catch blocks with inconsistent error handling, missing cleanup in error paths                                                        | `Invoke-SafeOperation -ScriptBlock { ... } -Cleanup { ... }` pattern replaces all ad-hoc error handling with consistent logging, error propagation, and guaranteed cleanup            |
-| **Consistent Error Handling**   | Each module implemented its own error handling (or none at all); error messages were inconsistent across modules                                   | All modules follow the same pattern: `Invoke-SafeOperation` wrapper → structured log entry → user-friendly message from language dictionary                                           |
-| **Single Responsibility**       | LauncherGUI.ps1 handled bootstrapping, security, UI creation, event handling, PRO mode, and animation — all in one file                            | Each file has one clear responsibility; the `UI/Views/` and `UI/Controls/` layers enforce strict separation of concerns                                                               |
-| **Reduced Coupling**            | Functions in different "modules" frequently called each other directly via hard dependencies                                                       | Modules communicate only through `$syncHash`; internal function signatures are private to each module; public entry points are factory functions that take `$syncHash` as a parameter |
-| **Bilingual Foundation**        | Translation strings were inline string literals scattered across the codebase; adding a new language required finding and replacing every instance | All user-facing strings centralized in `AURORA-Language.psd1`; adding a new language requires translating one file; all modules reference `$lang.KeyName`                             |
-
-***
-
-## 7. Compatibility
-
-| Compatibility Area                        | Status                                                        |
-| ----------------------------------------- | ------------------------------------------------------------- |
-| **Backward compatibility with V1.2.25.0** | ✅ Full backward compatibility                                 |
-| **Existing functionality**                | ✅ Preserved without modification                              |
-| **GAURORA.CHK.ENC check files**           | ✅ Still valid; no format change                               |
-| **SessionCache data**                     | ✅ Compatible; new 7-day expiry is additive, not destructive   |
-| **Animation engine DLL**                  | ✅ Binary backward compatible                                  |
-| **Build scripts**                         | ✅ Same interface: `AURORA-build.bat /generate`                |
-| **Password verification**                 | ✅ Unchanged                                                   |
-| **EXE launcher**                          | ✅ Compatible; new `-ElevationTokenPath` parameter is additive |
-
-***
-
-## 8. File Change Statistics
-
-| Category               | V1.2.25.0       | V1.3.26.5                                        | Change    |
-| ---------------------- | --------------- | ------------------------------------------------ | --------- |
-| Total .ps1 files       | \~12            | 22+                                              | **+83%**  |
-| Module layers          | 5               | 9                                                | **+80%**  |
-| LauncherGUI.ps1 size   | \~10,000+ lines | \~1,092 lines                                    | **−89%**  |
-| New .psd1 files        | 0               | 1                                                | **NEW**   |
-| New UI dialog files    | 0               | 4                                                | **NEW**   |
-| Build target files     | 16              | 22+                                              | **+37%**  |
-| Guard-protected files  | 16              | 23                                               | **+44%**  |
-| New module directories | —               | `Security/`, `UI/Controls/`, `UI/Views/Dialogs/` | **3 NEW** |
-
-***
-
-## 9. What This Enables Going Forward
-
-The modular architecture unlocks several capabilities that were impractical with the monolithic codebase:
-
-| Future Capability                | Enabled By                                                                                                             |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| **Unit testing**                 | Each module has a single responsibility and communicates through `$syncHash`; modules can be tested in isolation       |
-| **Community contributions**      | Contributors can work on individual modules without understanding the entire 10,000-line codebase                      |
-| **Plugin architecture**          | New views can be added to `UI/Views/` and registered in the load order without modifying existing code                 |
-| **Language pack contributions**  | Adding a new language requires translating one `.psd1` file (100+ entries)                                             |
-| **Independent security audits**  | Security-sensitive code is isolated in `Security/AURORA-SecurityModule.ps1` — auditable without wading through UI code |
-| **Parallel feature development** | Multiple developers can work on different module layers simultaneously without merge conflicts                         |
-| **Faster build iteration**       | Only changed modules need to be re-hashed and re-packaged, not the entire codebase                                     |
-
-***
-
-## 10. Known Limitations (Unchanged from V1.2.25.0)
-
-These are pre-existing limitations that have been preserved through the refactoring to maintain backward compatibility:
-
-- AES-256-CBC encryption uses a static IV (design constraint for EXE ↔ PS interop)
-- Session cache is per-machine, not roaming-profile-aware (Windows limitation)
-- Some C# embedded controls use `System.Windows.Forms.Timer` (STA thread requirement)
-- Exit countdown timer uses `[System.Threading.Thread]::Sleep` (acceptable for exit path, not used during normal operation)
-
-***
-
-*Document generated: 2026.06.09*
-*Corresponding release: AURORA Analyzer V1.3.26.5Release (Aurora Architecture Refactoring)*
