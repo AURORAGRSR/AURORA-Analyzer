@@ -4,7 +4,7 @@
 .DESCRIPTION
     启动画面（Splash Screen）：420x190，使用 StarfieldPanel 背景
 .NOTES
-    版本：V1.3.26.7Release | 构建时间：2026.06.22
+    版本：V1.3.26.7Release | 构建时间：2026.06.23
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 # ====== 启动画面（Splash Screen）：420x190，使用 StarfieldPanel 背景 ======

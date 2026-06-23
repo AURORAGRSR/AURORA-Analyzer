@@ -19,7 +19,7 @@
 .PARAMETER Language
     语言选择：CHS 或 ENG。默认为 CHS。
 .NOTES
-    版本：V1.3.26.7Release | 构建时间：2026.06.22
+    版本：V1.3.26.7Release | 构建时间：2026.06.23
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 param()
@@ -57,31 +57,28 @@ if (-not $global:AURORA_CoreEngine_Loaded) {
     }
 }
 
-$isLaunchedByGUI = $false
-
-# 检测方式1: 检查是否有GUI_Mode参数
-if ($GUI_Mode) {
-    $isLaunchedByGUI = $true
+# 加载安全模块，确保 RSA 令牌签名校验可用
+$securityModulePath = Join-Path $scriptsDir "Security\AURORA-SecurityModule.ps1"
+if (Test-Path $securityModulePath) {
+    . $securityModulePath
 }
 
-# 检测方式2: 检查是否有全局syncHash变量
-if (-not $isLaunchedByGUI -and (Get-Variable -Name "syncHash" -Scope Global -ErrorAction SilentlyContinue)) {
-    $isLaunchedByGUI = $true
+# 加载统一启动守卫模块
+$launchGuardPath = Join-Path $scriptsDir "Core\AURORA-LaunchGuard.ps1"
+if (Test-Path $launchGuardPath) {
+    . $launchGuardPath
 }
 
-# 如果不是由GUI启动，则显示提示并退出
-if (-not $isLaunchedByGUI) {
-    if ($script:Loc) {
-        Write-Host ""
-        Write-Host "========================================" -ForegroundColor Cyan
-        Write-Host $script:Loc['Launcher_Required'] -ForegroundColor Red
-        Write-Host "========================================" -ForegroundColor Cyan
-        Write-Host ""
-        Write-Host $script:Loc['Use_Launcher'] -ForegroundColor Yellow
-        Write-Host $script:Loc['Method_1'] -ForegroundColor White
-        Write-Host ""
-        Write-Host $script:Loc['Closing_Soon'] -ForegroundColor Gray
-    } else {
+# 使用统一启动上下文验证（GUI_Mode / syncHash / RSA 令牌三层检测）
+if (Get-Command Assert-AuroraLaunchContext -ErrorAction SilentlyContinue) {
+    Assert-AuroraLaunchContext -Params @{ GUI_Mode = $GUI_Mode } -LanguageResource $script:Loc -TimeoutSeconds 5
+} else {
+    # Fallback：LaunchGuard 缺失时的最小化保护
+    $isLaunchedByGUI = $false
+    if ($GUI_Mode) { $isLaunchedByGUI = $true }
+    if (-not $isLaunchedByGUI -and (Get-Variable -Name "syncHash" -Scope Global -ErrorAction SilentlyContinue)) { $isLaunchedByGUI = $true }
+
+    if (-not $isLaunchedByGUI) {
         Write-Host ""
         Write-Host "========================================" -ForegroundColor Cyan
         Write-Host "  This script cannot be run directly!" -ForegroundColor Red
@@ -91,10 +88,9 @@ if (-not $isLaunchedByGUI) {
         Write-Host "Double-click AURORA-Analyzer.exe" -ForegroundColor White
         Write-Host ""
         Write-Host "Program will close automatically in 5 seconds..." -ForegroundColor Gray
+        Start-Sleep -Seconds 5
+        Invoke-SafeExit -ExitCode 1
     }
-    
-    Start-Sleep -Seconds 5
-    Invoke-SafeExit -ExitCode 1
 }
 
 # ==========================================

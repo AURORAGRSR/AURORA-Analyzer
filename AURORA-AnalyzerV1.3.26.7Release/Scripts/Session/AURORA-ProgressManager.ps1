@@ -6,7 +6,7 @@
     支持工具目录和 TEMP 目录降级方案
     支持 7 天自动过期机制
 .NOTES
-    版本：V1.3.26.7Release | 构建时间：2026.06.22
+    版本：V1.3.26.7Release | 构建时间：2026.06.23
     作者：AURORA VelociRaptor-GR Dev PRJ.
     缓存目录结构说明：
         SessionCache\active\        - 当前活动会话
@@ -326,20 +326,19 @@ function Save-SessionProgress {
                     
                     # 【Phase 4.1 原子写入】使用 File.Replace 实现真正原子替换
                     try {
-                        [System.IO.File]::Replace($tempFile, $activeFile, $null)
-                    } catch [System.IO.FileNotFoundException] {
-                        [System.IO.File]::Move($tempFile, $activeFile)
-                    } catch {
-                        Write-Warning "原子写入失败: $($_.Exception.Message)"
-                        Start-Sleep -Milliseconds 100
-                        try {
+                        if (Test-Path $activeFile) {
                             $backupFile = "$activeFile.bak"
                             [System.IO.File]::Replace($tempFile, $activeFile, $backupFile)
-                        } catch [System.IO.FileNotFoundException] {
+                            # 清理备份文件
+                            if (Test-Path $backupFile) {
+                                [System.IO.File]::Delete($backupFile)
+                            }
+                        } else {
                             [System.IO.File]::Move($tempFile, $activeFile)
-                        } catch {
-                            throw
                         }
+                    } catch {
+                        Write-Warning "原子写入失败: $($_.Exception.Message)"
+                        throw
                     }
                     
                     $saved = $true

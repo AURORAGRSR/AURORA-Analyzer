@@ -15,7 +15,7 @@
 .PARAMETER GUI_Mode
     开关参数。标记是否在 GUI 模式下运行。
 .NOTES
-    版本：V1.3.26.7Release | 构建时间：2026.06.22
+    版本：V1.3.26.7Release | 构建时间：2026.06.23
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 

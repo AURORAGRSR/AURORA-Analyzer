@@ -4,7 +4,7 @@
 .DESCRIPTION
     主语言选择窗口（固定尺寸 400x480，无边框）
 .NOTES
-    版本：V1.3.26.7Release | 构建时间：2026.06.22
+    版本：V1.3.26.7Release | 构建时间：2026.06.23
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 # ====== 主语言选择窗口（固定尺寸 400x480，无边框）======
