@@ -4,7 +4,7 @@
 .DESCRIPTION
     权限选择二级窗口（复用 PRO 模式视觉和动画）
 .NOTES
-    版本：V1.4.27.1Release | 构建时间：2026.07.06
+    版本：V1.4.27.5Release | 构建时间：2026.07.07
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 # ====== 权限选择二级窗口（复用 PRO 模式视觉和动画） ======

@@ -6,7 +6,7 @@
     支持工具目录和 TEMP 目录降级方案
     支持 7 天自动过期机制
 .NOTES
-    版本：V1.4.27.1Release | 构建时间：2026.07.06
+    版本：V1.4.27.5Release | 构建时间：2026.07.07
     作者：AURORA VelociRaptor-GR Dev PRJ.
     缓存目录结构说明：
         SessionCache\active\        - 当前活动会话

@@ -5,7 +5,7 @@
     Windows 系统事件日志导出与智能分析工具的图形界面启动程序
     构建自 .NET Framework 4.x 的 C# 5.0
 .NOTES
-    版本：V1.4.27.1Release | 构建时间：2026.07.06
+    版本：V1.4.27.5Release | 构建时间：2026.07.07
     作者：AURORA VelociRaptor-GR Dev PRJ.
     警告：本工具仅用于个人学习使用。
 #>

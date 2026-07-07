@@ -4,7 +4,7 @@
 .DESCRIPTION
     无边框窗口拖拽支持、自定义 UI 控件等
 .NOTES
-    版本：V1.4.27.1Release | 构建时间：2026.07.06
+    版本：V1.4.27.5Release | 构建时间：2026.07.07
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 # ====== 无边框窗口拖拽支持 - Win32 API 声明 ======

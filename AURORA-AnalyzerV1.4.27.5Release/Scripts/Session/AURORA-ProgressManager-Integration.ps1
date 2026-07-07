@@ -4,7 +4,7 @@
 .DESCRIPTION
     统一的进度管理器集成模块（合并 CHS 和 ENG 版本）
 .NOTES
-    版本：V1.4.27.1Release | 构建时间：2026.07.06
+    版本：V1.4.27.5Release | 构建时间：2026.07.07
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 
