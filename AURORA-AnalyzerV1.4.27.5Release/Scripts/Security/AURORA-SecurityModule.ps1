@@ -13,10 +13,10 @@
 # 🔐 RSA 公钥验证模块（构建时注入）
 # ==========================================
 $global:AURORA_PublicKeyXml = @'
-<RSAKeyValue><Modulus>u01Fn69xBriH/xge+9wXJFiYh8EiDUbZeE1DA+BEwJTEkNrOhbcYEcQtIYNf1XMh7scf9PnfxIA0bCzUfhaWlfuY+hTjq1zqF+0vs/URpMhS8UDHw838+7RJnHHoyRaeVXHABzpSFUqap1tMa7hDPkElpLDzUAqewnzomK+qzrsNMobjrHsHyqXgmcHN0eTK5okDtH8AkIyjE6vj3XIk8y6W4w1EPrRA8q610IFCJeXiHYRo9MPpLcsmxBLTbNvydNJgHuRUk2wyz09MQD2Rsi5f+QdknmUoYdPT+F1wgacehOY7+3eOnpyblguPyX2OcIuyctIVliDb/qQeNmDagQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>
+<RSAKeyValue><Modulus>33/tiRinTlHw1k/M8XHENQn7rdw/LG5+6b1L4JdoPwLSuTXnw+/Lvw0Gt4FgTrm3HoiAr0m12yhg8rXR/bG6siSHpPNOhJjGey4P5Y2YVsgIz6TYcMYNtiRCkyq3QZtLzH5yHw0IgAmbWh5/FHkiNUo1K8KZgF88SZo9GFR4w1fNjKLMgkSQ+9jX19jst3YlUh2/IMUez2K8Y27vE9/0sFablGSN3aW113ksLuMRutMh6tgsmin/nD1hdeq4tjTy8z/xL/+MIgF0+mfwCTTKqtFh1j/BtWBRw86ip+H8hhQtKcvGWEMdP6wZGPtlFWhWBjfsRxZB+A9z1oVMRet1EQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>
 '@
 
-$global:AURORA_SessionSalt = [Convert]::FromBase64String('VS3d9m5+vfALS7oaOJEtYKYxm5GkH7AsG3quEJZYwzg=')
+$global:AURORA_SessionSalt = [Convert]::FromBase64String('j6eZtMtJzW8Y6M4KiwEWsaqEdqkE+fx2AYv6IX8oMZM=')
 
 $global:AURORA_AesSalt = [System.Text.Encoding]::UTF8.GetBytes('AU_SESSION_2026_SALT_V1')
 
@@ -182,7 +182,7 @@ public class AuroraGuard
         { "Scripts\\UI\\Views\\Dialogs\\View-ElevationDialog.ps1", "89def742f3388ac8acb7299f4a1c443e56ea5afd11e4fc6f5804bdd0dd9d4ce2" },
         { "Scripts\\UI\\Views\\Dialogs\\View-PermissionInfo.ps1", "79463101dd876c2ec9f662e2eb652fb4156d7c580be2f369db26ea848af26b22" },
         { "Scripts\\UI\\Views\\Dialogs\\View-AdminElevation.ps1", "3d922fe46fd6d6d70dbce21a47b1739eaabf86a529700a5c06ad7ce378546263" },
-        { "Scripts\\Engines\\AURORA-SmartEngine.ps1", "5e984b851b960d7dda24dfdb8877049054089fc7964bbe3505a5eb808de96174" },
+        { "Scripts\\Engines\\AURORA-SmartEngine.ps1", "4c1227a8728b1dd2938e22679b0a13f5dce2c48df22400b1cd97546fa711e1c3" },
         { "Scripts\\Core\\AURORA-CoreEngine.ps1", "b9d8f2d6c2f5869219fd92a73b5e48d28fa2afd388b9e34c60d189ca70982280" },
         { "Scripts\\PRO\\AURORA-AnalyzerPRO-Engine.ps1", "c211d7088b3d4303b594ff1d14fdbab71ef68897da48494b0f40fc45b139b557" },
         { "Scripts\\Session\\AURORA-ProgressManager.ps1", "234ebb7764cf52eb1c75711a8453d1d039ff4dd633530d5135f29f0006c925a4" },
@@ -195,7 +195,7 @@ public class AuroraGuard
         { "Scripts\\PRO\\AURORA-AnalyzerPRO.ps1", "cc19c00214eebcda765f4433662ef13d7e7f8ece977dd4df9aaec1707e7077c5" },
         { "Scripts\\Session\\AURORA-ProgressManager-Integration.ps1", "fa796cde5232abcf2f6211527193011b4aa7a563b24cab5c49fdb865fe10cb1d" },
         { "Scripts\\Core\\AURORA-AnimationCoreEngine.ps1", "a4401938d6b15459a543d7d9df9aa25b14f4e25a49a2a45088df060d300c8dc8" },
-        { "Scripts\\Core\\AURORA-LaunchGuard.ps1", "35fc9ce7ea399c6995fa0f8f22249a248522e2d7562733bf951b11118cad057f" },
+        { "Scripts\\Core\\AURORA-LaunchGuard.ps1", "1ddeb1759025a1b3b37f586062a60365bfad557a343cc88f49a1cad15f2b52c7" },
         { "Scripts\\AURORA-AnalyzerLauncherGUI.ps1", "45024d929a49e716adb3f4b052ff85d1c1481008d4ccbd81814c9a46f0300cc2" },
         { "Data\\AURORA-TechData.json", "908f6377ff794568d068ba8c1bd011f058c929df8c5944261d5208ca41ec3a19" }
     };
