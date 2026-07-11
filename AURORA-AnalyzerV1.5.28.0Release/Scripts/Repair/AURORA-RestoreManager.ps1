@@ -6,7 +6,11 @@
     支持修复命令执行前的系统保护
     支持撤销操作（Undo）
 .NOTES
+<<<<<<< HEAD
     版本：V1.5.28.1Release | 构建时间：2026.07.11
+=======
+    版本：V1.5.28.0Release | 构建时间：2026.07.10
+>>>>>>> eca052b35e16e59098597c1b22df8bf3d7cadc6e
     作者：AURORA VelociRaptor-GR Dev PRJ.
     需要管理员权限才能创建系统还原点
     仅支持 Windows NT/2000/XP 及更高版本

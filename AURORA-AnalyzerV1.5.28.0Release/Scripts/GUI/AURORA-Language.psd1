@@ -1,7 +1,11 @@
 ﻿# AURORA-Language.psd1
 # 集中式双语资源文件 (CHS / ENG)
 # 用于统一版 PRO 引擎
+<<<<<<< HEAD
 # 版本：V1.5.28.1Release | 构建时间：2026.07.11
+=======
+# 版本：V1.5.28.0Release | 构建时间：2026.07.10
+>>>>>>> eca052b35e16e59098597c1b22df8bf3d7cadc6e
 # 作者：AURORA VelociRaptor-GR Dev PRJ.
 
 @{

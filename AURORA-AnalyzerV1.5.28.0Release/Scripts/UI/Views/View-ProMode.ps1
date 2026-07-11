@@ -4,7 +4,11 @@
 .DESCRIPTION
     PRO 脚本运行窗口 - 多线程优化版
 .NOTES
+<<<<<<< HEAD
     版本：V1.5.28.1Release | 构建时间：2026.07.11
+=======
+    版本：V1.5.28.0Release | 构建时间：2026.07.10
+>>>>>>> eca052b35e16e59098597c1b22df8bf3d7cadc6e
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 # ====== PRO 脚本运行窗口 - 多线程优化版 ======

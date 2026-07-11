@@ -4,7 +4,11 @@
 .DESCRIPTION
     提供系统安全相关的功能，如会话管理、加密操作等。
 .NOTES
+<<<<<<< HEAD
     版本：V1.5.28.1Release | 构建时间：2026.07.11
+=======
+    版本：V1.5.28.0Release | 构建时间：2026.07.10
+>>>>>>> eca052b35e16e59098597c1b22df8bf3d7cadc6e
     作者：AURORA VelociRaptor-GR Dev PRJ.
     已独立至独立文件，避免与主脚本代码混合。
 #>
@@ -13,10 +17,17 @@
 # 🔐 RSA 公钥验证模块（构建时注入）
 # ==========================================
 $global:AURORA_PublicKeyXml = @'
+<<<<<<< HEAD
 <RSAKeyValue><Modulus>tV2ksOqzKrYD4a2nYf7e/dYhZY0dph/RJCUbMEi1UQcrP9yIaq1HpXJVOgngslnonN+ukUbY43FPbBf7BI9Ggpc+lP54EaR/CMCQkWhTo0Nq5rjKQ77Y97KOVMc/b2fmERrZHpZqSOs9pg9ErL+5i2t443wC+XECvwgndLS0smyspgC0aTVvxkkhSh2lB6ODSAwkFHw0oEfJT7GaufJJSNTytMejucng43XsI3Ar9XT5/vfkKfII2RhQ2hBQkWJwOdX2t1SJX3AMe7KpVb/uwZ+kyqrQiwBzHpD0bkU2Gl6r/khu1jAXS1QLi4jTwiQIBSHFLqe92zUWHGnQoJILpQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>
 '@
 
 $global:AURORA_SessionSalt = [Convert]::FromBase64String('8yLv/+87H1H7hlkMXFTWQNmYThLBUUA1i5nbzNOjVBU=')
+=======
+<RSAKeyValue><Modulus>3e88X0pXB1yBt33J5d6I+dvhhnFR6BA+JJyzwkYG9DRf5lKIfEfpa1MGCBa/gQSJ6x6Lby6j34oV/mjq6osBnJEETjmevfrAxyQD6tIyfajtHcmPMGZV+ueX4+L0NOpU/K1Hbs7tlqG3H+0bl9dC5Bf2gxop6s3fj9xLDQpNUWoYVAPMU9iI2ZyFp5uvyeXZQ/25DTBzKM7l/XbqHO9uQmiwsdeDRYvbfcDkusSb/7e2/O7ujs7GzFRqLln7v1XbP0CidOyepxtEi5wigs+eAqWbMyZZuwUrpj8m7OkLlB/gV61vnWcSep/o6IqSwMbDRVFBuXvQ5QLCK2+9qa/OxQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>
+'@
+
+$global:AURORA_SessionSalt = [Convert]::FromBase64String('xqre0tTcXS2QxbPVoHxo77OUVKCGPPEkzW3Klap/Sd8=')
+>>>>>>> eca052b35e16e59098597c1b22df8bf3d7cadc6e
 
 $global:AURORA_AesSalt = [System.Text.Encoding]::UTF8.GetBytes('AU_SESSION_2026_SALT_V1')
 
@@ -173,6 +184,7 @@ public class AuroraGuard
 {
     private static readonly Dictionary<string, string> _expected = new Dictionary<string, string>
     {
+<<<<<<< HEAD
         { "Scripts\\UI\\Controls\\AURORA-UIControls.ps1", "68c012d4fcf348884e3e2a9a1e7ecbc2b5bc98b3f3f7485ebc134f7734bbd402" },
         { "Scripts\\UI\\Controls\\AURORA-Animations.ps1", "d6b28d52facec0122601e35c72626daec39d4dba3e6e8fbfe5cb53e84c99ced1" },
         { "Scripts\\UI\\Views\\View-SplashScreen.ps1", "34b2adb32ba07eeacbf354522b5d8c81e8bd6428c85d1ec48c25ec2b2bebcf7b" },
@@ -197,6 +209,32 @@ public class AuroraGuard
         { "Scripts\\Core\\AURORA-AnimationCoreEngine.ps1", "7fdc65f191b861a7cf6c3156ef488b29665e58af2b3e81086372bce1b62a8a22" },
         { "Scripts\\Core\\AURORA-LaunchGuard.ps1", "1ddeb1759025a1b3b37f586062a60365bfad557a343cc88f49a1cad15f2b52c7" },
         { "Scripts\\AURORA-AnalyzerLauncherGUI.ps1", "1aba90b2d1433b1064d60a4a325d256f47dfe85f7034c38a59c626d30c5210e1" },
+=======
+        { "Scripts\\UI\\Controls\\AURORA-UIControls.ps1", "b222cf2e9ce56ee35687cdec50fa4ca8007c8fdf634cbca0db0bdc6d89a42adc" },
+        { "Scripts\\UI\\Controls\\AURORA-Animations.ps1", "452ac70ebd1f0efee1bbbf4e8a91bca47c8f8e8c30f6eb02ae370a75be302170" },
+        { "Scripts\\UI\\Views\\View-SplashScreen.ps1", "ca6381f0485593095afb00cf767a88d3fb6c12b62698b4dd8c12bb232420cbd8" },
+        { "Scripts\\UI\\Views\\View-MainForm.ps1", "26eb3fd80183d04e36e459a99844b77650bd2710d56ed07dbb53c2944048b174" },
+        { "Scripts\\UI\\Views\\View-ProMode.ps1", "75becefbd77d5d7b70c250c2d51701975e28496a1da958fda04842e5b3aaafbe" },
+        { "Scripts\\UI\\Views\\Dialogs\\View-SessionRestoreDialog.ps1", "47fbcbfd90c9b03fb2afd9a9d9bdffa2e45b46a563eb33414ca310e9207505c8" },
+        { "Scripts\\UI\\Views\\Dialogs\\View-ElevationDialog.ps1", "ec20d293ce1f8847fdbba31269acf18773e7b49f78964365446d3ee5e4aee011" },
+        { "Scripts\\UI\\Views\\Dialogs\\View-PermissionInfo.ps1", "4ac07efb6616edf3a4520b9b4439448d0ae0bd62878205f28249d3e52ae541b7" },
+        { "Scripts\\UI\\Views\\Dialogs\\View-AdminElevation.ps1", "1b2471786dbba5fb55bcfb599f6150da8c4ed81e872e988e51806bd8572a4f24" },
+        { "Scripts\\Engines\\AURORA-SmartEngine.ps1", "ef9ef3edd319da4998c414b4b4be6a640f16b8dd58a9c77e08083f4dfdb86f6b" },
+        { "Scripts\\Core\\AURORA-CoreEngine.ps1", "d2ccd6e62a4bc5d2bbd1ded10a5f349ac7cc99e89c0def35568a4bba56bfdbfd" },
+        { "Scripts\\PRO\\AURORA-AnalyzerPRO-Engine.ps1", "aaf194dca5081b59b3a0ead7fb7a03ed9f61029d414a4086c2291368e103230d" },
+        { "Scripts\\Session\\AURORA-ProgressManager.ps1", "e818b2ea86b2f0a5631aa103a9aae5ebab216d9d245cf14413783306cff18708" },
+        { "Scripts\\GUI\\AURORA-GUI-Functions.ps1", "52757a13d3a68c52f56dbc59ec74ac7244e41734b49c11c0d2c1419331f1af4c" },
+        { "Scripts\\Repair\\AURORA-RepairTools.ps1", "43d5dd98c7c091c4de443438249b2921df3b95598a43a17250fb03f1ce3a45f4" },
+        { "Scripts\\Session\\AURORA-UndoManager.ps1", "ea5ce8e28581a4ab757d0bd2abbcf4c009d7134d7fd4f818bdf420a9b7774267" },
+        { "Scripts\\Repair\\AURORA-RestoreManager.ps1", "1a202be16c8ac307d2b31f2bbb044929b13d64f5fc8a4382eae7a1b16885a1de" },
+        { "Scripts\\Repair\\AURORA-RepairLogger.ps1", "a2ab1dfa811df4a8caa263b9301d8a094b68bf71efa384bf496cf9ad69a0e47f" },
+        { "Scripts\\Session\\AURORA-UndoViewer.ps1", "c185280bde265ef7ff583f0f66b45dc5cebc976eb881ea4d1e51ef5a285ae207" },
+        { "Scripts\\PRO\\AURORA-AnalyzerPRO.ps1", "035257a4bce38af25a08bc81392030b10570fb9dca3fb3caa22a538733ded703" },
+        { "Scripts\\Session\\AURORA-ProgressManager-Integration.ps1", "65823c959a40af7433c42b29ce92c735ee2bec956b172e379848108624790b89" },
+        { "Scripts\\Core\\AURORA-AnimationCoreEngine.ps1", "da4ad995f9817edccd29325b7176d2f7a925d05eec5e4b754cf4adf77fae903a" },
+        { "Scripts\\Core\\AURORA-LaunchGuard.ps1", "35fc9ce7ea399c6995fa0f8f22249a248522e2d7562733bf951b11118cad057f" },
+        { "Scripts\\AURORA-AnalyzerLauncherGUI.ps1", "61e86e61725d7e68da04b316f3c98a0aa38cd8da6d0b8d8ec8ec037ffec86c39" },
+>>>>>>> eca052b35e16e59098597c1b22df8bf3d7cadc6e
         { "Data\\AURORA-TechData.json", "908f6377ff794568d068ba8c1bd011f058c929df8c5944261d5208ca41ec3a19" }
     };
 
