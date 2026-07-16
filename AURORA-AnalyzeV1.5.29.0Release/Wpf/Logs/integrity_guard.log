@@ -1,0 +1,458 @@
+[2026-07-15 16:09:37] Initialized 27 file hashes in whitelist
+[2026-07-15 16:09:37] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-15 16:14:11] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:11] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:14] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:14] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:17] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:17] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:20] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:20] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:23] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:23] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:26] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:26] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:29] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:29] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:32] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:32] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:35] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:35] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:38] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:38] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:41] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:41] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:44] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:44] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:47] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:47] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:50] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:51] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:53] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:54] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:56] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:57] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:14:59] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:00] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:02] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:03] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:05] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:06] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:08] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:09] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:11] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:12] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:14] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:15] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:17] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:18] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:20] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:21] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:23] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:24] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:26] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:27] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:29] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:30] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:32] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:33] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:35] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:36] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:38] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:39] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:41] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:42] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:44] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:45] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:47] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:48] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:50] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:51] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:53] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:54] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:56] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:57] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:15:59] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:00] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:02] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:03] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:05] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:06] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:08] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:09] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:11] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:12] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:14] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:15] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:17] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:18] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:20] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:21] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:23] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:24] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:26] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:27] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:29] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:30] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:32] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:33] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:35] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:36] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:38] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:39] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:41] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:42] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:44] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:45] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:47] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:48] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:50] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:51] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:53] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:54] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:56] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:57] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:16:59] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:00] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:02] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:03] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:05] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:06] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:08] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:09] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:11] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:12] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:14] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:15] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:17] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:18] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:20] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:21] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:23] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:24] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:26] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:27] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:29] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:30] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:32] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:33] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:35] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:36] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:38] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:39] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:41] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:42] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:44] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:45] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:47] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:48] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:50] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:51] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:53] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:54] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:56] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:57] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:17:59] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:00] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:02] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:03] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:05] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:06] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:08] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:09] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:11] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:12] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:14] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:15] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:17] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:18] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:20] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:21] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:23] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:24] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:26] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:27] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:29] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:30] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:32] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:33] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:35] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:36] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:38] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:39] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:41] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:42] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:44] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:45] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:47] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:48] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:50] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:51] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:53] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:54] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:56] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:57] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:18:59] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:00] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:02] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:03] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:05] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:06] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:08] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:09] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:12] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:12] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:15] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:15] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:18] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:18] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:21] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:21] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:24] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:24] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:27] RecheckFileIntegrity: tampering detected WpfExecutable (expected=a968d274, actual=36a4dcae)
+[2026-07-15 16:19:53] Initialized 27 file hashes in whitelist
+[2026-07-15 16:19:54] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-15 17:08:35] Initialized 27 file hashes in whitelist
+[2026-07-15 17:08:35] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-15 17:09:29] RecheckFileIntegrity: tampering detected WpfExecutable (expected=77495b88, actual=e3955180)
+[2026-07-15 17:09:32] RecheckFileIntegrity: tampering detected WpfExecutable (expected=77495b88, actual=e3955180)
+[2026-07-15 17:09:35] RecheckFileIntegrity: tampering detected WpfExecutable (expected=77495b88, actual=e3955180)
+[2026-07-15 17:09:38] RecheckFileIntegrity: tampering detected WpfExecutable (expected=77495b88, actual=e3955180)
+[2026-07-15 17:09:41] RecheckFileIntegrity: tampering detected WpfExecutable (expected=77495b88, actual=e3955180)
+[2026-07-15 17:09:44] RecheckFileIntegrity: tampering detected WpfExecutable (expected=77495b88, actual=e3955180)
+[2026-07-15 17:09:47] RecheckFileIntegrity: tampering detected WpfExecutable (expected=77495b88, actual=e3955180)
+[2026-07-15 17:09:50] RecheckFileIntegrity: tampering detected WpfExecutable (expected=77495b88, actual=e3955180)
+[2026-07-15 17:09:53] RecheckFileIntegrity: tampering detected WpfExecutable (expected=77495b88, actual=e3955180)
+[2026-07-15 17:09:58] Initialized 27 file hashes in whitelist
+[2026-07-15 17:09:58] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-15 17:16:37] Initialized 27 file hashes in whitelist
+[2026-07-15 17:16:37] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-15 17:17:40] Initialized 27 file hashes in whitelist
+[2026-07-15 17:17:40] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-15 17:18:48] Initialized 27 file hashes in whitelist
+[2026-07-15 17:18:48] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-15 17:19:03] RecheckFileIntegrity: missing file WpfExecutable (G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\AURORA.Wpf\bin\Debug\net48\AURORA.Wpf.exe)
+[2026-07-15 17:19:06] RecheckFileIntegrity: tampering detected WpfExecutable (expected=e3955180, actual=1bc4331d)
+[2026-07-15 17:19:09] RecheckFileIntegrity: tampering detected WpfExecutable (expected=e3955180, actual=1bc4331d)
+[2026-07-15 17:19:12] RecheckFileIntegrity: tampering detected WpfExecutable (expected=e3955180, actual=1bc4331d)
+[2026-07-15 17:19:21] Initialized 27 file hashes in whitelist
+[2026-07-15 17:19:21] WMI real-time process monitoring started (zero-delay)
+[2026-07-15 17:24:11] Initialized 27 file hashes in whitelist
+[2026-07-15 17:24:11] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-15 17:27:08] Initialized 27 file hashes in whitelist
+[2026-07-15 17:27:08] WMI real-time process monitoring started (zero-delay)
+[2026-07-15 17:28:27] Initialized 27 file hashes in whitelist
+[2026-07-15 17:28:27] WMI real-time process monitoring started (zero-delay)
+[2026-07-15 18:05:25] Initialized 27 file hashes in whitelist
+[2026-07-15 18:05:26] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-15 21:38:18] Initialized 27 file hashes in whitelist
+[2026-07-15 21:38:18] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-15 22:17:58] Initialized 27 file hashes in whitelist
+[2026-07-15 22:17:58] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-15 22:19:01] Initialized 27 file hashes in whitelist
+[2026-07-15 22:19:01] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-15 22:20:20] Initialized 27 file hashes in whitelist
+[2026-07-15 22:20:20] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-15 22:38:15] Initialized 27 file hashes in whitelist
+[2026-07-15 22:38:15] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-15 23:18:16] Initialized 27 file hashes in whitelist
+[2026-07-15 23:18:16] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-15 23:38:42] Initialized 27 file hashes in whitelist
+[2026-07-15 23:38:42] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 09:48:49] Initialized 27 file hashes in whitelist
+[2026-07-16 09:48:49] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 09:50:49] Initialized 27 file hashes in whitelist
+[2026-07-16 09:50:49] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 10:18:10] Initialized 27 file hashes in whitelist
+[2026-07-16 10:18:10] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 10:19:45] Initialized 27 file hashes in whitelist
+[2026-07-16 10:19:46] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 11:29:01] Initialized 27 file hashes in whitelist
+[2026-07-16 11:29:01] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 11:30:47] Initialized 27 file hashes in whitelist
+[2026-07-16 11:30:47] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 11:57:57] Initialized 27 file hashes in whitelist
+[2026-07-16 11:57:57] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 12:40:13] Initialized 27 file hashes in whitelist
+[2026-07-16 12:40:13] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 12:43:59] Initialized 27 file hashes in whitelist
+[2026-07-16 12:43:59] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 13:06:48] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:06:51] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:06:54] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:06:57] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:00] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:03] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:06] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:09] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:12] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:15] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:18] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:21] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:24] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:27] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:30] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:33] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:36] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:39] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:42] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:45] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:48] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:51] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:54] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:07:57] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:00] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:03] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:06] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:09] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:12] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:15] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:18] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:21] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:24] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:27] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:30] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:33] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:36] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:39] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:42] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:45] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:48] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:51] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:54] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:08:57] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:09:00] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:09:03] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:09:06] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:09:09] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:09:12] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:09:15] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:09:18] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:09:21] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:09:24] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:09:27] RecheckFileIntegrity: tampering detected WpfExecutable (expected=466039ee, actual=1cbfec25)
+[2026-07-16 13:09:46] Initialized 27 file hashes in whitelist
+[2026-07-16 13:09:46] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 13:31:06] Initialized 27 file hashes in whitelist
+[2026-07-16 13:31:06] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 13:31:41] Initialized 27 file hashes in whitelist
+[2026-07-16 13:31:41] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 13:52:40] Initialized 27 file hashes in whitelist
+[2026-07-16 13:52:40] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 14:20:29] Initialized 27 file hashes in whitelist
+[2026-07-16 14:20:29] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 14:26:20] Initialized 27 file hashes in whitelist
+[2026-07-16 14:26:20] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 14:28:33] Initialized 27 file hashes in whitelist
+[2026-07-16 14:28:33] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 14:38:01] Initialized 27 file hashes in whitelist
+[2026-07-16 14:38:01] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 14:49:21] Initialized 27 file hashes in whitelist
+[2026-07-16 14:49:21] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 14:52:00] RecheckFileIntegrity: tampering detected WpfExecutable (expected=bed137ed, actual=8d43ab2a)
+[2026-07-16 14:52:03] RecheckFileIntegrity: tampering detected WpfExecutable (expected=bed137ed, actual=8d43ab2a)
+[2026-07-16 14:52:06] RecheckFileIntegrity: tampering detected WpfExecutable (expected=bed137ed, actual=8d43ab2a)
+[2026-07-16 14:52:09] RecheckFileIntegrity: tampering detected WpfExecutable (expected=bed137ed, actual=8d43ab2a)
+[2026-07-16 14:52:12] RecheckFileIntegrity: tampering detected WpfExecutable (expected=bed137ed, actual=8d43ab2a)
+[2026-07-16 14:52:15] RecheckFileIntegrity: tampering detected WpfExecutable (expected=bed137ed, actual=8d43ab2a)
+[2026-07-16 14:52:18] RecheckFileIntegrity: tampering detected WpfExecutable (expected=bed137ed, actual=8d43ab2a)
+[2026-07-16 14:52:21] RecheckFileIntegrity: tampering detected WpfExecutable (expected=bed137ed, actual=8d43ab2a)
+[2026-07-16 14:52:24] RecheckFileIntegrity: tampering detected WpfExecutable (expected=bed137ed, actual=8d43ab2a)
+[2026-07-16 14:52:39] Initialized 27 file hashes in whitelist
+[2026-07-16 14:52:39] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 14:59:35] Initialized 27 file hashes in whitelist
+[2026-07-16 14:59:35] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 15:11:16] Initialized 27 file hashes in whitelist
+[2026-07-16 15:11:16] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 15:24:12] Initialized 27 file hashes in whitelist
+[2026-07-16 15:24:12] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 15:31:26] Initialized 27 file hashes in whitelist
+[2026-07-16 15:31:26] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 15:35:05] RecheckFileIntegrity: tampering detected WpfExecutable (expected=225b3ca5, actual=825f23b1)
+[2026-07-16 15:35:09] RecheckFileIntegrity: tampering detected WpfExecutable (expected=225b3ca5, actual=825f23b1)
+[2026-07-16 15:35:12] RecheckFileIntegrity: tampering detected WpfExecutable (expected=225b3ca5, actual=825f23b1)
+[2026-07-16 15:35:15] RecheckFileIntegrity: tampering detected WpfExecutable (expected=225b3ca5, actual=825f23b1)
+[2026-07-16 15:35:18] RecheckFileIntegrity: tampering detected WpfExecutable (expected=225b3ca5, actual=825f23b1)
+[2026-07-16 15:35:21] RecheckFileIntegrity: tampering detected WpfExecutable (expected=225b3ca5, actual=825f23b1)
+[2026-07-16 15:35:24] RecheckFileIntegrity: tampering detected WpfExecutable (expected=225b3ca5, actual=825f23b1)
+[2026-07-16 15:35:27] RecheckFileIntegrity: tampering detected WpfExecutable (expected=225b3ca5, actual=825f23b1)
+[2026-07-16 15:35:30] RecheckFileIntegrity: tampering detected WpfExecutable (expected=225b3ca5, actual=825f23b1)
+[2026-07-16 15:35:33] RecheckFileIntegrity: tampering detected WpfExecutable (expected=225b3ca5, actual=825f23b1)
+[2026-07-16 15:37:33] Initialized 27 file hashes in whitelist
+[2026-07-16 15:37:33] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 15:39:34] Initialized 27 file hashes in whitelist
+[2026-07-16 15:39:34] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 15:41:41] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:41:44] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:41:47] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:41:50] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:41:53] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:41:56] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:41:59] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:02] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:05] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:08] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:11] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:14] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:17] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:20] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:23] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:26] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:29] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:32] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:35] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:38] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:41] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:44] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:47] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:50] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:42:53] RecheckFileIntegrity: tampering detected WpfExecutable (expected=fbae25ad, actual=57f50402)
+[2026-07-16 15:43:07] Initialized 27 file hashes in whitelist
+[2026-07-16 15:43:07] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 15:58:38] Initialized 27 file hashes in whitelist
+[2026-07-16 15:58:38] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 16:01:00] Initialized 27 file hashes in whitelist
+[2026-07-16 16:01:00] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 16:11:36] Initialized 27 file hashes in whitelist
+[2026-07-16 16:11:36] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 16:21:24] Initialized 27 file hashes in whitelist
+[2026-07-16 16:21:24] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 16:27:14] Initialized 27 file hashes in whitelist
+[2026-07-16 16:27:14] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 16:35:45] Initialized 27 file hashes in whitelist
+[2026-07-16 16:35:45] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 16:48:09] Initialized 27 file hashes in whitelist
+[2026-07-16 16:48:09] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 16:49:39] RecheckFileIntegrity: tampering detected WpfExecutable (expected=229bba21, actual=34e227a5)
+[2026-07-16 16:49:42] RecheckFileIntegrity: tampering detected WpfExecutable (expected=229bba21, actual=34e227a5)
+[2026-07-16 16:49:45] RecheckFileIntegrity: tampering detected WpfExecutable (expected=229bba21, actual=34e227a5)
+[2026-07-16 16:49:48] RecheckFileIntegrity: tampering detected WpfExecutable (expected=229bba21, actual=34e227a5)
+[2026-07-16 16:49:51] RecheckFileIntegrity: tampering detected WpfExecutable (expected=229bba21, actual=34e227a5)
+[2026-07-16 16:49:54] RecheckFileIntegrity: tampering detected WpfExecutable (expected=229bba21, actual=34e227a5)
+[2026-07-16 16:49:57] RecheckFileIntegrity: tampering detected WpfExecutable (expected=229bba21, actual=34e227a5)
+[2026-07-16 16:50:00] RecheckFileIntegrity: tampering detected WpfExecutable (expected=229bba21, actual=34e227a5)
+[2026-07-16 16:50:03] RecheckFileIntegrity: tampering detected WpfExecutable (expected=229bba21, actual=34e227a5)
+[2026-07-16 16:50:06] RecheckFileIntegrity: tampering detected WpfExecutable (expected=229bba21, actual=34e227a5)
+[2026-07-16 16:50:27] Initialized 27 file hashes in whitelist
+[2026-07-16 16:50:27] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 17:00:10] Initialized 27 file hashes in whitelist
+[2026-07-16 17:00:10] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 17:07:34] Initialized 27 file hashes in whitelist
+[2026-07-16 17:07:34] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 17:14:44] Initialized 27 file hashes in whitelist
+[2026-07-16 17:14:44] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 17:15:10] Initialized 27 file hashes in whitelist
+[2026-07-16 17:15:10] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 17:19:31] Initialized 27 file hashes in whitelist
+[2026-07-16 17:19:31] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 17:20:53] Initialized 27 file hashes in whitelist
+[2026-07-16 17:20:53] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 17:30:11] Initialized 27 file hashes in whitelist
+[2026-07-16 17:30:11] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 17:42:08] Initialized 27 file hashes in whitelist
+[2026-07-16 17:42:08] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 17:47:38] Initialized 27 file hashes in whitelist
+[2026-07-16 17:47:38] WMI monitoring skipped (non-admin), using polling mode only
+[2026-07-16 17:50:27] Initialized 27 file hashes in whitelist
+[2026-07-16 17:50:27] WMI monitoring skipped (non-admin), using polling mode only
