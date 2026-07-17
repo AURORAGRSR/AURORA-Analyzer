@@ -1,0 +1,36 @@
+[2026-07-17 09:10:56] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-07-17 09:10:56] AssemblyLoad guard registered
+[2026-07-17 09:10:56] OnStartup
+[2026-07-17 09:10:56] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-07-17 09:10:56] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=57768)
+[2026-07-17 09:10:56] Password verification passed
+[2026-07-17 09:10:57] AURORA_PERF_TIER=Extreme
+[2026-07-17 09:10:57] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-07-17 09:10:57] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-07-17 09:10:57] AURORA_LANGUAGE=CHS
+[2026-07-17 09:10:57] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-07-17 09:10:57] VerifyDirectoryIntegrity: OK
+[2026-07-17 09:10:57] Directory integrity check passed
+[2026-07-17 09:10:57] IntegrityGuard detection: NONE
+[2026-07-17 09:10:57] IntegrityGuard initialized
+[2026-07-17 09:10:57] IntegrityGuard runtime monitoring started
+[2026-07-17 09:10:57] ElevationService configured
+[2026-07-17 09:10:57] Creating MainWindow shell
+[2026-07-17 09:10:58] MainWindow shell shown + PlayShellEnter
+[2026-07-17 09:10:58] ViewManager initialized
+[2026-07-17 09:10:58] Navigating to SplashScreenView
+[2026-07-17 09:10:58] SplashScreenView.ctor begin
+[2026-07-17 09:10:58] SplashScreenView.ctor InitializeComponent done
+[2026-07-17 09:10:58] SplashScreenView.Loaded
+[2026-07-17 09:11:08] SplashScreenView.LoadingComplete
+[2026-07-17 09:11:08] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-07-17 09:12:09] ElevationDialog result: ContinueNormal
+[2026-07-17 09:12:09] MainFormView.ctor begin
+[2026-07-17 09:12:09] MainFormView.ctor InitializeComponent done
+[2026-07-17 09:12:09] MainFormView.Loaded
+[2026-07-17 09:12:43] ProModeView.ctor begin
+[2026-07-17 09:12:43] ProModeView.ctor InitializeComponent done
+[2026-07-17 09:12:45] ProModeView.OnLoaded begin
+[2026-07-17 09:12:45] ProModeView.OnLoaded end
+[2026-07-17 09:13:21] PerformExitCleanup: done
+[2026-07-17 09:13:21] PerformExitCleanup: done
