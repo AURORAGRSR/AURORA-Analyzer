@@ -1,9 +1,0 @@
-[2026-07-15 23:39:47] [syncHash] ElevationAuthorized = false (elevation rejected, state cleaned)
-[2026-07-16 11:36:46] [WARN] 主动健康检查失败，通知引擎停止
-[2026-07-16 15:40:01] [syncHash] ElevationAuthorized = false (elevation rejected, state cleaned)
-[2026-07-16 15:40:03] [syncHash] ElevationAuthorized = false (elevation rejected, state cleaned)
-[2026-07-16 17:08:16] [syncHash] ElevationAuthorized = false (elevation rejected, state cleaned)
-[2026-07-16 17:22:21] [syncHash] ElevationAuthorized = false (elevation rejected, state cleaned)
-[2026-07-16 17:24:30] [syncHash] ElevationAuthorized = false (elevation rejected, state cleaned)
-[2026-07-16 17:57:01] [WARN] 主动健康检查失败，通知引擎停止
-[2026-07-16 17:59:56] [WARN] 主动健康检查失败，通知引擎停止
