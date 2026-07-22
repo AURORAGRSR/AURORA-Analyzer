@@ -5,7 +5,7 @@
     智能诊断与自主修复模式核心引擎
     架构特性：单文件双语支持 (Bilingual) + 动态环境感知 + 极速并发匹配
 .NOTES
-    版本：V1.5.29.0Release | 构建时间：2026.07.17
+    版本：V1.5.29.0Release | 构建时间：2026.07.21
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 
@@ -1211,6 +1211,10 @@ function Write-SmartLog {
 try {
     $global:syncHash.IsRunning = $true
     $global:syncHash.Progress = 5
+    # [P1-修复] 初始化 EngineError 标志,与 catch 块的 $true 设置配对。
+    #   防止上次会话残留的 EngineError=true 被本次会话误读为失败。
+    $global:syncHash.EngineError = $false
+    $global:syncHash.EngineErrorMessage = $null
 
     # =========================================================
     # Phase 1: 智能环境感知 (Auto-Detect) - 重构版
@@ -1577,15 +1581,28 @@ try {
     # 检查缓存有效性
     $kbTime = (Get-Item $kbPath).LastWriteTime
     
-    if ((Test-Path $cachePath) -and 
+    if ((Test-Path $cachePath) -and
         ((Get-Item $cachePath).LastWriteTime -ge $kbTime)) {
         try {
             $cachedData = Import-Clixml $cachePath -ErrorAction Stop
-            $currentKbVersion = (Get-Content "$script:KnowledgeBaseDir\version.txt" -ErrorAction SilentlyContinue) -replace '\s',''
-            if ($cachedData.FlatRules -and 
-                $cachedData.EventIdIndex -and 
+            # [修复-编码] version.txt 同样可能无 BOM,用 [System.IO.File]::ReadAllText 显式 UTF8 读取
+            # [P0-修复-路径] 原代码假设 version.txt 在 Data 目录下(与 $kbPath 同目录),
+            #   但实际 version.txt 位于项目根目录(AURORA-Analyzer-Factory\version.txt)。
+            #   $kbPath = ...\Data\AURORA-TechData.json,项目根目录是 Data 的父目录。
+            #   原路径 Test-Path 永远返回 false → $currentKbVersion 为空 → 缓存永久失效,
+            #   每次启动都重新解析 JSON、重建 flatRules、重新编译正则(性能损失)。
+            #   修复: version.txt 路径改为 $kbPath 上溯两级(从 Data\ 到项目根)。
+            $kbDir = [System.IO.Path]::GetDirectoryName($kbPath)
+            $projectRoot = [System.IO.Path]::GetDirectoryName($kbDir)
+            $versionPath = [System.IO.Path]::Combine($projectRoot, "version.txt")
+            $currentKbVersion = ""
+            if (Test-Path $versionPath) {
+                $currentKbVersion = ([System.IO.File]::ReadAllText($versionPath, [System.Text.Encoding]::UTF8)) -replace '\s',''
+            }
+            if ($cachedData.FlatRules -and
+                $cachedData.EventIdIndex -and
                 $cachedData.SourceIndex -and
-                $cachedData.KbVersion -eq $currentKbVersion) {
+                ($cachedData.KbVersion -eq $currentKbVersion)) {
                 $flatRules = $cachedData.FlatRules
                 $eventIdIndex = $cachedData.EventIdIndex
                 $sourceIndex = $cachedData.SourceIndex
@@ -1610,7 +1627,12 @@ try {
     }
     
     if (-not $useCache) {
-        $techData = Get-Content $kbPath -Raw | ConvertFrom-Json
+        # [修复-编码] PowerShell 5.1 的 Get-Content -Raw 在读取无 BOM 的 UTF-8 文件时,
+        #   默认使用系统 ANSI 编码(中文 Windows 为 GBK/CP936),导致中文乱码,
+        #   进而 ConvertFrom-Json 解析失败(ArgumentException: Invalid object passed in, ':' or '}' expected)。
+        #   改用 [System.IO.File]::ReadAllText 显式 UTF8 读取,确保中文正确解析。
+        $kbJson = [System.IO.File]::ReadAllText($kbPath, [System.Text.Encoding]::UTF8)
+        $techData = $kbJson | ConvertFrom-Json
         
         # 核心优化：将多层嵌套的 JSON 展平为一个 1D 数组，并预编译正则表达式
         $flatRules = @()
@@ -1948,6 +1970,11 @@ try {
 
 } catch {
     Write-SmartLog ($L["Fatal_Error"] -f $_.Exception.Message)
+    # [P1-修复] 设置 EngineError 标志,让 C# 端 OnScriptComplete 据此切换"失败"模态。
+    #   原代码 catch 仅日志记录,finally 无差别设 ScriptDone=true,C# 端检测到 ScriptDone
+    #   即调用 OnScriptComplete 显示"分析完成"成功模态——引擎实际已崩溃却显示成功,误导用户。
+    $global:syncHash.EngineError = $true
+    $global:syncHash.EngineErrorMessage = $_.Exception.Message
 } finally {
     # [P0-修复] 无论成功、异常、还是 catch 退出，都强制把进度推到 100。
     #   原代码 finally 块只设 ScriptDone 和 IsRunning，不设 Progress，

@@ -4,7 +4,7 @@
 .DESCRIPTION
     权限说明信息对话框
 .NOTES
-    版本：V1.5.29.0Release | 构建时间：2026.07.17
+    版本：V1.5.29.0Release | 构建时间：2026.07.21
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 # ====== 权限说明信息对话框 ======

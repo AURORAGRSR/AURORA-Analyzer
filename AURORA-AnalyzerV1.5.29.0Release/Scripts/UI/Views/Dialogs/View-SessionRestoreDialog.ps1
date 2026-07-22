@@ -4,7 +4,7 @@
 .DESCRIPTION
     进度恢复对话框（复用 PRO 模式视觉和动画）
 .NOTES
-    版本：V1.5.29.0Release | 构建时间：2026.07.17
+    版本：V1.5.29.0Release | 构建时间：2026.07.21
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 # ====== 进度恢复对话框（复用 PRO 模式视觉和动画） ======

@@ -5,7 +5,7 @@
     Windows 系统事件日志导出与智能分析工具的图形界面启动程序
     构建自 .NET Framework 4.x 的 C# 5.0
 .NOTES
-    版本：V1.5.29.0Release | 构建时间：2026.07.17
+    版本：V1.5.29.0Release | 构建时间：2026.07.21
     作者：AURORA VelociRaptor-GR Dev PRJ.
     警告：本工具仅用于个人学习使用。
 #>
@@ -117,6 +117,11 @@ if ($PSBoundParameters.ContainsKey('Language') -and $Language) {
 # 注意：如果后续 RSA 令牌验证失败，会清理环境变量并重置此标志
 $IsLaunchedByExe = [bool]$LaunchedByExe -or ($env:AURORA_LAUNCHED_BY_EXE -eq "1")
 
+# [P1-修复] 提权重启标记(对齐 WPF App.xaml.cs L53 IsElevationRestart)。
+#   令牌内容为 ELEVATION_RESTART 占位标记时设置(首次启动通过父进程名检测跳过密码,
+#   PassedHashList 为空,提权时用占位标记让新进程跳过安全守卫)。
+$IsElevationRestart = $false
+
 # ==========================================
 # RSA 令牌验证 - 获取解密后的哈希列表
 # ⚠️ 重要：无论启动方式都尝试解密哈希列表
@@ -169,7 +174,9 @@ if ($ElevationTokenPath -and (Test-Path $ElevationTokenPath)) {
             $elevPayloadB64 = $elevParts[2]
 
             $elevAge = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() - $elevTimestamp
-            if ($elevAge -gt 0 -and $elevAge -lt 60) {
+            # [P2-修复-时效容忍] 允许 -5 秒时钟偏差(对齐 C# ElevationTokenService L167 的 age >= 60 || age < -5)。
+            #   原代码 $elevAge -gt 0 不允许负值,跨进程时钟不同步时令牌会被误判过期。
+            if ($elevAge -lt 60 -and $elevAge -gt -5) {
                 $elevPayload = [Convert]::FromBase64String($elevPayloadB64)
                 if ($elevPayload.Length -gt 16) {
                     $elevIv = $elevPayload[0..15]
@@ -191,15 +198,18 @@ if ($ElevationTokenPath -and (Test-Path $ElevationTokenPath)) {
                     $elevPlainBytes = $elevAes.CreateDecryptor().TransformFinalBlock($elevCipher, 0, $elevCipher.Length)
                     $elevPlainText = [System.Text.Encoding]::UTF8.GetString($elevPlainBytes).TrimEnd("`r", "`n")
 
-                    # 解析三部分内容：scriptPath:elevationToken:hashList
-                    $elevParts2 = $elevPlainText -split ':', 3
-                    if ($elevParts2.Count -ge 2 -and $elevParts2[0] -eq "AURORA-AnalyzerLauncherGUI.ps1") {
+                    # [P2-修复-格式不一致] 生成端(View-AdminElevation.ps1 L95)和 C# 端(ElevationTokenService.cs L91)
+                    #   都仅加密纯 hashList,此解密端原期望 "scriptPath:token:hashList" 三段格式,
+                    #   导致 PS1 端提权令牌验证永远失败。改为与生成端/C# 端一致:期望纯 hashList
+                    #   或 ELEVATION_RESTART 占位符(无 hashList 的提权重启场景)。
+                    if ($elevPlainText -eq "ELEVATION_RESTART") {
                         $IsLaunchedByExe = $true
-                        # 提取哈希列表（第三部分）
-                        if ($elevParts2.Count -ge 3) {
-                            $global:PassedHashListFromExe = $elevParts2[2]
-                        }
-                        Write-Host "[安全] 提权令牌验证通过（令牌时效：$elevAge 秒）" -ForegroundColor Green
+                        $IsElevationRestart = $true
+                        Write-Host "[安全] 提权令牌验证通过（令牌时效：$elevAge 秒，ELEVATION_RESTART 占位）" -ForegroundColor Green
+                    } elseif ($elevPlainText.Length -gt 0) {
+                        $IsLaunchedByExe = $true
+                        $global:PassedHashListFromExe = $elevPlainText
+                        Write-Host "[安全] 提权令牌验证通过（令牌时效：$elevAge 秒，hashList 长度：$($elevPlainText.Length)）" -ForegroundColor Green
                     } else {
                         Write-Host "[安全] 提权令牌解密内容无效" -ForegroundColor Red
                     }
@@ -219,8 +229,12 @@ if ($ElevationTokenPath -and (Test-Path $ElevationTokenPath)) {
 # 🔐 P0修复：如果 IsLaunchedByExe 来自命令行参数但既没有 RSA 令牌
 # 也没有提权令牌验证通过，则重置为 $false 强制走密码验证
 # 防止攻击者伪造 -LaunchedByExe 参数绕过所有安全验证
+# [P1-修复] 对齐 WPF App.xaml.cs L511 的 !IsElevationRestart 放宽条件。
+#   ELEVATION_RESTART 占位场景下 PassedHashListFromExe 为空但合法
+#   (首次启动通过父进程名跳过密码,提权时用占位标记),
+#   原代码会误杀此场景,强制走密码验证,提权流程断裂。
 # ==========================================
-if ($IsLaunchedByExe -and $null -eq $global:PassedHashListFromExe) {
+if ($IsLaunchedByExe -and $null -eq $global:PassedHashListFromExe -and -not $IsElevationRestart) {
     # [兼容提示] 检测旧版 AURORA-Analyzer.exe 启动器（V1.5.28.5 之前构建）
     #   旧启动器成功通过自身 GAURORA.CHK.ENC 哈希校验（设置了 AURORA_EXE_VERIFIED=1），
     #   但其内嵌的 RSA 私钥与当前脚本的新公钥不匹配 → RSA 令牌验签失败。
@@ -558,7 +572,10 @@ if (-not $IsLaunchedByExe) {
         
         $Decryptor = $Aes.CreateDecryptor()
         $PlainBytes = $Decryptor.TransformFinalBlock($Cipher, 0, $Cipher.Length)
-        $PlainText = [System.Text.Encoding]::Default.GetString($PlainBytes)
+        # [P2-修复-编码统一] 改为 UTF8,与 C# PasswordService.cs L116 [SEC-FIX M3] 统一。
+        #   原 Encoding::Default 在中文系统为 GBK,对非 ASCII 字符解码结果与 C# 不一致。
+        #   hashList 实际为 base64(纯 ASCII) 影响为零,但纵深防御统一编码。
+        $PlainText = [System.Text.Encoding]::UTF8.GetString($PlainBytes)
         
         $global:PassedHashListFromExe = $PlainText
         

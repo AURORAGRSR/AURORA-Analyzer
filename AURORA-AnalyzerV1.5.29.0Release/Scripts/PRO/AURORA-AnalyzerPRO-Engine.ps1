@@ -19,7 +19,7 @@
 .PARAMETER Language
     语言选择：CHS 或 ENG。默认为 CHS。
 .NOTES
-    版本：V1.5.29.0Release | 构建时间：2026.07.17
+    版本：V1.5.29.0Release | 构建时间：2026.07.21
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 param()

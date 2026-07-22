@@ -4,7 +4,7 @@
 .DESCRIPTION
     提权重启功能
 .NOTES
-    版本：V1.5.29.0Release | 构建时间：2026.07.17
+    版本：V1.5.29.0Release | 构建时间：2026.07.21
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 # ====== 提权重启功能 ======
@@ -75,49 +75,56 @@ function Restart-WithAdmin {
         # 使用当前已验证的哈希列表加密后传递给提权进程
         # 解决 RSA 令牌文件被旧进程删除导致信任链断裂的问题
         $elevationTokenGenerated = $false
-        if ($null -ne $global:PassedHashListFromExe -and $global:PassedHashListFromExe.Length -gt 0) {
+        $elevTokenFile = $null
+        # [P1-修复] hashList 为空时使用 ELEVATION_RESTART 占位符,与 C# ElevationService.cs L84-88 一致。
+        #   场景: 首次启动通过父进程名检测跳过密码时 PassedHashList 为空,提权时仍需传递令牌
+        #   让新进程设置 IsElevationRestart=true 跳过安全守卫(对齐 WPF App.xaml.cs L511)。
+        #   原代码在 hashList 为空时直接跳过令牌生成,回退到旧 RSA 令牌文件路径(可能已被删除)。
+        $elevPayloadText = $global:PassedHashListFromExe
+        if ([string]::IsNullOrWhiteSpace($elevPayloadText)) {
+            $elevPayloadText = "ELEVATION_RESTART"
+        }
+        try {
+            $elevNonce = [guid]::NewGuid().ToString("N")
+            $elevTimestamp = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+
+            $elevKey = (New-Object System.Security.Cryptography.Rfc2898DeriveBytes(
+                $elevNonce,
+                $global:AURORA_AesSalt,
+                100000,
+                [System.Security.Cryptography.HashAlgorithmName]::SHA256
+            )).GetBytes(32)
+
+            $elevAes = [System.Security.Cryptography.Aes]::Create()
+            $elevAes.Key = $elevKey
+            $elevAes.GenerateIV()
+            $elevIv = $elevAes.IV
+
+            $elevPlainBytes = [System.Text.Encoding]::UTF8.GetBytes($elevPayloadText)
+            $elevCipher = $elevAes.CreateEncryptor().TransformFinalBlock($elevPlainBytes, 0, $elevPlainBytes.Length)
+
+            $elevPayload = $elevIv + $elevCipher
+            $elevPayloadB64 = [Convert]::ToBase64String($elevPayload)
+            $elevTokenContent = "$elevNonce`:$elevTimestamp`:$elevPayloadB64"
+
+            $elevTokenFile = Join-Path $env:TEMP "aurora_elev_$([guid]::NewGuid().ToString("N")).tok"
+            [System.IO.File]::WriteAllText($elevTokenFile, $elevTokenContent, [System.Text.Encoding]::UTF8)
+            # 🔒 M-5：为令牌文件设置 ACL，仅允许当前用户访问
             try {
-                $elevNonce = [guid]::NewGuid().ToString("N")
-                $elevTimestamp = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
-                
-                $elevKey = (New-Object System.Security.Cryptography.Rfc2898DeriveBytes(
-                    $elevNonce,
-                    $global:AURORA_AesSalt,
-                    100000,
-                    [System.Security.Cryptography.HashAlgorithmName]::SHA256
-                )).GetBytes(32)
-                
-                $elevAes = [System.Security.Cryptography.Aes]::Create()
-                $elevAes.Key = $elevKey
-                $elevAes.GenerateIV()
-                $elevIv = $elevAes.IV
-                
-                $elevPlainBytes = [System.Text.Encoding]::UTF8.GetBytes($global:PassedHashListFromExe)
-                $elevCipher = $elevAes.CreateEncryptor().TransformFinalBlock($elevPlainBytes, 0, $elevPlainBytes.Length)
-                
-                $elevPayload = $elevIv + $elevCipher
-                $elevPayloadB64 = [Convert]::ToBase64String($elevPayload)
-                $elevTokenContent = "$elevNonce`:$elevTimestamp`:$elevPayloadB64"
-                
-                $elevTokenFile = Join-Path $env:TEMP "aurora_elev_$([guid]::NewGuid().ToString("N")).tok"
-                [System.IO.File]::WriteAllText($elevTokenFile, $elevTokenContent, [System.Text.Encoding]::UTF8)
-                # 🔒 M-5：为令牌文件设置 ACL，仅允许当前用户访问
-                try {
-                    $currentIdentity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
-                    $acl = Get-Acl $elevTokenFile
-                    $acl.SetAccessRuleProtection($true, $false)
-                    $rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
-                        $currentIdentity.User, "FullControl", "Allow")
-                    $acl.AddAccessRule($rule)
-                    Set-Acl -Path $elevTokenFile -AclObject $acl
-                } catch {}
-                
-                $arguments += " -ElevationTokenPath `"$elevTokenFile`""
-                $elevationTokenGenerated = $true
-                Write-Host "[安全] 提权令牌已生成" -ForegroundColor Green
-            } catch {
-                Write-Host "[安全] 提权令牌生成失败：$($_.Exception.Message)" -ForegroundColor Yellow
-            }
+                $currentIdentity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+                $acl = Get-Acl $elevTokenFile
+                $acl.SetAccessRuleProtection($true, $false)
+                $rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
+                    $currentIdentity.User, "FullControl", "Allow")
+                $acl.AddAccessRule($rule)
+                Set-Acl -Path $elevTokenFile -AclObject $acl
+            } catch {}
+
+            $arguments += " -ElevationTokenPath `"$elevTokenFile`""
+            $elevationTokenGenerated = $true
+            Write-Host "[安全] 提权令牌已生成（payload: $(if ($elevPayloadText -eq 'ELEVATION_RESTART') { 'ELEVATION_RESTART' } else { 'hashList' })）" -ForegroundColor Green
+        } catch {
+            Write-Host "[安全] 提权令牌生成失败：$($_.Exception.Message)" -ForegroundColor Yellow
         }
         
         # 🔐 如果没有提权令牌，尝试传递原始安全环境变量作为回退
@@ -179,6 +186,12 @@ function Restart-WithAdmin {
     catch {
         $errorMsg = $_.Exception.Message
         Write-Host " 提权失败错误：$errorMsg" -ForegroundColor Red
+
+        # [P1-修复] Start-Process 失败(用户拒绝 UAC 或其他异常)时清理已生成的令牌文件,
+        #   避免令牌文件残留(60 秒窗口内同用户进程可读取解密 hashList)。
+        if ($elevTokenFile -and (Test-Path $elevTokenFile)) {
+            try { Remove-Item $elevTokenFile -Force -ErrorAction SilentlyContinue } catch {}
+        }
         
         [System.Windows.Forms.MessageBox]::Show(
             $(if ($script:selectedLanguage -eq "CHS") {
