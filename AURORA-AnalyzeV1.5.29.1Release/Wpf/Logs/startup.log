@@ -1,0 +1,38 @@
+[2026-07-27 17:32:19] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-07-27 17:32:19] AssemblyLoad guard registered
+[2026-07-27 17:32:19] OnStartup
+[2026-07-27 17:32:19] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-07-27 17:32:19] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-07-27 17:32:19] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-AnalyzeV1.5.29.1Release\AURORA-AnalyzerWPF.exe
+[2026-07-27 17:32:19] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=35072, deploy=wpf-subdir)
+[2026-07-27 17:32:19] Password verification passed
+[2026-07-27 17:32:19] AURORA_PERF_TIER=Extreme
+[2026-07-27 17:32:19] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-07-27 17:32:19] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-07-27 17:32:19] AURORA_LANGUAGE=CHS
+[2026-07-27 17:32:19] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-07-27 17:32:19] VerifyDirectoryIntegrity: OK
+[2026-07-27 17:32:19] Directory integrity check passed
+[2026-07-27 17:32:19] IntegrityGuard detection: NONE
+[2026-07-27 17:32:19] IntegrityGuard initialized
+[2026-07-27 17:32:19] IntegrityGuard runtime monitoring started
+[2026-07-27 17:32:19] ElevationService configured
+[2026-07-27 17:32:19] Creating MainWindow shell
+[2026-07-27 17:32:20] MainWindow shell shown + PlayShellEnter
+[2026-07-27 17:32:20] ViewManager initialized
+[2026-07-27 17:32:20] Navigating to SplashScreenView
+[2026-07-27 17:32:20] SplashScreenView.ctor begin
+[2026-07-27 17:32:20] SplashScreenView.ctor InitializeComponent done
+[2026-07-27 17:32:20] SplashScreenView.Loaded
+[2026-07-27 17:32:30] SplashScreenView.LoadingComplete
+[2026-07-27 17:32:30] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-07-27 17:32:32] ElevationDialog result: ContinueNormal
+[2026-07-27 17:32:32] MainFormView.ctor begin
+[2026-07-27 17:32:32] MainFormView.ctor InitializeComponent done
+[2026-07-27 17:32:33] MainFormView.Loaded
+[2026-07-27 17:32:38] ProModeView.ctor begin
+[2026-07-27 17:32:38] ProModeView.ctor InitializeComponent done
+[2026-07-27 17:32:39] ProModeView.OnLoaded begin
+[2026-07-27 17:32:39] ProModeView.OnLoaded end
+[2026-07-27 17:32:49] PerformExitCleanup: done
+[2026-07-27 17:32:49] PerformExitCleanup: done
