@@ -5,7 +5,7 @@
     智能诊断与自主修复模式核心引擎
     架构特性：单文件双语支持 (Bilingual) + 动态环境感知 + 极速并发匹配
 .NOTES
-    版本：V1.5.29.1Release | 构建时间：2026.07.27
+    版本：V1.5.29.1Release | 构建时间：2026.07.28
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 
@@ -1724,7 +1724,8 @@ try {
             }
             # 【修复】使用 -Depth 3 确保嵌套的 Hashtable 和数组可以正确序列化
             $cacheData | Export-Clixml $cachePath -Depth 3 -ErrorAction Stop
-            Write-SmartLog "Knowledge base cached ($(($cacheData | ConvertTo-Json -Depth 1).Length / 1KB).ToString('F1') KB)"
+            $cacheSizeKb = ($cacheData | ConvertTo-Json -Depth 1).Length / 1KB
+            Write-SmartLog "Knowledge base cached ($($cacheSizeKb.ToString('F1')) KB)"
         } catch {
             Write-SmartLog "Warning: Failed to save cache: $($_.Exception.Message)"
         }
@@ -1750,10 +1751,21 @@ try {
             $candidates += $eventIdIndex[$eidKey]
         }
         
-        # 从 Source 索引获取候选（O(1)）
+        # 从 Source 索引获取候选
+        # [FIX] KB source 多为简短名（HAL/Disk/Kernel-Power），而事件 ProviderName 多为全名
+        # （Microsoft-Windows-HAL）。原 ContainsKey 精确匹配导致 0 命中。
+        # 精确命中后直接取；否则回退到双向 Contains 匹配（与 WPF 端
+        # KnowledgeBaseService 的 source 匹配逻辑对齐）。
         $providerKey = $e.ProviderName.ToLower()
         if ($sourceIndex.ContainsKey($providerKey)) {
             $candidates += $sourceIndex[$providerKey]
+        } else {
+            foreach ($srcKey in $sourceIndex.Keys) {
+                if ($providerKey.IndexOf($srcKey, [System.StringComparison]::OrdinalIgnoreCase) -ge 0 -or
+                    $srcKey.IndexOf($providerKey, [System.StringComparison]::OrdinalIgnoreCase) -ge 0) {
+                    $candidates += $sourceIndex[$srcKey]
+                }
+            }
         }
         
         # 去重：避免同一规则被重复匹配

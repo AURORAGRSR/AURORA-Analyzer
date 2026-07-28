@@ -6,7 +6,7 @@
     支持撤销操作（Undo）
     支持修复历史查询
 .NOTES
-    版本：V1.5.29.1Release | 构建时间：2026.07.27
+    版本：V1.5.29.1Release | 构建时间：2026.07.28
     作者：AURORA VelociRaptor-GR Dev PRJ.
     与 RestoreManager 配合使用
     提供完整的修复操作审计追踪
