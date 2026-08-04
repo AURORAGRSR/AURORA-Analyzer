@@ -2,7 +2,7 @@
 
 > **Windows 事件日志导出与智能诊断分析工具**
 >
-> 版本：V1.5.29.1 Release · 技术栈：WPF + .NET Framework 4.x + C# 5 + PowerShell 5.1
+> 版本：V1.6.30.1 Release · 技术栈：WPF + .NET Framework 4.x + C# 5 + PowerShell 5.1
 >
 > 作者：AURORA VelociRaptor-GR Dev PRJ.
 >
@@ -27,6 +27,8 @@ AURORA Analyzer 是一款专为 Windows 平台设计的系统事件日志导出�
 ## 三、核心特性概览
 
 AURORA Analyzer 的核心能力可以归纳为五个方面。第一，**智能诊断**：内置丰富的知识图谱规则库，支持事件 ID 匹配、严重程度评分（1—10 分）与因果关系分析，将零散事件串联成因果链；同时提供历史指纹匹配，将当前日志与历史归档进行三层指纹对比，给出"是否曾经发生过类似问题"的判断与系统健康度评分。第二，**多维度扫描**：覆盖系统文件完整性、服务状态、注册表健康度、磁盘 I/O、内存与 CPU、网络配置、事件日志等多个维度。第三，**一键修复**：诊断完成后可自动执行修复，修复前自动创建系统还原点与快速备份快照，所有修复操作均可撤销并精确回滚到操作前状态。第四，**会话断点续传**：诊断与修复进度自动持久化，意外中断后可从中断点恢复，并向用户展示中断天数以辅助决策。第五，**安全机制**：从启动密码、RSA 签名哈希列表到 UAC 提权令牌，构成一条完整的信任链；运行时通过反调试栈、文件完整性守护与看门狗心跳持续自我保护。
+
+此外，AURORA Analyzer 在历史分析与报告导出方面同样表现出色。历史界面提供智能化的"分析"按钮，根据用户选中的归档数量自动切换分析模式：未选中时显示禁用态，选中单条归档时切换为"时间线"模式展示该归档内部的事件时序分布，选中多条归档时切换为"趋势"模式展示跨归档的系统健康度演进趋势，按钮图标（放大镜/时钟/折线）随模式同步切换，无需用户手动判断应使用哪种视图。报告导出支持 HTML、Excel 等多种格式，格式选择对话框的选项卡片具备平滑的鼠标悬停渐变反馈，且整个导出链路（从主界面语言设置到报告生成器再到导出器）统一传递中英双语配置，确保导出报告的语言与主界面始终保持一致。
 
 ---
 
@@ -103,6 +105,8 @@ AURORA Analyzer 提供完整的修复工具链，覆盖 Windows 系统的多个�
 **直接 C# 实现的修复工具（RepairService）** 包括以下几类。**Windows 更新控制**：通过注册表 `SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU` 设置 NoAutoUpdate=1、AUOptions=1 来禁用自动更新。**Defender 防护**：通过注册表 `SOFTWARE\Policies\Microsoft\Windows Defender` 设置 DisableAntiSpyware=0 来启用 Defender。**遥测控制**：通过注册表 `SOFTWARE\Policies\Microsoft\Windows\DataCollection` 设置 AllowTelemetry=0 来关闭遥测。**网络重置**：通过 `netsh winsock reset` + `netsh int ip reset` + `ipconfig /flushdns` 重置网络栈。**系统临时文件清理**：清理 `Path.GetTempPath()` 目录。**SFC 系统文件修复**：调用 `sfc.exe /scannow`（10 分钟超时）。**Windows Store 缓存重置**：调用 `wsreset.exe`（60 秒超时）。**事件日志清理**：通过 `wevtutil cl` 清理 Application / System / Security 日志。**DNS 刷新**：通过 `ipconfig /flushdns`。
 
 **知识库命令执行（FixExecutionService）** 负责执行诊断引擎匹配出的 KnowledgeBaseCommand。命令类型支持 cmd（通过 `cmd.exe /c` 执行）与 powershell（通过 `powershell.exe -NoProfile -NonInteractive -Command` 执行）两种。执行前会先评估 PreCheck（PowerShell 表达式，输出非空即视为通过）、检查 ElevationRequired、并根据 RiskLevel（High / Medium）给出警示。仅当 AutoExecute=true 时才会自动执行（保守模式），避免高风险操作被静默执行。执行失败时会自动调用 RollbackCommand 回滚（沿用原命令的 type，避免 PowerShell 语法被 cmd.exe 解析出错）。整个执行过程通过 `RepairService` 的 StartRepairSession / LogRepairCommand / CompleteRepairSession 进行会话记录，并通过 `ProModeViewModel.RecordRepairSession` 让 UndoViewer 后续可追溯。FixPhase 状态机覆盖 Starting / Executing / RolledBack / Completed / Skipped 五个阶段，并支持 IProgress<FixProgress> 与 CancellationToken，便于 UI 实时反馈与用户取消。
+
+**执行窗口与回滚闭环加固（V1.6.30.1）** 对解决方案视图执行窗口进行了全面重构与完整性加固。执行窗口采用步骤时间线+日志双栏布局，左侧实时展示 FixPhase 状态机推进，右侧同步回显命令日志。失败处理支持 Abort / Continue / AskUser 三态选择，Continue 模式会先执行失败命令的 RollbackCommand 再跳过，避免脏状态连锁失败。进度预估基于已执行命令的平均耗时实时估算剩余时间。取消操作通过 Process.Kill 终止整个进程树，避免孤儿进程。EvaluatePreCheck 传入实际 CancellationToken，pre_check 期间取消有效。回滚闭环方面，CompleteRepairSession 实现终态保护（已是终态则不覆盖 Status/CanUndo），过期清理联动磁盘快照清理，启动时调用 CleanupExpiredSnapshots(7) 清理孤儿快照。UndoViewerViewModel.Refresh() 加载磁盘孤儿快照对账，撤销失败保留 CanUndo=true 可重试，撤销成功后手动触发 PropertyChanged 刷新 UI。
 
 **系统还原点（RestoreService）** 基于 WMI SystemRestore 类实现。CreateRestorePoint 接受描述、还原点类型与事件类型参数，并按 RestorePointTypeName 完成映射（APPLICATION_INSTALL、MODIFY_SETTINGS、DEVICE_DRIVER_INSTALL 等）。还原点元数据以 JSON 形式保存到 SessionCache/restorepoints/ 目录。GetRestorePoints 会过滤出 AURORA 相关的还原点并按 SequenceNumber 降序排列，便于用户定位到本工具创建的还原点。TestCapability 会检查管理员权限、系统还原是否启用（注册表 RPSessionInterval）以及 WMI 是否可访问。
 
@@ -183,6 +187,8 @@ AURORA Analyzer 的视觉系统是其最具辨识度的特性之一，所有渲�
 **UWP 标准动画系统** 提供完整的曲线族：UwpStandardEase（cubic-bezier(0.8, 0, 0.2, 1)）、UwpAccelEase（(0.7, 0, 1, 0.5)）、UwpDecelEase（(0.1, 0.9, 0.2, 1)）、UwpExpoOutEase（(0.16, 1.0, 0.3, 1.0)）、UwpDampedEase（3 段插值，3.5% 过冲）。AnimationHelper 提供 PlayUwpEnter（QuarticEase EaseOut，0→1 Scale + 0→1 Opacity + Y offset）、PlayUwpExit（3 阶段关键帧：弹性回拉 + 加速飞散 + 晚期淡出）、PlayMainWindowEnter（1.15→1.03→1.0 单调收敛 + 微过冲，660ms+1100ms SineEase）等方法，所有入场动效严格遵循 project_memory 约束：直接过冲到 1.15 后以 800ms 收敛到 1.0，所有退场动效从 1.0 放大到 1.15，Dialog RenderTransform 在代码中创建（非 XAML）以保证 PRO 模式下的可靠性，RenderTransformOrigin = (0.5, 0.5) 居中缩放。
 
 **快速切换闪回修复（V1.5.29.1）** 针对 6 个 IAuroraStaggerView 视图（ProMode、SmartMode、ExportHistory、SolutionDetail、ElevationDialog、SessionRestore）统一引入 `_pendingEnterTimers` 跟踪列表。入场动画创建的 DispatcherTimer（per-tile 错峰、fallback 兜底、listDelay 列表项延迟）原本是 fire-and-forget，在退场动画启动后仍会触发并覆盖退场状态，导致控件闪现回原位。V1.5.29.1 在退场动画启动前统一调用 `CancelPendingEnterTimers()` 取消所有待触发的入场定时器，根除快速切换闪回问题。
+
+**玻璃弹窗动画统一封装（V1.6.30.1）** 将 10 处重复实现的玻璃弹窗入场/退场动画统一迁移至 `GlassDialogAnimation` 工具类。入场动画为三通道 Scale 0.92→1.07→1.0（360ms CubicEase + 525ms QuarticEase 回弹）+ TranslateY 24→0 + Opacity 0→1；退场动画为蓄力 1.0→0.97（80ms QuadraticEase）→ 放大离开 0.97→1.15（720ms QuadraticEase）+ TranslateY 0→-16 + Opacity 1→0。工具类提供 `PlayGlassEnter`（overlay+contentBorder 入场）、`PlayGlassExit`（退场+onClosed 回调+兜底定时器）、`PlayWindowExit`（Window 级退场）三个公共方法，并通过 `onSafetyTimerCreated` 回调重载支持 ProModeView ModalOverlay 复用场景。动画时长常量集中管理（EnterScaleMs/EnterBounceMs/ExitWindupMs/ExitLeaveMs/ExitFadeMs/ExitSafetyMs），任何参数调整只需修改一处。
 
 **自定义控件库** 包括 9 个核心控件。**AuroraButton** 是极光玻璃按钮，包含 Normal/Hover/Press/Disabled/Loading/Success/Failure 状态机、磁吸偏移（半径 135、强度 0.35、最大 17.5、平滑 0.08）、倾斜扫光（SkewTransform -20° + 渐变矩形，2400ms）、iOS Q弹释放反馈（600ms）、V1.5 液态玻璃 hover 离开果冻回弹（271ms）、涟漪（Lifetime 1.2s，easeOutCubic）、500ms 点击冷却 + 500ms 长按检测、极光环境色注入（按 Y 位置采样）、15+ 渲染层与键盘焦点光晕（3 层外光晕 + 2 层内辉光）。**AuroraConsoleBox** 是极光玻璃控制台回显框，集成 V5 材质管线（圆角 12、深度 0.5），实现批处理 UWP 滑动入场（_pendingLines 缓存 + 33ms 节流 flush，910ms 正常 / 560ms 流星压缩）、新行动效（DampedPushEase 位移 + SmoothEaseOut 透明度 + 顶部高亮线 + 外发光）、UWP 平滑滚动（910ms SmoothEaseOut 亚像素 _scrollFraction）、定制玻璃滚动条（轨道 + 拇指 + hover/drag 状态 + 外发光）、文字选择 + 右键菜单"复制所有终端日志" + Ctrl+C、FormattedText 缓存（稳态零分配）与形变采样冻结（IsSizeChangeFrozen）。**AuroraTaskHUD** 是任务状态 HUD，包含 4 步骤节点（环境侦测 / 风险评估 / 定向自动修复 / 验证修复结果）、TaskState 枚举（Pending / Running / Success / Error）、文本滑入动画与 V5 材质管线集成（圆角 12、深度 0.6）。**AuroraProgressBar** 是极光玻璃进度条，集成 V5 材质管线（圆角可配置、深度 0.6）、倾斜扫光、进度前缘光点与粒子系统（Performance/Extreme）。**AuroraTextBlock** 是极光文本块，实现文本切换动画（Idle→FadingOut→Waiting→FadingIn→Idle）与入场动画状态。**AuroraPrivilegeIndicator** 是权限指示器，管理员显示绿色盾牌 + 对勾、普通用户显示橙色盾牌，V5 材质管线集成（圆角 8、深度 0.6）。**AuroraFrostedGlassBorder** 是极光毛玻璃边框，继承 Border（XAML API 完全兼容），Depth DependencyProperty 控制 EffectiveBlurRadius = Preset.BlurRadius × (0.3 + Depth × 1.4)，UseV5Pipeline 开关可在 V5 管线与 v4 AuroraGlassMaterial 间切换。
 
@@ -270,4 +276,4 @@ AURORA Analyzer 实现完整的中英双语支持，由 `LanguageService` 统一
 
 ---
 
-*AURORA VelociRaptor-GR Dev PRJ. · V1.5.29.1 Release*
+*AURORA VelociRaptor-GR Dev PRJ. · V1.6.30.1 Release*
