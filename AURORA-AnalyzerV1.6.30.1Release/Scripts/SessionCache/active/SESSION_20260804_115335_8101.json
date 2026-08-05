@@ -1,0 +1,53 @@
+{
+    "ReportMode":  "完整 Application 日志",
+    "Checkpoints":  [
+
+                    ],
+    "HealthLevel":  "优秀",
+    "SessionType":  "ExportTask",
+    "TotalEventCount":  1485,
+    "HealthScore":  94,
+    "CreatedAt":  "2026-08-04T11:53:35.0548228+08:00",
+    "ExportScope":  "Full",
+    "WarningEvents":  32,
+    "FullLogEventCount":  1485,
+    "SessionId":  "SESSION_20260804_115335_8101",
+    "CurrentStage":  "正在导出：完整 Application 日志",
+    "ErrorEvents":  29,
+    "Scopes":  [
+                   {
+                       "ReportTitle":  "System 日志报告 - 2026-07-31 至 2026-08-04",
+                       "EndTime":  "\/Date(1785859199999)\/",
+                       "LogType":  "System",
+                       "StartTime":  "\/Date(1785427200000)\/",
+                       "DatePart":  "20260731_至_20260804"
+                   },
+                   {
+                       "ReportTitle":  "Application 日志报告 - 2026-07-31 至 2026-08-04",
+                       "EndTime":  "\/Date(1785859199999)\/",
+                       "LogType":  "Application",
+                       "StartTime":  "\/Date(1785427200000)\/",
+                       "DatePart":  "20260731_至_20260804"
+                   }
+               ],
+    "LogType":  "System",
+    "HighRiskEventCount":  61,
+    "EventCount":  1485,
+    "Status":  "Active",
+    "CriticalEvents":  0,
+    "ExportChoice":  "Full",
+    "ExportMode":  "SingleDay",
+    "HealthStatus":  "系统状态：优秀 —— 运行稳定，无明显异常！",
+    "EndTime":  "\/Date(1785859199999)\/",
+    "Progress":  0,
+    "ExportPath":  "G:\\PowerShellBat\\AURORA-Analyzer\\AURORA-Analyzer-Factory-Dev\\AURORA-Analyzer-Factory\\UserLogs",
+    "ChunkSize":  7,
+    "StartTime":  "\/Date(1785427200000)\/",
+    "LastUpdated":  "2026-08-04T11:55:22.0230031+08:00",
+    "Metadata":  {
+                     "ExportMode":  "SingleDay",
+                     "LogType":  "System",
+                     "ExportScope":  "Full"
+                 },
+    "PerformanceScore":  100
+}

@@ -5,7 +5,7 @@
     AURORA 动画核心引擎独立模块
     包含：渲染引擎配置、动画管理器、动画基类、FloatAnimation、EasingType、IAnimatable 接口
 .NOTES
-    版本：V1.6.30.1Release | 构建时间：2026.08.04
+    版本：V1.6.30.1Release | 构建时间：2026.08.05
     作者：AURORA VelociRaptor-GR Dev PRJ.
     变更：缓动函数库扩展至16种 + 动态计时器间隔优化
 #>

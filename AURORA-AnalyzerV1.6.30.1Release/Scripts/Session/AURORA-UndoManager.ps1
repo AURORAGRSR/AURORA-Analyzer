@@ -6,7 +6,7 @@
     作为系统还原的补充方案
     支持注册表、文件、服务的备份与还原
 .NOTES
-    版本：V1.6.30.1Release | 构建时间：2026.08.04
+    版本：V1.6.30.1Release | 构建时间：2026.08.05
     作者：AURORA VelociRaptor-GR Dev PRJ.
     与 RestoreManager 和 RepairLogger 配合使用
     提供快速的撤销操作（无需重启）
