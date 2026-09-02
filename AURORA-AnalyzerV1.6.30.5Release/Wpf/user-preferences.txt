@@ -1,0 +1,6 @@
+﻿# AURORA Analyzer user preferences
+# Generated: 2026-09-02 15:49:49
+Language=CHS
+Mode=SMART
+MotionPace=Graceful
+AllowInterrupt=False

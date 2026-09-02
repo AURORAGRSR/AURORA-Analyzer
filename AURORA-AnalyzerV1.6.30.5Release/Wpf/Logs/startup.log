@@ -1,0 +1,1454 @@
+[2026-09-01 22:40:36] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-01 22:40:36] AssemblyLoad guard registered
+[2026-09-01 22:40:36] OnStartup
+[2026-09-01 22:40:36] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-01 22:40:36] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-01 22:40:36] WMI fallback got parent ExecutablePath: E:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\AURORA-AnalyzerWPF.exe
+[2026-09-01 22:40:36] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=16300, deploy=wpf-subdir)
+[2026-09-01 22:40:36] Password verification passed
+[2026-09-01 22:40:36] AURORA_PERF_TIER=Extreme
+[2026-09-01 22:40:36] AURORA_THEME=Dark
+[2026-09-01 22:40:36] PERF_SCORE_DIAG: cores=16 ramMB=32341 ramGB=32 baseClockMHz=3501 gpuScore=80 perfScore=735.01 gpuDiag=GPU=NVIDIA GeForce RTX 4060 | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.16.1074
+[2026-09-01 22:40:36] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 4060 gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-01 22:40:36] AURORA_LANGUAGE=CHS
+[2026-09-01 22:40:36] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-01 22:40:36] VerifyDirectoryIntegrity: OK
+[2026-09-01 22:40:36] Directory integrity check passed
+[2026-09-01 22:40:36] IntegrityGuard detection: NONE
+[2026-09-01 22:40:36] IntegrityGuard initialized
+[2026-09-01 22:40:36] IntegrityGuard runtime monitoring started
+[2026-09-01 22:40:36] ElevationService configured
+[2026-09-01 22:40:37] Creating MainWindow shell
+[2026-09-01 22:40:37] MainWindow shell shown + PlayShellEnter
+[2026-09-01 22:40:37] ViewManager initialized
+[2026-09-01 22:40:37] Navigating to SplashScreenView
+[2026-09-01 22:40:37] SplashScreenView.ctor begin
+[2026-09-01 22:40:37] SplashScreenView.ctor InitializeComponent done
+[2026-09-01 22:40:37] SplashScreenView.Loaded
+[2026-09-01 22:40:47] SplashScreenView.LoadingComplete
+[2026-09-01 22:40:47] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-01 22:40:49] ElevationDialog result: ContinueNormal
+[2026-09-01 22:40:49] MainFormView.ctor begin
+[2026-09-01 22:40:50] MainFormView.ctor InitializeComponent done
+[2026-09-01 22:40:50] MainFormView.Loaded
+[2026-09-01 22:40:55] MainFormView.LaunchConsoleMode: SelectedLanguage='ENG', fallback App.CurrentLanguage='CHS', actual used='ENG'
+[2026-09-01 22:40:56] PerformExitCleanup: done
+[2026-09-01 22:40:56] PerformExitCleanup: done
+[2026-09-01 22:44:04] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-01 22:44:04] AssemblyLoad guard registered
+[2026-09-01 22:44:04] OnStartup
+[2026-09-01 22:44:04] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-01 22:44:04] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-01 22:44:04] WMI fallback got parent ExecutablePath: E:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\AURORA-AnalyzerWPF.exe
+[2026-09-01 22:44:04] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=39260, deploy=wpf-subdir)
+[2026-09-01 22:44:04] Password verification passed
+[2026-09-01 22:44:04] AURORA_PERF_TIER=Extreme
+[2026-09-01 22:44:04] AURORA_THEME=Dark
+[2026-09-01 22:44:04] PERF_SCORE_DIAG: cores=16 ramMB=32341 ramGB=32 baseClockMHz=3501 gpuScore=80 perfScore=735.01 gpuDiag=GPU=NVIDIA GeForce RTX 4060 | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.16.1074
+[2026-09-01 22:44:04] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 4060 gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-01 22:44:04] AURORA_LANGUAGE=CHS
+[2026-09-01 22:44:04] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-01 22:44:04] VerifyDirectoryIntegrity: OK
+[2026-09-01 22:44:04] Directory integrity check passed
+[2026-09-01 22:44:04] IntegrityGuard detection: NONE
+[2026-09-01 22:44:04] IntegrityGuard initialized
+[2026-09-01 22:44:04] IntegrityGuard runtime monitoring started
+[2026-09-01 22:44:04] ElevationService configured
+[2026-09-01 22:44:05] Creating MainWindow shell
+[2026-09-01 22:44:05] MainWindow shell shown + PlayShellEnter
+[2026-09-01 22:44:05] ViewManager initialized
+[2026-09-01 22:44:05] Navigating to SplashScreenView
+[2026-09-01 22:44:05] SplashScreenView.ctor begin
+[2026-09-01 22:44:05] SplashScreenView.ctor InitializeComponent done
+[2026-09-01 22:44:05] SplashScreenView.Loaded
+[2026-09-01 22:44:15] SplashScreenView.LoadingComplete
+[2026-09-01 22:44:15] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-01 22:44:17] ElevationDialog result: ContinueNormal
+[2026-09-01 22:44:17] MainFormView.ctor begin
+[2026-09-01 22:44:17] MainFormView.ctor InitializeComponent done
+[2026-09-01 22:44:18] MainFormView.Loaded
+[2026-09-01 22:44:23] MainFormView.LaunchConsoleMode: SelectedLanguage='ENG', fallback App.CurrentLanguage='CHS', actual used='ENG'
+[2026-09-01 22:44:23] PerformExitCleanup: done
+[2026-09-01 22:44:23] PerformExitCleanup: done
+[2026-09-01 22:44:57] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-01 22:44:57] AssemblyLoad guard registered
+[2026-09-01 22:44:57] OnStartup
+[2026-09-01 22:44:57] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-01 22:44:57] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-01 22:44:57] WMI fallback got parent ExecutablePath: E:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\AURORA-AnalyzerWPF.exe
+[2026-09-01 22:44:57] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=39324, deploy=wpf-subdir)
+[2026-09-01 22:44:57] Password verification passed
+[2026-09-01 22:44:58] AURORA_PERF_TIER=Extreme
+[2026-09-01 22:44:58] AURORA_THEME=Dark
+[2026-09-01 22:44:58] PERF_SCORE_DIAG: cores=16 ramMB=32341 ramGB=32 baseClockMHz=3501 gpuScore=80 perfScore=735.01 gpuDiag=GPU=NVIDIA GeForce RTX 4060 | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.16.1074
+[2026-09-01 22:44:58] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 4060 gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-01 22:44:58] AURORA_LANGUAGE=CHS
+[2026-09-01 22:44:58] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-01 22:44:58] VerifyDirectoryIntegrity: OK
+[2026-09-01 22:44:58] Directory integrity check passed
+[2026-09-01 22:44:58] IntegrityGuard detection: NONE
+[2026-09-01 22:44:58] IntegrityGuard initialized
+[2026-09-01 22:44:58] IntegrityGuard runtime monitoring started
+[2026-09-01 22:44:58] ElevationService configured
+[2026-09-01 22:44:58] Creating MainWindow shell
+[2026-09-01 22:44:59] MainWindow shell shown + PlayShellEnter
+[2026-09-01 22:44:59] ViewManager initialized
+[2026-09-01 22:44:59] Navigating to SplashScreenView
+[2026-09-01 22:44:59] SplashScreenView.ctor begin
+[2026-09-01 22:44:59] SplashScreenView.ctor InitializeComponent done
+[2026-09-01 22:44:59] SplashScreenView.Loaded
+[2026-09-01 22:45:09] SplashScreenView.LoadingComplete
+[2026-09-01 22:45:09] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-01 22:45:11] ElevationDialog result: ContinueNormal
+[2026-09-01 22:45:11] MainFormView.ctor begin
+[2026-09-01 22:45:11] MainFormView.ctor InitializeComponent done
+[2026-09-01 22:45:11] MainFormView.Loaded
+[2026-09-01 22:45:16] MainFormView.LaunchConsoleMode: SelectedLanguage='ENG', fallback App.CurrentLanguage='CHS', actual used='ENG'
+[2026-09-01 22:45:16] PerformExitCleanup: done
+[2026-09-01 22:45:16] PerformExitCleanup: done
+[2026-09-01 23:12:07] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-01 23:12:07] AssemblyLoad guard registered
+[2026-09-01 23:12:07] OnStartup
+[2026-09-01 23:12:07] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-01 23:12:07] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-01 23:12:07] WMI fallback got parent ExecutablePath: E:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\AURORA-AnalyzerWPF.exe
+[2026-09-01 23:12:07] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=38396, deploy=wpf-subdir)
+[2026-09-01 23:12:07] Password verification passed
+[2026-09-01 23:12:07] AURORA_PERF_TIER=Extreme
+[2026-09-01 23:12:07] AURORA_THEME=Dark
+[2026-09-01 23:12:07] PERF_SCORE_DIAG: cores=16 ramMB=32341 ramGB=32 baseClockMHz=3501 gpuScore=80 perfScore=735.01 gpuDiag=GPU=NVIDIA GeForce RTX 4060 | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.16.1074
+[2026-09-01 23:12:07] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 4060 gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-01 23:12:07] AURORA_LANGUAGE=CHS
+[2026-09-01 23:12:07] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-01 23:12:07] VerifyDirectoryIntegrity: OK
+[2026-09-01 23:12:07] Directory integrity check passed
+[2026-09-01 23:12:07] IntegrityGuard detection: NONE
+[2026-09-01 23:12:07] IntegrityGuard initialized
+[2026-09-01 23:12:07] IntegrityGuard runtime monitoring started
+[2026-09-01 23:12:07] ElevationService configured
+[2026-09-01 23:12:08] Creating MainWindow shell
+[2026-09-01 23:12:08] MainWindow shell shown + PlayShellEnter
+[2026-09-01 23:12:08] ViewManager initialized
+[2026-09-01 23:12:08] Navigating to SplashScreenView
+[2026-09-01 23:12:08] SplashScreenView.ctor begin
+[2026-09-01 23:12:08] SplashScreenView.ctor InitializeComponent done
+[2026-09-01 23:12:08] SplashScreenView.Loaded
+[2026-09-01 23:12:18] SplashScreenView.LoadingComplete
+[2026-09-01 23:12:18] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-01 23:13:46] ElevationDialog result: ContinueNormal
+[2026-09-01 23:13:46] MainFormView.ctor begin
+[2026-09-01 23:13:46] MainFormView.ctor InitializeComponent done
+[2026-09-01 23:13:46] MainFormView.Loaded
+[2026-09-01 23:13:55] MainFormView.LaunchConsoleMode: SelectedLanguage='ENG', fallback App.CurrentLanguage='CHS', actual used='ENG'
+[2026-09-01 23:13:55] PerformExitCleanup: done
+[2026-09-01 23:13:55] PerformExitCleanup: done
+[2026-09-02 00:30:05] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 00:30:05] AssemblyLoad guard registered
+[2026-09-02 00:30:05] OnStartup
+[2026-09-02 00:30:05] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 00:30:05] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 00:30:05] WMI fallback got parent ExecutablePath: E:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\AURORA-AnalyzerWPF.exe
+[2026-09-02 00:30:05] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=35436, deploy=wpf-subdir)
+[2026-09-02 00:30:05] Password verification passed
+[2026-09-02 00:30:05] AURORA_PERF_TIER=Extreme
+[2026-09-02 00:30:05] AURORA_THEME=Dark
+[2026-09-02 00:30:05] PERF_SCORE_DIAG: cores=16 ramMB=32341 ramGB=32 baseClockMHz=3501 gpuScore=80 perfScore=735.01 gpuDiag=GPU=NVIDIA GeForce RTX 4060 | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.16.1074
+[2026-09-02 00:30:05] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 4060 gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 00:30:05] AURORA_LANGUAGE=CHS
+[2026-09-02 00:30:05] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 00:30:05] VerifyDirectoryIntegrity: OK
+[2026-09-02 00:30:05] Directory integrity check passed
+[2026-09-02 00:30:05] IntegrityGuard detection: NONE
+[2026-09-02 00:30:05] IntegrityGuard initialized
+[2026-09-02 00:30:05] IntegrityGuard runtime monitoring started
+[2026-09-02 00:30:05] ElevationService configured
+[2026-09-02 00:30:06] Creating MainWindow shell
+[2026-09-02 00:30:06] MainWindow shell shown + PlayShellEnter
+[2026-09-02 00:30:06] ViewManager initialized
+[2026-09-02 00:30:06] Navigating to SplashScreenView
+[2026-09-02 00:30:06] SplashScreenView.ctor begin
+[2026-09-02 00:30:06] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 00:30:06] SplashScreenView.Loaded
+[2026-09-02 00:30:16] SplashScreenView.LoadingComplete
+[2026-09-02 00:30:16] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 00:30:23] ElevationDialog result: ContinueNormal
+[2026-09-02 00:30:23] MainFormView.ctor begin
+[2026-09-02 00:30:23] MainFormView.ctor InitializeComponent done
+[2026-09-02 00:30:23] MainFormView.Loaded
+[2026-09-02 00:30:41] ProModeView.ctor begin
+[2026-09-02 00:30:41] ProModeView.ctor InitializeComponent done
+[2026-09-02 00:30:42] ProModeView.OnLoaded begin
+[2026-09-02 00:30:42] ProModeView.OnLoaded end
+[2026-09-02 00:30:46] MainFormView.Loaded
+[2026-09-02 00:30:59] ProModeView.OnLoaded begin
+[2026-09-02 00:30:59] ProModeView.OnLoaded end
+[2026-09-02 00:31:11] ProModeView.OnLoaded begin
+[2026-09-02 00:31:11] ProModeView.OnLoaded end
+[2026-09-02 00:31:14] MainFormView.Loaded
+[2026-09-02 00:31:19] PerformExitCleanup: done
+[2026-09-02 00:31:19] PerformExitCleanup: done
+[2026-09-02 09:27:49] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 09:27:49] AssemblyLoad guard registered
+[2026-09-02 09:27:49] OnStartup
+[2026-09-02 09:27:49] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 09:27:49] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 09:27:49] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 09:27:49] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=8956, deploy=wpf-subdir)
+[2026-09-02 09:27:49] Password verification passed
+[2026-09-02 09:27:49] AURORA_PERF_TIER=Extreme
+[2026-09-02 09:27:49] AURORA_THEME=Dark
+[2026-09-02 09:27:49] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 09:27:49] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 09:27:49] AURORA_LANGUAGE=CHS
+[2026-09-02 09:27:49] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 09:27:49] VerifyDirectoryIntegrity: OK
+[2026-09-02 09:27:49] Directory integrity check passed
+[2026-09-02 09:27:49] IntegrityGuard detection: NONE
+[2026-09-02 09:27:49] IntegrityGuard initialized
+[2026-09-02 09:27:49] IntegrityGuard runtime monitoring started
+[2026-09-02 09:27:49] ElevationService configured
+[2026-09-02 09:27:50] Creating MainWindow shell
+[2026-09-02 09:27:51] MainWindow shell shown + PlayShellEnter
+[2026-09-02 09:27:51] ViewManager initialized
+[2026-09-02 09:27:51] Navigating to SplashScreenView
+[2026-09-02 09:27:51] SplashScreenView.ctor begin
+[2026-09-02 09:27:51] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 09:27:51] SplashScreenView.Loaded
+[2026-09-02 09:28:00] SplashScreenView.LoadingComplete
+[2026-09-02 09:28:00] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 09:28:03] ElevationDialog result: ContinueNormal
+[2026-09-02 09:28:03] MainFormView.ctor begin
+[2026-09-02 09:28:03] MainFormView.ctor InitializeComponent done
+[2026-09-02 09:28:04] MainFormView.Loaded
+[2026-09-02 09:33:29] PerformExitCleanup: done
+[2026-09-02 09:33:29] PerformExitCleanup: done
+[2026-09-02 10:09:31] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 10:09:31] AssemblyLoad guard registered
+[2026-09-02 10:09:31] OnStartup
+[2026-09-02 10:09:31] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 10:09:31] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 10:09:31] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 10:09:31] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=5456, deploy=wpf-subdir)
+[2026-09-02 10:09:31] Password verification passed
+[2026-09-02 10:09:31] AURORA_PERF_TIER=Extreme
+[2026-09-02 10:09:31] AURORA_THEME=Dark
+[2026-09-02 10:09:31] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 10:09:31] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 10:09:31] AURORA_LANGUAGE=CHS
+[2026-09-02 10:09:31] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 10:09:31] VerifyDirectoryIntegrity: OK
+[2026-09-02 10:09:31] Directory integrity check passed
+[2026-09-02 10:09:31] IntegrityGuard detection: NONE
+[2026-09-02 10:09:31] IntegrityGuard initialized
+[2026-09-02 10:09:31] IntegrityGuard runtime monitoring started
+[2026-09-02 10:09:31] ElevationService configured
+[2026-09-02 10:09:32] Creating MainWindow shell
+[2026-09-02 10:09:32] MainWindow shell shown + PlayShellEnter
+[2026-09-02 10:09:32] ViewManager initialized
+[2026-09-02 10:09:32] Navigating to SplashScreenView
+[2026-09-02 10:09:32] SplashScreenView.ctor begin
+[2026-09-02 10:09:32] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 10:09:32] SplashScreenView.Loaded
+[2026-09-02 10:09:42] SplashScreenView.LoadingComplete
+[2026-09-02 10:09:42] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 10:10:10] ElevationDialog result: ContinueNormal
+[2026-09-02 10:10:10] MainFormView.ctor begin
+[2026-09-02 10:10:10] MainFormView.ctor InitializeComponent done
+[2026-09-02 10:10:10] MainFormView.Loaded
+[2026-09-02 10:13:18] ProModeView.ctor begin
+[2026-09-02 10:13:18] ProModeView.ctor InitializeComponent done
+[2026-09-02 10:13:20] ProModeView.OnLoaded begin
+[2026-09-02 10:13:20] ProModeView.OnLoaded end
+[2026-09-02 10:13:39] ProModeView.OnLoaded begin
+[2026-09-02 10:13:39] ProModeView.OnLoaded end
+[2026-09-02 10:13:44] MainFormView.Loaded
+[2026-09-02 10:15:01] ProModeView.OnLoaded begin
+[2026-09-02 10:15:01] ProModeView.OnLoaded end
+[2026-09-02 10:15:04] MainFormView.Loaded
+[2026-09-02 10:29:08] PerformExitCleanup: done
+[2026-09-02 10:29:08] PerformExitCleanup: done
+[2026-09-02 10:41:39] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 10:41:39] AssemblyLoad guard registered
+[2026-09-02 10:41:39] OnStartup
+[2026-09-02 10:41:39] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 10:41:39] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 10:41:39] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 10:41:39] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=7552, deploy=wpf-subdir)
+[2026-09-02 10:41:39] Password verification passed
+[2026-09-02 10:41:39] AURORA_PERF_TIER=Extreme
+[2026-09-02 10:41:39] AURORA_THEME=Dark
+[2026-09-02 10:41:39] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 10:41:39] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 10:41:39] AURORA_LANGUAGE=CHS
+[2026-09-02 10:41:39] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 10:41:39] VerifyDirectoryIntegrity: OK
+[2026-09-02 10:41:39] Directory integrity check passed
+[2026-09-02 10:41:39] IntegrityGuard detection: NONE
+[2026-09-02 10:41:39] IntegrityGuard initialized
+[2026-09-02 10:41:39] IntegrityGuard runtime monitoring started
+[2026-09-02 10:41:39] ElevationService configured
+[2026-09-02 10:41:40] Creating MainWindow shell
+[2026-09-02 10:41:40] MainWindow shell shown + PlayShellEnter
+[2026-09-02 10:41:40] ViewManager initialized
+[2026-09-02 10:41:40] Navigating to SplashScreenView
+[2026-09-02 10:41:40] SplashScreenView.ctor begin
+[2026-09-02 10:41:40] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 10:41:40] SplashScreenView.Loaded
+[2026-09-02 10:41:50] SplashScreenView.LoadingComplete
+[2026-09-02 10:41:50] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 10:41:53] ElevationDialog result: ContinueNormal
+[2026-09-02 10:41:53] DirectLaunch: mode=SMART, lang=CHS
+[2026-09-02 10:41:53] ProModeView.ctor begin
+[2026-09-02 10:41:53] ProModeView.ctor InitializeComponent done
+[2026-09-02 10:41:53] DirectLaunch: ProModeView navigated (mode=SMART)
+[2026-09-02 10:41:54] ProModeView.OnLoaded begin
+[2026-09-02 10:41:54] ProModeView.OnLoaded end
+[2026-09-02 10:41:59] SplashScreenView.Loaded
+[2026-09-02 10:42:09] SplashScreenView.LoadingComplete
+[2026-09-02 10:42:09] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 10:43:38] PerformExitCleanup: done
+[2026-09-02 10:43:38] PerformExitCleanup: done
+[2026-09-02 10:47:30] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 10:47:30] AssemblyLoad guard registered
+[2026-09-02 10:47:30] OnStartup
+[2026-09-02 10:47:30] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 10:47:30] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 10:47:30] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 10:47:30] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=24772, deploy=wpf-subdir)
+[2026-09-02 10:47:30] Password verification passed
+[2026-09-02 10:47:30] AURORA_PERF_TIER=Extreme
+[2026-09-02 10:47:30] AURORA_THEME=Dark
+[2026-09-02 10:47:30] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 10:47:30] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 10:47:30] AURORA_LANGUAGE=CHS
+[2026-09-02 10:47:30] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 10:47:30] VerifyDirectoryIntegrity: OK
+[2026-09-02 10:47:30] Directory integrity check passed
+[2026-09-02 10:47:30] IntegrityGuard detection: NONE
+[2026-09-02 10:47:30] IntegrityGuard initialized
+[2026-09-02 10:47:30] IntegrityGuard runtime monitoring started
+[2026-09-02 10:47:30] ElevationService configured
+[2026-09-02 10:47:30] Creating MainWindow shell
+[2026-09-02 10:47:31] MainWindow shell shown + PlayShellEnter
+[2026-09-02 10:47:31] ViewManager initialized
+[2026-09-02 10:47:31] Navigating to SplashScreenView
+[2026-09-02 10:47:31] SplashScreenView.ctor begin
+[2026-09-02 10:47:31] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 10:47:31] SplashScreenView.Loaded
+[2026-09-02 10:47:41] SplashScreenView.LoadingComplete
+[2026-09-02 10:47:41] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 10:48:16] ElevationDialog result: ContinueNormal
+[2026-09-02 10:48:16] DirectLaunch: mode=SMART, lang=CHS
+[2026-09-02 10:48:16] MainFormView.ctor begin
+[2026-09-02 10:48:16] MainFormView.ctor InitializeComponent done
+[2026-09-02 10:48:16] ProModeView.ctor begin
+[2026-09-02 10:48:16] ProModeView.ctor InitializeComponent done
+[2026-09-02 10:48:16] DirectLaunch: ProModeView navigated (mode=SMART, root=MainFormView)
+[2026-09-02 10:48:17] ProModeView.OnLoaded begin
+[2026-09-02 10:48:17] ProModeView.OnLoaded end
+[2026-09-02 10:48:32] ProModeView.OnLoaded begin
+[2026-09-02 10:48:32] ProModeView.OnLoaded end
+[2026-09-02 10:48:36] MainFormView.Loaded
+[2026-09-02 10:48:42] ProModeView.OnLoaded begin
+[2026-09-02 10:48:42] ProModeView.OnLoaded end
+[2026-09-02 10:48:45] MainFormView.Loaded
+[2026-09-02 10:50:29] ProModeView.OnLoaded begin
+[2026-09-02 10:50:29] ProModeView.OnLoaded end
+[2026-09-02 10:50:32] MainFormView.Loaded
+[2026-09-02 10:53:19] ProModeView.OnLoaded begin
+[2026-09-02 10:53:19] ProModeView.OnLoaded end
+[2026-09-02 10:53:23] MainFormView.Loaded
+[2026-09-02 10:53:45] PerformExitCleanup: done
+[2026-09-02 10:53:45] PerformExitCleanup: done
+[2026-09-02 11:01:05] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 11:01:05] AssemblyLoad guard registered
+[2026-09-02 11:01:05] OnStartup
+[2026-09-02 11:01:05] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 11:01:05] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 11:01:06] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 11:01:06] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=20520, deploy=wpf-subdir)
+[2026-09-02 11:01:06] Password verification passed
+[2026-09-02 11:01:06] AURORA_PERF_TIER=Extreme
+[2026-09-02 11:01:06] AURORA_THEME=Dark
+[2026-09-02 11:01:06] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 11:01:06] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 11:01:06] AURORA_LANGUAGE=CHS
+[2026-09-02 11:01:06] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 11:01:06] VerifyDirectoryIntegrity: OK
+[2026-09-02 11:01:06] Directory integrity check passed
+[2026-09-02 11:01:06] IntegrityGuard detection: NONE
+[2026-09-02 11:01:06] IntegrityGuard initialized
+[2026-09-02 11:01:06] IntegrityGuard runtime monitoring started
+[2026-09-02 11:01:06] ElevationService configured
+[2026-09-02 11:01:06] Creating MainWindow shell
+[2026-09-02 11:01:07] MainWindow shell shown + PlayShellEnter
+[2026-09-02 11:01:07] ViewManager initialized
+[2026-09-02 11:01:07] Navigating to SplashScreenView
+[2026-09-02 11:01:07] SplashScreenView.ctor begin
+[2026-09-02 11:01:07] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 11:01:07] SplashScreenView.Loaded
+[2026-09-02 11:01:17] SplashScreenView.LoadingComplete
+[2026-09-02 11:01:17] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 11:01:19] ElevationDialog result: ContinueNormal
+[2026-09-02 11:01:19] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 11:01:19] MainFormView.ctor begin
+[2026-09-02 11:01:19] MainFormView.ctor InitializeComponent done
+[2026-09-02 11:01:19] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 11:01:20] MainFormView.Loaded
+[2026-09-02 11:05:25] ProModeView.ctor begin
+[2026-09-02 11:05:25] ProModeView.ctor InitializeComponent done
+[2026-09-02 11:05:26] ProModeView.OnLoaded begin
+[2026-09-02 11:05:26] ProModeView.OnLoaded end
+[2026-09-02 11:05:40] ProModeView.OnLoaded begin
+[2026-09-02 11:05:40] ProModeView.OnLoaded end
+[2026-09-02 11:05:43] MainFormView.Loaded
+[2026-09-02 11:05:45] ProModeView.OnLoaded begin
+[2026-09-02 11:05:45] ProModeView.OnLoaded end
+[2026-09-02 11:05:50] ProModeView.OnLoaded begin
+[2026-09-02 11:05:50] ProModeView.OnLoaded end
+[2026-09-02 11:05:52] MainFormView.Loaded
+[2026-09-02 11:06:11] PerformExitCleanup: done
+[2026-09-02 11:06:11] PerformExitCleanup: done
+[2026-09-02 11:12:43] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 11:12:43] AssemblyLoad guard registered
+[2026-09-02 11:12:43] OnStartup
+[2026-09-02 11:12:43] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 11:12:43] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 11:12:43] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 11:12:43] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=33352, deploy=wpf-subdir)
+[2026-09-02 11:12:43] Password verification passed
+[2026-09-02 11:12:44] AURORA_PERF_TIER=Extreme
+[2026-09-02 11:12:44] AURORA_THEME=Dark
+[2026-09-02 11:12:44] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 11:12:44] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 11:12:44] AURORA_LANGUAGE=CHS
+[2026-09-02 11:12:44] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 11:12:44] VerifyDirectoryIntegrity: OK
+[2026-09-02 11:12:44] Directory integrity check passed
+[2026-09-02 11:12:44] IntegrityGuard detection: NONE
+[2026-09-02 11:12:44] IntegrityGuard initialized
+[2026-09-02 11:12:44] IntegrityGuard runtime monitoring started
+[2026-09-02 11:12:44] ElevationService configured
+[2026-09-02 11:12:44] Creating MainWindow shell
+[2026-09-02 11:12:45] MainWindow shell shown + PlayShellEnter
+[2026-09-02 11:12:45] ViewManager initialized
+[2026-09-02 11:12:45] Navigating to SplashScreenView
+[2026-09-02 11:12:45] SplashScreenView.ctor begin
+[2026-09-02 11:12:45] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 11:12:45] SplashScreenView.Loaded
+[2026-09-02 11:12:55] SplashScreenView.LoadingComplete
+[2026-09-02 11:12:55] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 11:12:59] ElevationDialog result: ContinueNormal
+[2026-09-02 11:12:59] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 11:12:59] MainFormView.ctor begin
+[2026-09-02 11:12:59] MainFormView.ctor InitializeComponent done
+[2026-09-02 11:12:59] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 11:12:59] MainFormView.Loaded
+[2026-09-02 11:13:50] ProModeView.ctor begin
+[2026-09-02 11:13:50] ProModeView.ctor InitializeComponent done
+[2026-09-02 11:13:52] ProModeView.OnLoaded begin
+[2026-09-02 11:13:52] ProModeView.OnLoaded end
+[2026-09-02 11:13:54] MainFormView.Loaded
+[2026-09-02 11:16:09] ProModeView.OnLoaded begin
+[2026-09-02 11:16:09] ProModeView.OnLoaded end
+[2026-09-02 11:16:28] ProModeView.OnLoaded begin
+[2026-09-02 11:16:28] ProModeView.OnLoaded end
+[2026-09-02 11:16:31] MainFormView.Loaded
+[2026-09-02 11:17:19] PerformExitCleanup: done
+[2026-09-02 11:17:19] PerformExitCleanup: done
+[2026-09-02 11:19:45] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 11:19:45] AssemblyLoad guard registered
+[2026-09-02 11:19:45] OnStartup
+[2026-09-02 11:19:45] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 11:19:45] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 11:19:45] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 11:19:45] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=30908, deploy=wpf-subdir)
+[2026-09-02 11:19:45] Password verification passed
+[2026-09-02 11:19:45] AURORA_PERF_TIER=Extreme
+[2026-09-02 11:19:45] AURORA_THEME=Dark
+[2026-09-02 11:19:45] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 11:19:45] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 11:19:45] AURORA_LANGUAGE=CHS
+[2026-09-02 11:19:45] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 11:19:45] VerifyDirectoryIntegrity: OK
+[2026-09-02 11:19:45] Directory integrity check passed
+[2026-09-02 11:19:45] IntegrityGuard detection: NONE
+[2026-09-02 11:19:45] IntegrityGuard initialized
+[2026-09-02 11:19:45] IntegrityGuard runtime monitoring started
+[2026-09-02 11:19:45] ElevationService configured
+[2026-09-02 11:19:45] Creating MainWindow shell
+[2026-09-02 11:19:46] MainWindow shell shown + PlayShellEnter
+[2026-09-02 11:19:46] ViewManager initialized
+[2026-09-02 11:19:46] Navigating to SplashScreenView
+[2026-09-02 11:19:46] SplashScreenView.ctor begin
+[2026-09-02 11:19:46] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 11:19:46] SplashScreenView.Loaded
+[2026-09-02 11:19:56] SplashScreenView.LoadingComplete
+[2026-09-02 11:19:56] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 11:19:59] ElevationDialog result: ContinueNormal
+[2026-09-02 11:19:59] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 11:19:59] MainFormView.ctor begin
+[2026-09-02 11:19:59] MainFormView.ctor InitializeComponent done
+[2026-09-02 11:19:59] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 11:19:59] MainFormView.Loaded
+[2026-09-02 11:29:28] PerformExitCleanup: done
+[2026-09-02 11:29:28] PerformExitCleanup: done
+[2026-09-02 11:34:01] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 11:34:01] AssemblyLoad guard registered
+[2026-09-02 11:34:01] OnStartup
+[2026-09-02 11:34:01] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 11:34:01] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 11:34:01] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 11:34:01] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=10164, deploy=wpf-subdir)
+[2026-09-02 11:34:01] Password verification passed
+[2026-09-02 11:34:01] AURORA_PERF_TIER=Extreme
+[2026-09-02 11:34:01] AURORA_THEME=Dark
+[2026-09-02 11:34:01] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 11:34:01] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 11:34:01] AURORA_LANGUAGE=CHS
+[2026-09-02 11:34:01] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 11:34:01] VerifyDirectoryIntegrity: OK
+[2026-09-02 11:34:01] Directory integrity check passed
+[2026-09-02 11:34:01] IntegrityGuard detection: NONE
+[2026-09-02 11:34:01] IntegrityGuard initialized
+[2026-09-02 11:34:01] IntegrityGuard runtime monitoring started
+[2026-09-02 11:34:01] ElevationService configured
+[2026-09-02 11:34:02] Creating MainWindow shell
+[2026-09-02 11:34:02] MainWindow shell shown + PlayShellEnter
+[2026-09-02 11:34:02] ViewManager initialized
+[2026-09-02 11:34:02] Navigating to SplashScreenView
+[2026-09-02 11:34:02] SplashScreenView.ctor begin
+[2026-09-02 11:34:02] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 11:34:02] SplashScreenView.Loaded
+[2026-09-02 11:34:12] SplashScreenView.LoadingComplete
+[2026-09-02 11:34:12] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 11:34:15] ElevationDialog result: ContinueNormal
+[2026-09-02 11:34:15] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 11:34:15] MainFormView.ctor begin
+[2026-09-02 11:34:15] MainFormView.ctor InitializeComponent done
+[2026-09-02 11:34:15] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 11:34:16] MainFormView.Loaded
+[2026-09-02 11:39:03] ProModeView.ctor begin
+[2026-09-02 11:39:03] ProModeView.ctor InitializeComponent done
+[2026-09-02 11:39:04] ProModeView.OnLoaded begin
+[2026-09-02 11:39:04] ProModeView.OnLoaded end
+[2026-09-02 11:39:35] ProModeView.OnLoaded begin
+[2026-09-02 11:39:35] ProModeView.OnLoaded end
+[2026-09-02 11:39:38] MainFormView.Loaded
+[2026-09-02 11:39:41] ProModeView.OnLoaded begin
+[2026-09-02 11:39:41] ProModeView.OnLoaded end
+[2026-09-02 11:39:46] ProModeView.OnLoaded begin
+[2026-09-02 11:39:46] ProModeView.OnLoaded end
+[2026-09-02 11:39:59] ProModeView.OnLoaded begin
+[2026-09-02 11:39:59] ProModeView.OnLoaded end
+[2026-09-02 11:40:03] MainFormView.Loaded
+[2026-09-02 11:40:05] ProModeView.OnLoaded begin
+[2026-09-02 11:40:05] ProModeView.OnLoaded end
+[2026-09-02 11:40:08] MainFormView.Loaded
+[2026-09-02 11:40:10] ProModeView.OnLoaded begin
+[2026-09-02 11:40:10] ProModeView.OnLoaded end
+[2026-09-02 11:40:12] MainFormView.Loaded
+[2026-09-02 11:40:15] ProModeView.OnLoaded begin
+[2026-09-02 11:40:15] ProModeView.OnLoaded end
+[2026-09-02 11:40:17] MainFormView.Loaded
+[2026-09-02 11:40:19] ProModeView.OnLoaded begin
+[2026-09-02 11:40:19] ProModeView.OnLoaded end
+[2026-09-02 11:40:21] MainFormView.Loaded
+[2026-09-02 11:40:23] ProModeView.OnLoaded begin
+[2026-09-02 11:40:23] ProModeView.OnLoaded end
+[2026-09-02 11:40:28] ProModeView.OnLoaded begin
+[2026-09-02 11:40:28] ProModeView.OnLoaded end
+[2026-09-02 11:40:30] MainFormView.Loaded
+[2026-09-02 11:41:09] PerformExitCleanup: done
+[2026-09-02 11:41:09] PerformExitCleanup: done
+[2026-09-02 11:45:08] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 11:45:08] AssemblyLoad guard registered
+[2026-09-02 11:45:08] OnStartup
+[2026-09-02 11:45:08] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 11:45:08] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 11:45:08] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 11:45:08] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=33064, deploy=wpf-subdir)
+[2026-09-02 11:45:08] Password verification passed
+[2026-09-02 11:45:08] AURORA_PERF_TIER=Extreme
+[2026-09-02 11:45:08] AURORA_THEME=Dark
+[2026-09-02 11:45:08] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 11:45:08] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 11:45:08] AURORA_LANGUAGE=CHS
+[2026-09-02 11:45:08] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 11:45:08] VerifyDirectoryIntegrity: OK
+[2026-09-02 11:45:08] Directory integrity check passed
+[2026-09-02 11:45:08] IntegrityGuard detection: NONE
+[2026-09-02 11:45:08] IntegrityGuard initialized
+[2026-09-02 11:45:08] IntegrityGuard runtime monitoring started
+[2026-09-02 11:45:08] ElevationService configured
+[2026-09-02 11:45:08] Creating MainWindow shell
+[2026-09-02 11:45:09] MainWindow shell shown + PlayShellEnter
+[2026-09-02 11:45:09] ViewManager initialized
+[2026-09-02 11:45:09] Navigating to SplashScreenView
+[2026-09-02 11:45:09] SplashScreenView.ctor begin
+[2026-09-02 11:45:09] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 11:45:09] SplashScreenView.Loaded
+[2026-09-02 11:45:19] SplashScreenView.LoadingComplete
+[2026-09-02 11:45:19] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 11:45:21] ElevationDialog result: ContinueNormal
+[2026-09-02 11:45:21] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 11:45:21] MainFormView.ctor begin
+[2026-09-02 11:45:21] MainFormView.ctor InitializeComponent done
+[2026-09-02 11:45:21] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 11:45:22] MainFormView.Loaded
+[2026-09-02 11:45:49] PerformExitCleanup: done
+[2026-09-02 11:45:49] PerformExitCleanup: done
+[2026-09-02 11:45:52] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 11:45:52] AssemblyLoad guard registered
+[2026-09-02 11:45:52] OnStartup
+[2026-09-02 11:45:52] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 11:45:52] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 11:45:52] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 11:45:52] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=33992, deploy=wpf-subdir)
+[2026-09-02 11:45:52] Password verification passed
+[2026-09-02 11:45:52] AURORA_PERF_TIER=Extreme
+[2026-09-02 11:45:52] AURORA_THEME=Dark
+[2026-09-02 11:45:52] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 11:45:52] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 11:45:52] AURORA_LANGUAGE=CHS
+[2026-09-02 11:45:52] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 11:45:52] VerifyDirectoryIntegrity: OK
+[2026-09-02 11:45:52] Directory integrity check passed
+[2026-09-02 11:45:52] IntegrityGuard detection: NONE
+[2026-09-02 11:45:52] IntegrityGuard initialized
+[2026-09-02 11:45:52] IntegrityGuard runtime monitoring started
+[2026-09-02 11:45:52] ElevationService configured
+[2026-09-02 11:45:53] Creating MainWindow shell
+[2026-09-02 11:45:53] MainWindow shell shown + PlayShellEnter
+[2026-09-02 11:45:53] ViewManager initialized
+[2026-09-02 11:45:53] Navigating to SplashScreenView
+[2026-09-02 11:45:53] SplashScreenView.ctor begin
+[2026-09-02 11:45:53] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 11:45:53] SplashScreenView.Loaded
+[2026-09-02 11:46:03] SplashScreenView.LoadingComplete
+[2026-09-02 11:46:03] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 11:46:06] ElevationDialog result: ContinueNormal
+[2026-09-02 11:46:06] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 11:46:06] MainFormView.ctor begin
+[2026-09-02 11:46:06] MainFormView.ctor InitializeComponent done
+[2026-09-02 11:46:06] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 11:46:07] MainFormView.Loaded
+[2026-09-02 11:46:37] ProModeView.ctor begin
+[2026-09-02 11:46:37] ProModeView.ctor InitializeComponent done
+[2026-09-02 11:46:38] ProModeView.OnLoaded begin
+[2026-09-02 11:46:38] ProModeView.OnLoaded end
+[2026-09-02 11:46:43] MainFormView.Loaded
+[2026-09-02 11:47:05] ProModeView.OnLoaded begin
+[2026-09-02 11:47:05] ProModeView.OnLoaded end
+[2026-09-02 11:47:08] MainFormView.Loaded
+[2026-09-02 11:47:34] ProModeView.OnLoaded begin
+[2026-09-02 11:47:34] ProModeView.OnLoaded end
+[2026-09-02 11:47:39] MainFormView.Loaded
+[2026-09-02 11:47:50] ProModeView.OnLoaded begin
+[2026-09-02 11:47:50] ProModeView.OnLoaded end
+[2026-09-02 11:47:55] PerformExitCleanup: done
+[2026-09-02 11:47:55] PerformExitCleanup: done
+[2026-09-02 11:47:58] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 11:47:58] AssemblyLoad guard registered
+[2026-09-02 11:47:58] OnStartup
+[2026-09-02 11:47:58] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 11:47:58] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 11:47:58] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 11:47:58] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=32888, deploy=wpf-subdir)
+[2026-09-02 11:47:58] Password verification passed
+[2026-09-02 11:47:58] AURORA_PERF_TIER=Extreme
+[2026-09-02 11:47:58] AURORA_THEME=Dark
+[2026-09-02 11:47:58] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 11:47:58] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 11:47:58] AURORA_LANGUAGE=CHS
+[2026-09-02 11:47:58] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 11:47:58] VerifyDirectoryIntegrity: OK
+[2026-09-02 11:47:58] Directory integrity check passed
+[2026-09-02 11:47:58] IntegrityGuard detection: NONE
+[2026-09-02 11:47:58] IntegrityGuard initialized
+[2026-09-02 11:47:58] IntegrityGuard runtime monitoring started
+[2026-09-02 11:47:58] ElevationService configured
+[2026-09-02 11:47:58] Creating MainWindow shell
+[2026-09-02 11:47:59] MainWindow shell shown + PlayShellEnter
+[2026-09-02 11:47:59] ViewManager initialized
+[2026-09-02 11:47:59] Navigating to SplashScreenView
+[2026-09-02 11:47:59] SplashScreenView.ctor begin
+[2026-09-02 11:47:59] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 11:47:59] SplashScreenView.Loaded
+[2026-09-02 11:48:09] SplashScreenView.LoadingComplete
+[2026-09-02 11:48:09] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 11:49:13] ElevationDialog result: ContinueNormal
+[2026-09-02 11:49:13] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 11:49:13] MainFormView.ctor begin
+[2026-09-02 11:49:13] MainFormView.ctor InitializeComponent done
+[2026-09-02 11:49:13] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 11:49:14] MainFormView.Loaded
+[2026-09-02 11:53:46] ProModeView.ctor begin
+[2026-09-02 11:53:46] ProModeView.ctor InitializeComponent done
+[2026-09-02 11:53:48] ProModeView.OnLoaded begin
+[2026-09-02 11:53:48] ProModeView.OnLoaded end
+[2026-09-02 11:53:53] PerformExitCleanup: done
+[2026-09-02 11:53:53] PerformExitCleanup: done
+[2026-09-02 11:58:22] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 11:58:22] AssemblyLoad guard registered
+[2026-09-02 11:58:22] OnStartup
+[2026-09-02 11:58:22] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 11:58:22] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 11:58:22] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 11:58:22] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=20140, deploy=wpf-subdir)
+[2026-09-02 11:58:22] Password verification passed
+[2026-09-02 11:58:22] AURORA_PERF_TIER=Extreme
+[2026-09-02 11:58:22] AURORA_THEME=Dark
+[2026-09-02 11:58:22] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 11:58:22] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 11:58:22] AURORA_LANGUAGE=CHS
+[2026-09-02 11:58:22] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 11:58:22] VerifyDirectoryIntegrity: OK
+[2026-09-02 11:58:22] Directory integrity check passed
+[2026-09-02 11:58:22] IntegrityGuard detection: NONE
+[2026-09-02 11:58:22] IntegrityGuard initialized
+[2026-09-02 11:58:22] IntegrityGuard runtime monitoring started
+[2026-09-02 11:58:22] ElevationService configured
+[2026-09-02 11:58:22] Creating MainWindow shell
+[2026-09-02 11:58:23] MainWindow shell shown + PlayShellEnter
+[2026-09-02 11:58:23] ViewManager initialized
+[2026-09-02 11:58:23] Navigating to SplashScreenView
+[2026-09-02 11:58:23] SplashScreenView.ctor begin
+[2026-09-02 11:58:23] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 11:58:23] SplashScreenView.Loaded
+[2026-09-02 11:58:33] SplashScreenView.LoadingComplete
+[2026-09-02 11:58:33] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 11:58:35] ElevationDialog result: ContinueNormal
+[2026-09-02 11:58:35] MainFormView.ctor begin
+[2026-09-02 11:58:35] MainFormView.ctor InitializeComponent done
+[2026-09-02 11:58:36] MainFormView.Loaded
+[2026-09-02 11:59:11] ProModeView.ctor begin
+[2026-09-02 11:59:11] ProModeView.ctor InitializeComponent done
+[2026-09-02 11:59:12] ProModeView.OnLoaded begin
+[2026-09-02 11:59:12] ProModeView.OnLoaded end
+[2026-09-02 11:59:19] PerformExitCleanup: done
+[2026-09-02 11:59:19] PerformExitCleanup: done
+[2026-09-02 11:59:20] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 11:59:20] AssemblyLoad guard registered
+[2026-09-02 11:59:20] OnStartup
+[2026-09-02 11:59:20] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 11:59:20] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 11:59:20] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 11:59:20] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=35744, deploy=wpf-subdir)
+[2026-09-02 11:59:20] Password verification passed
+[2026-09-02 11:59:20] AURORA_PERF_TIER=Extreme
+[2026-09-02 11:59:20] AURORA_THEME=Dark
+[2026-09-02 11:59:20] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 11:59:20] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 11:59:20] AURORA_LANGUAGE=CHS
+[2026-09-02 11:59:20] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 11:59:20] VerifyDirectoryIntegrity: OK
+[2026-09-02 11:59:20] Directory integrity check passed
+[2026-09-02 11:59:20] IntegrityGuard detection: NONE
+[2026-09-02 11:59:20] IntegrityGuard initialized
+[2026-09-02 11:59:20] IntegrityGuard runtime monitoring started
+[2026-09-02 11:59:20] ElevationService configured
+[2026-09-02 11:59:21] Creating MainWindow shell
+[2026-09-02 11:59:21] MainWindow shell shown + PlayShellEnter
+[2026-09-02 11:59:21] ViewManager initialized
+[2026-09-02 11:59:21] Navigating to SplashScreenView
+[2026-09-02 11:59:21] SplashScreenView.ctor begin
+[2026-09-02 11:59:21] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 11:59:21] SplashScreenView.Loaded
+[2026-09-02 11:59:31] SplashScreenView.LoadingComplete
+[2026-09-02 11:59:31] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 11:59:34] ElevationDialog result: ContinueNormal
+[2026-09-02 11:59:34] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 11:59:34] MainFormView.ctor begin
+[2026-09-02 11:59:34] MainFormView.ctor InitializeComponent done
+[2026-09-02 11:59:34] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 11:59:35] MainFormView.Loaded
+[2026-09-02 12:02:51] PerformExitCleanup: done
+[2026-09-02 12:02:51] PerformExitCleanup: done
+[2026-09-02 12:03:57] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 12:03:57] AssemblyLoad guard registered
+[2026-09-02 12:03:57] OnStartup
+[2026-09-02 12:03:57] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 12:03:57] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 12:03:57] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 12:03:57] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=20984, deploy=wpf-subdir)
+[2026-09-02 12:03:57] Password verification passed
+[2026-09-02 12:03:57] AURORA_PERF_TIER=Extreme
+[2026-09-02 12:03:57] AURORA_THEME=Dark
+[2026-09-02 12:03:57] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 12:03:57] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 12:03:57] AURORA_LANGUAGE=CHS
+[2026-09-02 12:03:57] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 12:03:57] VerifyDirectoryIntegrity: OK
+[2026-09-02 12:03:57] Directory integrity check passed
+[2026-09-02 12:03:57] IntegrityGuard detection: NONE
+[2026-09-02 12:03:57] IntegrityGuard initialized
+[2026-09-02 12:03:57] IntegrityGuard runtime monitoring started
+[2026-09-02 12:03:57] ElevationService configured
+[2026-09-02 12:03:58] Creating MainWindow shell
+[2026-09-02 12:03:58] MainWindow shell shown + PlayShellEnter
+[2026-09-02 12:03:58] ViewManager initialized
+[2026-09-02 12:03:58] Navigating to SplashScreenView
+[2026-09-02 12:03:58] SplashScreenView.ctor begin
+[2026-09-02 12:03:58] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 12:03:58] SplashScreenView.Loaded
+[2026-09-02 12:04:08] SplashScreenView.LoadingComplete
+[2026-09-02 12:04:08] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 12:04:11] ElevationDialog result: ContinueNormal
+[2026-09-02 12:04:11] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 12:04:11] MainFormView.ctor begin
+[2026-09-02 12:04:11] MainFormView.ctor InitializeComponent done
+[2026-09-02 12:04:11] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 12:04:11] MainFormView.Loaded
+[2026-09-02 12:04:35] ProModeView.ctor begin
+[2026-09-02 12:04:35] ProModeView.ctor InitializeComponent done
+[2026-09-02 12:04:36] ProModeView.OnLoaded begin
+[2026-09-02 12:04:36] ProModeView.OnLoaded end
+[2026-09-02 12:04:40] PerformExitCleanup: done
+[2026-09-02 12:04:40] PerformExitCleanup: done
+[2026-09-02 12:04:43] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 12:04:43] AssemblyLoad guard registered
+[2026-09-02 12:04:43] OnStartup
+[2026-09-02 12:04:43] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 12:04:43] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 12:04:43] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 12:04:43] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=35692, deploy=wpf-subdir)
+[2026-09-02 12:04:43] Password verification passed
+[2026-09-02 12:04:43] AURORA_PERF_TIER=Extreme
+[2026-09-02 12:04:43] AURORA_THEME=Dark
+[2026-09-02 12:04:43] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 12:04:43] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 12:04:43] AURORA_LANGUAGE=CHS
+[2026-09-02 12:04:43] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 12:04:43] VerifyDirectoryIntegrity: OK
+[2026-09-02 12:04:43] Directory integrity check passed
+[2026-09-02 12:04:43] IntegrityGuard detection: NONE
+[2026-09-02 12:04:43] IntegrityGuard initialized
+[2026-09-02 12:04:43] IntegrityGuard runtime monitoring started
+[2026-09-02 12:04:43] ElevationService configured
+[2026-09-02 12:04:44] Creating MainWindow shell
+[2026-09-02 12:04:44] MainWindow shell shown + PlayShellEnter
+[2026-09-02 12:04:44] ViewManager initialized
+[2026-09-02 12:04:44] Navigating to SplashScreenView
+[2026-09-02 12:04:44] SplashScreenView.ctor begin
+[2026-09-02 12:04:44] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 12:04:44] SplashScreenView.Loaded
+[2026-09-02 12:04:54] SplashScreenView.LoadingComplete
+[2026-09-02 12:04:54] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 12:04:57] ElevationDialog result: ContinueNormal
+[2026-09-02 12:04:57] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 12:04:57] MainFormView.ctor begin
+[2026-09-02 12:04:57] MainFormView.ctor InitializeComponent done
+[2026-09-02 12:04:57] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 12:04:57] MainFormView.Loaded
+[2026-09-02 12:07:44] PerformExitCleanup: done
+[2026-09-02 12:07:44] PerformExitCleanup: done
+[2026-09-02 12:07:51] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 12:07:51] AssemblyLoad guard registered
+[2026-09-02 12:07:51] OnStartup
+[2026-09-02 12:07:51] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 12:07:51] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 12:07:51] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 12:07:51] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=20684, deploy=wpf-subdir)
+[2026-09-02 12:07:51] Password verification passed
+[2026-09-02 12:07:52] AURORA_PERF_TIER=Extreme
+[2026-09-02 12:07:52] AURORA_THEME=Dark
+[2026-09-02 12:07:52] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 12:07:52] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 12:07:52] AURORA_LANGUAGE=CHS
+[2026-09-02 12:07:52] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 12:07:52] VerifyDirectoryIntegrity: OK
+[2026-09-02 12:07:52] Directory integrity check passed
+[2026-09-02 12:07:52] IntegrityGuard detection: NONE
+[2026-09-02 12:07:52] IntegrityGuard initialized
+[2026-09-02 12:07:52] IntegrityGuard runtime monitoring started
+[2026-09-02 12:07:52] ElevationService configured
+[2026-09-02 12:07:52] Creating MainWindow shell
+[2026-09-02 12:07:53] MainWindow shell shown + PlayShellEnter
+[2026-09-02 12:07:53] ViewManager initialized
+[2026-09-02 12:07:53] Navigating to SplashScreenView
+[2026-09-02 12:07:53] SplashScreenView.ctor begin
+[2026-09-02 12:07:53] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 12:07:53] SplashScreenView.Loaded
+[2026-09-02 12:08:03] SplashScreenView.LoadingComplete
+[2026-09-02 12:08:03] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 12:08:05] ElevationDialog result: ContinueNormal
+[2026-09-02 12:08:05] DirectLaunch: skip language page, lang=ENG
+[2026-09-02 12:08:05] MainFormView.ctor begin
+[2026-09-02 12:08:05] MainFormView.ctor InitializeComponent done
+[2026-09-02 12:08:05] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 12:08:05] MainFormView.Loaded
+[2026-09-02 12:10:56] PerformExitCleanup: done
+[2026-09-02 12:10:56] PerformExitCleanup: done
+[2026-09-02 12:54:30] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 12:54:30] AssemblyLoad guard registered
+[2026-09-02 12:54:30] OnStartup
+[2026-09-02 12:54:30] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 12:54:30] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 12:54:31] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 12:54:31] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=9924, deploy=wpf-subdir)
+[2026-09-02 12:54:31] Password verification passed
+[2026-09-02 12:54:31] AURORA_PERF_TIER=Extreme
+[2026-09-02 12:54:31] AURORA_THEME=Dark
+[2026-09-02 12:54:31] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 12:54:31] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 12:54:31] AURORA_LANGUAGE=CHS
+[2026-09-02 12:54:31] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 12:54:31] VerifyDirectoryIntegrity: OK
+[2026-09-02 12:54:31] Directory integrity check passed
+[2026-09-02 12:54:31] IntegrityGuard detection: NONE
+[2026-09-02 12:54:31] IntegrityGuard initialized
+[2026-09-02 12:54:31] IntegrityGuard runtime monitoring started
+[2026-09-02 12:54:31] ElevationService configured
+[2026-09-02 12:54:31] Creating MainWindow shell
+[2026-09-02 12:54:32] MainWindow shell shown + PlayShellEnter
+[2026-09-02 12:54:32] ViewManager initialized
+[2026-09-02 12:54:32] Navigating to SplashScreenView
+[2026-09-02 12:54:32] SplashScreenView.ctor begin
+[2026-09-02 12:54:32] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 12:54:32] SplashScreenView.Loaded
+[2026-09-02 12:54:42] SplashScreenView.LoadingComplete
+[2026-09-02 12:54:42] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 12:54:44] ElevationDialog result: ContinueNormal
+[2026-09-02 12:54:44] DirectLaunch: skip language page, lang=ENG
+[2026-09-02 12:54:44] MainFormView.ctor begin
+[2026-09-02 12:54:44] MainFormView.ctor InitializeComponent done
+[2026-09-02 12:54:44] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 12:54:44] MainFormView.Loaded
+[2026-09-02 12:55:45] PerformExitCleanup: done
+[2026-09-02 12:55:45] PerformExitCleanup: done
+[2026-09-02 13:01:34] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 13:01:34] AssemblyLoad guard registered
+[2026-09-02 13:01:34] OnStartup
+[2026-09-02 13:01:34] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 13:01:34] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 13:01:34] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 13:01:34] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=25732, deploy=wpf-subdir)
+[2026-09-02 13:01:34] Password verification passed
+[2026-09-02 13:01:35] AURORA_PERF_TIER=Extreme
+[2026-09-02 13:01:35] AURORA_THEME=Dark
+[2026-09-02 13:01:35] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 13:01:35] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 13:01:35] AURORA_LANGUAGE=CHS
+[2026-09-02 13:01:35] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 13:01:35] VerifyDirectoryIntegrity: OK
+[2026-09-02 13:01:35] Directory integrity check passed
+[2026-09-02 13:01:35] IntegrityGuard detection: NONE
+[2026-09-02 13:01:35] IntegrityGuard initialized
+[2026-09-02 13:01:35] IntegrityGuard runtime monitoring started
+[2026-09-02 13:01:35] ElevationService configured
+[2026-09-02 13:01:35] Creating MainWindow shell
+[2026-09-02 13:01:36] MainWindow shell shown + PlayShellEnter
+[2026-09-02 13:01:36] ViewManager initialized
+[2026-09-02 13:01:36] Navigating to SplashScreenView
+[2026-09-02 13:01:36] SplashScreenView.ctor begin
+[2026-09-02 13:01:36] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 13:01:36] SplashScreenView.Loaded
+[2026-09-02 13:01:46] SplashScreenView.LoadingComplete
+[2026-09-02 13:01:46] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 13:01:48] ElevationDialog result: ContinueNormal
+[2026-09-02 13:01:48] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 13:01:48] MainFormView.ctor begin
+[2026-09-02 13:01:48] MainFormView.ctor InitializeComponent done
+[2026-09-02 13:01:48] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 13:01:49] MainFormView.Loaded
+[2026-09-02 13:02:00] PerformExitCleanup: done
+[2026-09-02 13:02:00] PerformExitCleanup: done
+[2026-09-02 13:06:57] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 13:06:57] AssemblyLoad guard registered
+[2026-09-02 13:06:57] OnStartup
+[2026-09-02 13:06:57] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 13:06:57] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 13:06:58] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 13:06:58] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=7708, deploy=wpf-subdir)
+[2026-09-02 13:06:58] Password verification passed
+[2026-09-02 13:06:58] AURORA_PERF_TIER=Extreme
+[2026-09-02 13:06:58] AURORA_THEME=Dark
+[2026-09-02 13:06:58] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 13:06:58] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 13:06:58] AURORA_LANGUAGE=CHS
+[2026-09-02 13:06:58] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 13:06:58] VerifyDirectoryIntegrity: OK
+[2026-09-02 13:06:58] Directory integrity check passed
+[2026-09-02 13:06:58] IntegrityGuard detection: NONE
+[2026-09-02 13:06:58] IntegrityGuard initialized
+[2026-09-02 13:06:58] IntegrityGuard runtime monitoring started
+[2026-09-02 13:06:58] ElevationService configured
+[2026-09-02 13:06:58] Creating MainWindow shell
+[2026-09-02 13:06:59] MainWindow shell shown + PlayShellEnter
+[2026-09-02 13:06:59] ViewManager initialized
+[2026-09-02 13:06:59] Navigating to SplashScreenView
+[2026-09-02 13:06:59] SplashScreenView.ctor begin
+[2026-09-02 13:06:59] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 13:06:59] SplashScreenView.Loaded
+[2026-09-02 13:07:09] SplashScreenView.LoadingComplete
+[2026-09-02 13:07:09] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 13:07:14] ElevationDialog result: ContinueNormal
+[2026-09-02 13:07:14] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 13:07:14] MainFormView.ctor begin
+[2026-09-02 13:07:14] MainFormView.ctor InitializeComponent done
+[2026-09-02 13:07:14] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 13:07:15] MainFormView.Loaded
+[2026-09-02 13:07:23] ProModeView.ctor begin
+[2026-09-02 13:07:23] ProModeView.ctor InitializeComponent done
+[2026-09-02 13:07:25] ProModeView.OnLoaded begin
+[2026-09-02 13:07:25] ProModeView.OnLoaded end
+[2026-09-02 13:07:29] MainFormView.Loaded
+[2026-09-02 13:07:47] ProModeView.OnLoaded begin
+[2026-09-02 13:07:47] ProModeView.OnLoaded end
+[2026-09-02 13:07:50] MainFormView.Loaded
+[2026-09-02 13:07:54] ProModeView.OnLoaded begin
+[2026-09-02 13:07:54] ProModeView.OnLoaded end
+[2026-09-02 13:08:03] ProModeView.OnLoaded begin
+[2026-09-02 13:08:03] ProModeView.OnLoaded end
+[2026-09-02 13:09:59] ProModeView.OnLoaded begin
+[2026-09-02 13:09:59] ProModeView.OnLoaded end
+[2026-09-02 13:10:02] MainFormView.Loaded
+[2026-09-02 13:10:17] PerformExitCleanup: done
+[2026-09-02 13:10:17] PerformExitCleanup: done
+[2026-09-02 13:20:34] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 13:20:34] AssemblyLoad guard registered
+[2026-09-02 13:20:34] OnStartup
+[2026-09-02 13:20:34] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 13:20:34] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 13:20:34] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 13:20:34] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=3152, deploy=wpf-subdir)
+[2026-09-02 13:20:34] Password verification passed
+[2026-09-02 13:20:35] AURORA_PERF_TIER=Extreme
+[2026-09-02 13:20:35] AURORA_THEME=Dark
+[2026-09-02 13:20:35] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 13:20:35] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 13:20:35] AURORA_LANGUAGE=CHS
+[2026-09-02 13:20:35] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 13:20:35] VerifyDirectoryIntegrity: OK
+[2026-09-02 13:20:35] Directory integrity check passed
+[2026-09-02 13:20:35] IntegrityGuard detection: NONE
+[2026-09-02 13:20:35] IntegrityGuard initialized
+[2026-09-02 13:20:35] IntegrityGuard runtime monitoring started
+[2026-09-02 13:20:35] ElevationService configured
+[2026-09-02 13:20:35] Creating MainWindow shell
+[2026-09-02 13:20:36] MainWindow shell shown + PlayShellEnter
+[2026-09-02 13:20:36] ViewManager initialized
+[2026-09-02 13:20:36] Navigating to SplashScreenView
+[2026-09-02 13:20:36] SplashScreenView.ctor begin
+[2026-09-02 13:20:36] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 13:20:36] SplashScreenView.Loaded
+[2026-09-02 13:20:45] SplashScreenView.LoadingComplete
+[2026-09-02 13:20:45] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 13:20:48] ElevationDialog result: ContinueNormal
+[2026-09-02 13:20:48] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 13:20:48] MainFormView.ctor begin
+[2026-09-02 13:20:48] MainFormView.ctor InitializeComponent done
+[2026-09-02 13:20:48] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 13:20:48] MainFormView.Loaded
+[2026-09-02 13:20:56] ProModeView.ctor begin
+[2026-09-02 13:20:56] ProModeView.ctor InitializeComponent done
+[2026-09-02 13:20:56] ProModeView.OnLoaded begin
+[2026-09-02 13:20:56] ProModeView.OnLoaded end
+[2026-09-02 13:21:12] ProModeView.OnLoaded begin
+[2026-09-02 13:21:12] ProModeView.OnLoaded end
+[2026-09-02 13:23:23] ProModeView.OnLoaded begin
+[2026-09-02 13:23:23] ProModeView.OnLoaded end
+[2026-09-02 13:23:25] MainFormView.Loaded
+[2026-09-02 13:23:27] ProModeView.OnLoaded begin
+[2026-09-02 13:23:27] ProModeView.OnLoaded end
+[2026-09-02 13:23:30] MainFormView.Loaded
+[2026-09-02 13:23:40] ProModeView.OnLoaded begin
+[2026-09-02 13:23:40] ProModeView.OnLoaded end
+[2026-09-02 13:24:37] ProModeView.OnLoaded begin
+[2026-09-02 13:24:37] ProModeView.OnLoaded end
+[2026-09-02 13:24:41] PerformExitCleanup: done
+[2026-09-02 13:24:41] PerformExitCleanup: done
+[2026-09-02 13:30:24] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 13:30:24] AssemblyLoad guard registered
+[2026-09-02 13:30:24] OnStartup
+[2026-09-02 13:30:24] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 13:30:24] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 13:30:24] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 13:30:24] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=13204, deploy=wpf-subdir)
+[2026-09-02 13:30:24] Password verification passed
+[2026-09-02 13:30:24] AURORA_PERF_TIER=Extreme
+[2026-09-02 13:30:24] AURORA_THEME=Dark
+[2026-09-02 13:30:24] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 13:30:24] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 13:30:24] AURORA_LANGUAGE=CHS
+[2026-09-02 13:30:24] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 13:30:24] VerifyDirectoryIntegrity: OK
+[2026-09-02 13:30:24] Directory integrity check passed
+[2026-09-02 13:30:24] IntegrityGuard detection: NONE
+[2026-09-02 13:30:24] IntegrityGuard initialized
+[2026-09-02 13:30:24] IntegrityGuard runtime monitoring started
+[2026-09-02 13:30:24] ElevationService configured
+[2026-09-02 13:30:24] Creating MainWindow shell
+[2026-09-02 13:30:25] MainWindow shell shown + PlayShellEnter
+[2026-09-02 13:30:25] ViewManager initialized
+[2026-09-02 13:30:25] Navigating to SplashScreenView
+[2026-09-02 13:30:25] SplashScreenView.ctor begin
+[2026-09-02 13:30:25] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 13:30:25] SplashScreenView.Loaded
+[2026-09-02 13:30:35] SplashScreenView.LoadingComplete
+[2026-09-02 13:30:35] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 13:30:38] ElevationDialog result: ContinueNormal
+[2026-09-02 13:30:38] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 13:30:38] MainFormView.ctor begin
+[2026-09-02 13:30:38] MainFormView.ctor InitializeComponent done
+[2026-09-02 13:30:38] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 13:30:38] MainFormView.Loaded
+[2026-09-02 13:30:45] PerformExitCleanup: done
+[2026-09-02 13:30:45] PerformExitCleanup: done
+[2026-09-02 13:30:46] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 13:30:46] AssemblyLoad guard registered
+[2026-09-02 13:30:46] OnStartup
+[2026-09-02 13:30:46] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 13:30:46] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 13:30:46] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\Update\AURORA-AnalyzerWPF.exe
+[2026-09-02 13:30:46] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=16276, deploy=wpf-subdir)
+[2026-09-02 13:30:46] Password verification passed
+[2026-09-02 13:30:47] AURORA_PERF_TIER=Extreme
+[2026-09-02 13:30:47] AURORA_THEME=Dark
+[2026-09-02 13:30:47] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 13:30:47] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 13:30:47] AURORA_LANGUAGE=CHS
+[2026-09-02 13:30:47] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 13:30:47] VerifyDirectoryIntegrity: OK
+[2026-09-02 13:30:47] Directory integrity check passed
+[2026-09-02 13:30:47] IntegrityGuard detection: NONE
+[2026-09-02 13:30:47] IntegrityGuard initialized
+[2026-09-02 13:30:47] IntegrityGuard runtime monitoring started
+[2026-09-02 13:30:47] ElevationService configured
+[2026-09-02 13:30:47] Creating MainWindow shell
+[2026-09-02 13:30:47] MainWindow shell shown + PlayShellEnter
+[2026-09-02 13:30:47] ViewManager initialized
+[2026-09-02 13:30:47] Navigating to SplashScreenView
+[2026-09-02 13:30:47] SplashScreenView.ctor begin
+[2026-09-02 13:30:47] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 13:30:47] SplashScreenView.Loaded
+[2026-09-02 13:30:57] SplashScreenView.LoadingComplete
+[2026-09-02 13:30:57] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 13:31:00] ElevationDialog result: ContinueNormal
+[2026-09-02 13:31:00] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 13:31:00] MainFormView.ctor begin
+[2026-09-02 13:31:00] MainFormView.ctor InitializeComponent done
+[2026-09-02 13:31:00] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 13:31:00] MainFormView.Loaded
+[2026-09-02 13:31:02] ProModeView.ctor begin
+[2026-09-02 13:31:02] ProModeView.ctor InitializeComponent done
+[2026-09-02 13:31:03] ProModeView.OnLoaded begin
+[2026-09-02 13:31:03] ProModeView.OnLoaded end
+[2026-09-02 13:31:15] ProModeView.OnLoaded begin
+[2026-09-02 13:31:15] ProModeView.OnLoaded end
+[2026-09-02 13:31:17] MainFormView.Loaded
+[2026-09-02 13:31:29] PerformExitCleanup: done
+[2026-09-02 13:31:30] PerformExitCleanup: done
+[2026-09-02 14:32:08] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 14:32:08] AssemblyLoad guard registered
+[2026-09-02 14:32:08] OnStartup
+[2026-09-02 14:32:08] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 14:32:08] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 14:32:08] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\AURORA-AnalyzerWPF.exe
+[2026-09-02 14:32:08] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=9128, deploy=wpf-subdir)
+[2026-09-02 14:32:08] Password verification passed
+[2026-09-02 14:32:09] AURORA_PERF_TIER=Extreme
+[2026-09-02 14:32:09] AURORA_THEME=Dark
+[2026-09-02 14:32:09] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 14:32:09] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 14:32:09] AURORA_LANGUAGE=CHS
+[2026-09-02 14:32:09] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 14:32:09] VerifyDirectoryIntegrity: OK
+[2026-09-02 14:32:09] Directory integrity check passed
+[2026-09-02 14:32:09] IntegrityGuard detection: NONE
+[2026-09-02 14:32:09] IntegrityGuard initialized
+[2026-09-02 14:32:09] IntegrityGuard runtime monitoring started
+[2026-09-02 14:32:09] ElevationService configured
+[2026-09-02 14:32:09] Creating MainWindow shell
+[2026-09-02 14:32:10] MainWindow shell shown + PlayShellEnter
+[2026-09-02 14:32:10] ViewManager initialized
+[2026-09-02 14:32:10] Navigating to SplashScreenView
+[2026-09-02 14:32:10] SplashScreenView.ctor begin
+[2026-09-02 14:32:10] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 14:32:10] SplashScreenView.Loaded
+[2026-09-02 14:32:20] SplashScreenView.LoadingComplete
+[2026-09-02 14:32:20] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 14:32:27] ElevationDialog result: Exit
+[2026-09-02 14:32:28] PerformExitCleanup: done
+[2026-09-02 14:32:28] PerformExitCleanup: done
+[2026-09-02 14:32:29] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 14:32:29] AssemblyLoad guard registered
+[2026-09-02 14:32:29] OnStartup
+[2026-09-02 14:32:29] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 14:32:29] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 14:32:29] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\AURORA-AnalyzerWPF.exe
+[2026-09-02 14:32:29] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=22768, deploy=wpf-subdir)
+[2026-09-02 14:32:29] Password verification passed
+[2026-09-02 14:32:29] AURORA_PERF_TIER=Extreme
+[2026-09-02 14:32:29] AURORA_THEME=Dark
+[2026-09-02 14:32:29] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 14:32:29] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 14:32:29] AURORA_LANGUAGE=CHS
+[2026-09-02 14:32:29] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 14:32:29] VerifyDirectoryIntegrity: OK
+[2026-09-02 14:32:29] Directory integrity check passed
+[2026-09-02 14:32:29] IntegrityGuard detection: NONE
+[2026-09-02 14:32:29] IntegrityGuard initialized
+[2026-09-02 14:32:29] IntegrityGuard runtime monitoring started
+[2026-09-02 14:32:29] ElevationService configured
+[2026-09-02 14:32:29] Creating MainWindow shell
+[2026-09-02 14:32:30] MainWindow shell shown + PlayShellEnter
+[2026-09-02 14:32:30] ViewManager initialized
+[2026-09-02 14:32:30] Navigating to SplashScreenView
+[2026-09-02 14:32:30] SplashScreenView.ctor begin
+[2026-09-02 14:32:30] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 14:32:30] SplashScreenView.Loaded
+[2026-09-02 14:32:40] SplashScreenView.LoadingComplete
+[2026-09-02 14:32:40] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 14:32:43] ElevationDialog result: ContinueNormal
+[2026-09-02 14:32:43] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 14:32:43] MainFormView.ctor begin
+[2026-09-02 14:32:43] MainFormView.ctor InitializeComponent done
+[2026-09-02 14:32:43] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 14:32:43] MainFormView.Loaded
+[2026-09-02 14:33:29] ProModeView.ctor begin
+[2026-09-02 14:33:29] ProModeView.ctor InitializeComponent done
+[2026-09-02 14:33:30] ProModeView.OnLoaded begin
+[2026-09-02 14:33:30] ProModeView.OnLoaded end
+[2026-09-02 14:33:37] PerformExitCleanup: done
+[2026-09-02 14:33:37] PerformExitCleanup: done
+[2026-09-02 14:33:37] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 14:33:37] AssemblyLoad guard registered
+[2026-09-02 14:33:37] OnStartup
+[2026-09-02 14:33:37] Elevation token verified: ELEVATION_RESTART (no hashList)
+[2026-09-02 14:33:37] Password verification skipped: IsLaunchedByExe=true
+[2026-09-02 14:33:37] Password verification passed
+[2026-09-02 14:33:38] AURORA_PERF_TIER=Extreme
+[2026-09-02 14:33:38] AURORA_THEME=Dark
+[2026-09-02 14:33:38] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 14:33:38] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 14:33:38] AURORA_LANGUAGE=CHS
+[2026-09-02 14:33:38] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 14:33:38] VerifyDirectoryIntegrity: OK
+[2026-09-02 14:33:38] Directory integrity check passed
+[2026-09-02 14:33:38] IntegrityGuard detection: NONE
+[2026-09-02 14:33:38] IntegrityGuard initialized
+[2026-09-02 14:33:38] IntegrityGuard runtime monitoring started
+[2026-09-02 14:33:38] ElevationService configured
+[2026-09-02 14:33:38] Creating MainWindow shell
+[2026-09-02 14:33:39] MainWindow shell shown + PlayShellEnter
+[2026-09-02 14:33:39] ViewManager initialized
+[2026-09-02 14:33:39] SkipSplash=true and elevated, navigating to MainFormView
+[2026-09-02 14:33:39] MainFormView.ctor begin
+[2026-09-02 14:33:39] MainFormView.ctor InitializeComponent done
+[2026-09-02 14:33:39] MainFormView.Loaded
+[2026-09-02 14:35:32] ProModeView.ctor begin
+[2026-09-02 14:35:32] ProModeView.ctor InitializeComponent done
+[2026-09-02 14:35:33] ProModeView.OnLoaded begin
+[2026-09-02 14:35:33] ProModeView.OnLoaded end
+[2026-09-02 14:35:36] MainFormView.Loaded
+[2026-09-02 14:35:39] ProModeView.OnLoaded begin
+[2026-09-02 14:35:39] ProModeView.OnLoaded end
+[2026-09-02 14:35:41] MainFormView.Loaded
+[2026-09-02 14:35:43] ProModeView.OnLoaded begin
+[2026-09-02 14:35:43] ProModeView.OnLoaded end
+[2026-09-02 14:35:45] MainFormView.Loaded
+[2026-09-02 14:35:48] ProModeView.OnLoaded begin
+[2026-09-02 14:35:48] ProModeView.OnLoaded end
+[2026-09-02 14:35:49] MainFormView.Loaded
+[2026-09-02 14:36:02] ProModeView.OnLoaded begin
+[2026-09-02 14:36:02] ProModeView.OnLoaded end
+[2026-09-02 14:36:07] ProModeView.OnLoaded begin
+[2026-09-02 14:36:07] ProModeView.OnLoaded end
+[2026-09-02 14:36:09] MainFormView.Loaded
+[2026-09-02 14:36:12] ProModeView.OnLoaded begin
+[2026-09-02 14:36:12] ProModeView.OnLoaded end
+[2026-09-02 14:36:18] ProModeView.OnLoaded begin
+[2026-09-02 14:36:18] ProModeView.OnLoaded end
+[2026-09-02 14:36:26] ProModeView.OnLoaded begin
+[2026-09-02 14:36:26] ProModeView.OnLoaded end
+[2026-09-02 14:36:37] ProModeView.OnLoaded begin
+[2026-09-02 14:36:37] ProModeView.OnLoaded end
+[2026-09-02 14:37:09] ProModeView.OnLoaded begin
+[2026-09-02 14:37:09] ProModeView.OnLoaded end
+[2026-09-02 14:37:15] ProModeView.OnLoaded begin
+[2026-09-02 14:37:15] ProModeView.OnLoaded end
+[2026-09-02 14:39:45] ProModeView.OnLoaded begin
+[2026-09-02 14:39:45] ProModeView.OnLoaded end
+[2026-09-02 14:39:50] PerformExitCleanup: done
+[2026-09-02 14:39:50] PerformExitCleanup: done
+[2026-09-02 14:40:14] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 14:40:14] AssemblyLoad guard registered
+[2026-09-02 14:40:14] OnStartup
+[2026-09-02 14:40:14] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 14:40:14] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 14:40:14] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\AURORA-AnalyzerWPF.exe
+[2026-09-02 14:40:14] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=31428, deploy=wpf-subdir)
+[2026-09-02 14:40:14] Password verification passed
+[2026-09-02 14:40:15] AURORA_PERF_TIER=Extreme
+[2026-09-02 14:40:15] AURORA_THEME=Dark
+[2026-09-02 14:40:15] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 14:40:15] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 14:40:15] AURORA_LANGUAGE=CHS
+[2026-09-02 14:40:15] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 14:40:15] VerifyDirectoryIntegrity: OK
+[2026-09-02 14:40:15] Directory integrity check passed
+[2026-09-02 14:40:15] IntegrityGuard detection: NONE
+[2026-09-02 14:40:15] IntegrityGuard initialized
+[2026-09-02 14:40:15] IntegrityGuard runtime monitoring started
+[2026-09-02 14:40:15] ElevationService configured
+[2026-09-02 14:40:15] Creating MainWindow shell
+[2026-09-02 14:40:16] MainWindow shell shown + PlayShellEnter
+[2026-09-02 14:40:16] ViewManager initialized
+[2026-09-02 14:40:16] Navigating to SplashScreenView
+[2026-09-02 14:40:16] SplashScreenView.ctor begin
+[2026-09-02 14:40:16] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 14:40:16] SplashScreenView.Loaded
+[2026-09-02 14:40:26] SplashScreenView.LoadingComplete
+[2026-09-02 14:40:26] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 14:40:30] ElevationDialog result: ContinueNormal
+[2026-09-02 14:40:30] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 14:40:30] MainFormView.ctor begin
+[2026-09-02 14:40:30] MainFormView.ctor InitializeComponent done
+[2026-09-02 14:40:30] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 14:40:31] MainFormView.Loaded
+[2026-09-02 14:40:54] ProModeView.ctor begin
+[2026-09-02 14:40:54] ProModeView.ctor InitializeComponent done
+[2026-09-02 14:40:56] ProModeView.OnLoaded begin
+[2026-09-02 14:40:56] ProModeView.OnLoaded end
+[2026-09-02 14:41:09] ProModeView.OnLoaded begin
+[2026-09-02 14:41:09] ProModeView.OnLoaded end
+[2026-09-02 14:41:17] ProModeView.OnLoaded begin
+[2026-09-02 14:41:17] ProModeView.OnLoaded end
+[2026-09-02 14:41:24] PerformExitCleanup: done
+[2026-09-02 14:41:24] PerformExitCleanup: done
+[2026-09-02 14:45:00] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 14:45:00] AssemblyLoad guard registered
+[2026-09-02 14:45:00] OnStartup
+[2026-09-02 14:45:00] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 14:45:00] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 14:45:00] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\AURORA-AnalyzerWPF.exe
+[2026-09-02 14:45:00] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=37768, deploy=wpf-subdir)
+[2026-09-02 14:45:00] Password verification passed
+[2026-09-02 14:45:00] AURORA_PERF_TIER=Extreme
+[2026-09-02 14:45:00] AURORA_THEME=Dark
+[2026-09-02 14:45:00] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 14:45:00] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 14:45:00] AURORA_LANGUAGE=CHS
+[2026-09-02 14:45:00] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 14:45:00] VerifyDirectoryIntegrity: OK
+[2026-09-02 14:45:00] Directory integrity check passed
+[2026-09-02 14:45:00] IntegrityGuard detection: NONE
+[2026-09-02 14:45:00] IntegrityGuard initialized
+[2026-09-02 14:45:00] IntegrityGuard runtime monitoring started
+[2026-09-02 14:45:00] ElevationService configured
+[2026-09-02 14:45:01] Creating MainWindow shell
+[2026-09-02 14:45:01] MainWindow shell shown + PlayShellEnter
+[2026-09-02 14:45:01] ViewManager initialized
+[2026-09-02 14:45:01] Navigating to SplashScreenView
+[2026-09-02 14:45:01] SplashScreenView.ctor begin
+[2026-09-02 14:45:01] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 14:45:01] SplashScreenView.Loaded
+[2026-09-02 14:45:11] SplashScreenView.LoadingComplete
+[2026-09-02 14:45:11] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 14:45:29] ElevationDialog result: ContinueNormal
+[2026-09-02 14:45:29] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 14:45:29] MainFormView.ctor begin
+[2026-09-02 14:45:29] MainFormView.ctor InitializeComponent done
+[2026-09-02 14:45:29] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 14:45:30] MainFormView.Loaded
+[2026-09-02 14:45:58] ProModeView.ctor begin
+[2026-09-02 14:45:58] ProModeView.ctor InitializeComponent done
+[2026-09-02 14:45:59] ProModeView.OnLoaded begin
+[2026-09-02 14:45:59] ProModeView.OnLoaded end
+[2026-09-02 14:46:15] ProModeView.OnLoaded begin
+[2026-09-02 14:46:15] ProModeView.OnLoaded end
+[2026-09-02 14:46:24] ProModeView.OnLoaded begin
+[2026-09-02 14:46:24] ProModeView.OnLoaded end
+[2026-09-02 14:48:24] ProModeView.OnLoaded begin
+[2026-09-02 14:48:24] ProModeView.OnLoaded end
+[2026-09-02 14:55:07] PerformExitCleanup: done
+[2026-09-02 14:55:07] PerformExitCleanup: done
+[2026-09-02 14:55:24] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 14:55:24] AssemblyLoad guard registered
+[2026-09-02 14:55:24] OnStartup
+[2026-09-02 14:55:24] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 14:55:24] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 14:55:25] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\AURORA-AnalyzerWPF.exe
+[2026-09-02 14:55:25] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=18780, deploy=wpf-subdir)
+[2026-09-02 14:55:25] Password verification passed
+[2026-09-02 14:55:25] AURORA_PERF_TIER=Extreme
+[2026-09-02 14:55:25] AURORA_THEME=Dark
+[2026-09-02 14:55:25] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 14:55:25] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 14:55:25] AURORA_LANGUAGE=CHS
+[2026-09-02 14:55:25] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 14:55:25] VerifyDirectoryIntegrity: OK
+[2026-09-02 14:55:25] Directory integrity check passed
+[2026-09-02 14:55:25] IntegrityGuard detection: NONE
+[2026-09-02 14:55:25] IntegrityGuard initialized
+[2026-09-02 14:55:25] IntegrityGuard runtime monitoring started
+[2026-09-02 14:55:25] ElevationService configured
+[2026-09-02 14:55:25] Creating MainWindow shell
+[2026-09-02 14:55:26] MainWindow shell shown + PlayShellEnter
+[2026-09-02 14:55:26] ViewManager initialized
+[2026-09-02 14:55:26] Navigating to SplashScreenView
+[2026-09-02 14:55:26] SplashScreenView.ctor begin
+[2026-09-02 14:55:26] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 14:55:26] SplashScreenView.Loaded
+[2026-09-02 14:55:36] SplashScreenView.LoadingComplete
+[2026-09-02 14:55:36] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 14:55:43] ElevationDialog result: ContinueNormal
+[2026-09-02 14:55:43] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 14:55:43] MainFormView.ctor begin
+[2026-09-02 14:55:43] MainFormView.ctor InitializeComponent done
+[2026-09-02 14:55:43] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 14:55:43] MainFormView.Loaded
+[2026-09-02 14:55:58] ProModeView.ctor begin
+[2026-09-02 14:55:58] ProModeView.ctor InitializeComponent done
+[2026-09-02 14:55:59] ProModeView.OnLoaded begin
+[2026-09-02 14:55:59] ProModeView.OnLoaded end
+[2026-09-02 14:56:39] ProModeView.OnLoaded begin
+[2026-09-02 14:56:39] ProModeView.OnLoaded end
+[2026-09-02 14:56:45] ProModeView.OnLoaded begin
+[2026-09-02 14:56:45] ProModeView.OnLoaded end
+[2026-09-02 14:56:53] PerformExitCleanup: done
+[2026-09-02 14:56:53] PerformExitCleanup: done
+[2026-09-02 15:49:19] WPF_RENDER_TIER=2 (0=Software, 1=2D Hardware, 2=Advanced Hardware)
+[2026-09-02 15:49:19] AssemblyLoad guard registered
+[2026-09-02 15:49:19] OnStartup
+[2026-09-02 15:49:19] SECURITY: unverified --launched-by-exe flag detected, resetting to false
+[2026-09-02 15:49:20] Parent MainModule access failed, trying WMI fallback: 32 位进程无法访问 64 位进程的模块。
+[2026-09-02 15:49:20] WMI fallback got parent ExecutablePath: G:\PowerShellBat\AURORA-Analyzer\AURORA-Analyzer-Factory-Dev\AURORA-Analyzer-Factory\AURORA-AnalyzerWPF.exe
+[2026-09-02 15:49:20] Password verification skipped: parent process is AURORA (AURORA-AnalyzerWPF, PID=33512, deploy=wpf-subdir)
+[2026-09-02 15:49:20] Password verification passed
+[2026-09-02 15:49:20] AURORA_PERF_TIER=Extreme
+[2026-09-02 15:49:20] AURORA_THEME=Dark
+[2026-09-02 15:49:20] PERF_SCORE_DIAG: cores=16 ramMB=32506 ramGB=32 baseClockMHz=2304 gpuScore=80 perfScore=723.04 gpuDiag=GPU=NVIDIA GeForce RTX 3060 Laptop GPU | Vendor=NVIDIA | VRAM=4096MB | D3D9Ex=OK | Score=80 | Driver=32.0.15.9174
+[2026-09-02 15:49:20] HARDWARE_DIAG: cores=16 | gpuName=NVIDIA GeForce RTX 3060 Laptop GPU gpuVendor=NVIDIA d3d9ex=True gpuVramMB=4096 gpuScore=80 backend=D3D9Ex
+[2026-09-02 15:49:20] AURORA_LANGUAGE=CHS
+[2026-09-02 15:49:20] AURORA_IS_LAUNCHED_BY_EXE=True
+[2026-09-02 15:49:20] VerifyDirectoryIntegrity: OK
+[2026-09-02 15:49:20] Directory integrity check passed
+[2026-09-02 15:49:20] IntegrityGuard detection: NONE
+[2026-09-02 15:49:20] IntegrityGuard initialized
+[2026-09-02 15:49:20] IntegrityGuard runtime monitoring started
+[2026-09-02 15:49:20] ElevationService configured
+[2026-09-02 15:49:20] Creating MainWindow shell
+[2026-09-02 15:49:21] MainWindow shell shown + PlayShellEnter
+[2026-09-02 15:49:21] ViewManager initialized
+[2026-09-02 15:49:21] Navigating to SplashScreenView
+[2026-09-02 15:49:21] SplashScreenView.ctor begin
+[2026-09-02 15:49:21] SplashScreenView.ctor InitializeComponent done
+[2026-09-02 15:49:21] SplashScreenView.Loaded
+[2026-09-02 15:49:31] SplashScreenView.LoadingComplete
+[2026-09-02 15:49:31] ShowMainWindow: navigate to ElevationDialog (before MainForm)
+[2026-09-02 15:49:35] ElevationDialog result: ContinueNormal
+[2026-09-02 15:49:35] DirectLaunch: skip language page, lang=CHS
+[2026-09-02 15:49:35] MainFormView.ctor begin
+[2026-09-02 15:49:35] MainFormView.ctor InitializeComponent done
+[2026-09-02 15:49:35] DirectLaunch: MainFormView navigated at ModeSelection
+[2026-09-02 15:49:35] MainFormView.Loaded
+[2026-09-02 15:49:49] ProModeView.ctor begin
+[2026-09-02 15:49:49] ProModeView.ctor InitializeComponent done
+[2026-09-02 15:49:51] ProModeView.OnLoaded begin
+[2026-09-02 15:49:51] ProModeView.OnLoaded end
+[2026-09-02 15:49:55] MainFormView.Loaded
+[2026-09-02 15:50:02] PerformExitCleanup: done
+[2026-09-02 15:50:02] PerformExitCleanup: done

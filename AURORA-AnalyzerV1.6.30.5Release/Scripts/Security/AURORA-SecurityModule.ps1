@@ -27,12 +27,12 @@ function _GL {
 # 🔐 RSA 公钥验证模块（构建时注入）
 # ==========================================
 $global:AURORA_PublicKeyXml = @'
-<RSAKeyValue><Modulus>xOpzdCFZLON6KOT0Qd1sBPIgTDeYiVyIrJ5bx4rw+JOqYgfpx5S2f0CWmrCjTl0HBtd7/pcsd9hEKmQ7aQg8slnbPS15q2DK+lPDKkWUGQCk5DsysMc7KOInxqXz+doVC8bXaKkO5OA76PairXGgyFPnksdJ3L55iDZfx8tXoiphgJG0+oSW5fzL9ui9iobQni0dY1LZpqMFI8dGdvowDYMcAAx5a4H4KGVE9tCW0XWb6BAqHy1vMn6ZHXwfED55E/E2DLilos29kKxRDbkZnHo1zgF7eN5SOH0kgEWrJhEbv5A9y1beqLJmkz9rWhRF0saK+bv1wosG7w0sB7XIAQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>
+<RSAKeyValue><Modulus>zQzp4aljVwe8DKwVuCyRVcSde4I7mFJ4rnfugcbvvwaAKjRPPrWi/lM4gGDZT8ZcToXa4plU1kOJKVe5M4xIKtz04R6CnfQl2OQH7z5HjZOHiKN1I/Cm2nLwGdtVR4z16kqZ/Ir9yucMRmlR/+XrQvvVFwcrlazX4jaGyt+JhTMXHzNv9N4/Nc13pu8buERfSLyL7YOUqUDPuLe/VAVzO4GLH0oBm7MG8r5xVyEEY8lJk3Vor0c84bSzDcvGEy0cbQTAfrZ8Brp+SJXD27NenR8uOhPrmtAFYI1T24xjB0+hnC5fBsckUaWmPE2rGHobKa9sx7xenl0HqiojyCzfMQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>
 '@
 
-$global:AURORA_SessionSalt = [Convert]::FromBase64String('EpJjaIIP5GoGrpBHp07YrSKA3ILE/WdV4oBnS8/Vok0=')
+$global:AURORA_SessionSalt = [Convert]::FromBase64String('L04z4UsKgZiNd78Sp0wMidamQ/f5PkuL/p7zqcotK+s=')
 
-$global:AURORA_AesSalt = [Convert]::FromBase64String('4zpbL2VvrtUzv04AalbZiB3otXgoZlSDyD/lL740gVs=')
+$global:AURORA_AesSalt = [Convert]::FromBase64String('bPnYVyCz5UX+Trt6enuCtMcTqVSEwOiAvF2mO1mrOOE=')
 # 🔒 安全修复 H-8：AES salt 不再硬编码为固定字符串
 # 改为构建时由 build.ps1 随机生成并注入（与 SessionSalt 相同机制）
 # 上述 Base64 值为初始占位符，构建时会被替换为随机生成的 32 字节 salt

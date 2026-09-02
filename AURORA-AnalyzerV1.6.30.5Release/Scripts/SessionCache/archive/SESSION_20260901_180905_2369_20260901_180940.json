@@ -1,0 +1,42 @@
+{
+    "ReportMode":  "仅高危事件",
+    "Checkpoints":  [
+
+                    ],
+    "HealthLevel":  "较差",
+    "SessionType":  "ExportTask",
+    "TotalEventCount":  280,
+    "HealthScore":  44,
+    "CreatedAt":  "2026-09-01T18:09:05.3751266+08:00",
+    "ExportScope":  "Full",
+    "WarningEvents":  109,
+    "SessionId":  "SESSION_20260901_180905_2369",
+    "CurrentStage":  "Completed",
+    "CompletedAt":  "2026-09-01T18:09:40.0896635+08:00",
+    "ErrorEvents":  24,
+    "Scopes":  {
+                   "ReportTitle":  "System 日志日报 - 2026-09-01",
+                   "EndTime":  "\/Date(1788278399999)\/",
+                   "LogType":  "System",
+                   "StartTime":  "\/Date(1788192000000)\/",
+                   "DatePart":  "20260901"
+               },
+    "LogType":  "System",
+    "HighRiskEventCount":  133,
+    "EventCount":  134,
+    "Status":  "Completed",
+    "CriticalEvents":  0,
+    "ExportChoice":  "HighRisk",
+    "ExportMode":  "SingleDay",
+    "HealthStatus":  "系统状态：较差 —— 存在大量异常，建议立即检查！",
+    "Progress":  100,
+    "ExportPath":  "G:\\PowerShellBat\\AURORA-Analyzer\\AURORA-Analyzer-Factory-Dev\\AURORA-Analyzer-Factory\\UserLogs",
+    "ChunkSize":  7,
+    "LastUpdated":  "2026-09-01T18:09:40.0896635+08:00",
+    "Metadata":  {
+                     "ExportMode":  "SingleDay",
+                     "LogType":  "System",
+                     "ExportScope":  "Full"
+                 },
+    "PerformanceScore":  100
+}
