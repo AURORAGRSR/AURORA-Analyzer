@@ -6,7 +6,7 @@
     支持撤销操作（Undo）
     支持修复历史查询
 .NOTES
-    版本：V1.6.30.5Release | 构建时间：2026.09.02
+    版本：V1.6.30.5Release | 构建时间：2026.09.03
     作者：AURORA VelociRaptor-GR Dev PRJ.
     与 RestoreManager 配合使用
     提供完整的修复操作审计追踪
@@ -25,6 +25,15 @@ $script:RepairLogDir = if ($PSScriptRoot) {
 }
 
 $script:CurrentRepairSession = $null
+
+# [2026-09-03 冒烟实测修复] 引擎路径 dot-source 本模块后未调 Initialize-RepairLogger
+# 即 Start-RepairSession，repairlogs 目录不存在时会话日志保存静默失败（追溯丢失）。
+# 加载时兜底建目录（幂等，与 Initialize 内逻辑一致）。
+try {
+    if (-not (Test-Path $script:RepairLogDir)) {
+        New-Item -ItemType Directory -Path $script:RepairLogDir -Force | Out-Null
+    }
+} catch { }
 
 #endregion
 

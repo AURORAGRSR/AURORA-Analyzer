@@ -5,7 +5,7 @@
     智能诊断与自主修复模式核心引擎
     架构特性：单文件双语支持 (Bilingual) + 动态环境感知 + 极速并发匹配
 .NOTES
-    版本：V1.6.30.5Release | 构建时间：2026.09.02
+    版本：V1.6.30.5Release | 构建时间：2026.09.03
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 
@@ -373,9 +373,14 @@ function Invoke-AuroraSafeAction {
     param(
         [Parameter(Mandatory=$true)]
         [PSObject]$Command,
-        
+
         [Parameter(Mandatory=$false)]
-        [string]$Language = "CHS"
+        [string]$Language = "CHS",
+
+        # [P1-2 引擎侧收尾 2026-09-03] 同规则完整命令列表（菜单构建方传入），
+        # 供 Step5 post_check 未过时按 alternate_of（name_en）查备选命令自恢复；缺省不启用。
+        [Parameter(Mandatory=$false)]
+        $RuleCommands = $null
     )
 
     # ==========================================
@@ -444,6 +449,11 @@ if (-not (Get-Command Create-BackupSnapshot -ErrorAction SilentlyContinue)) {
             "PreCheckPass"= "✅ 前置检查通过";
             "PreCheckFail"= "❌ 前置检查失败，中止执行";
             "RiskConfirm" = "⚠️ 该操作需要您的确认授权才能继续";
+            "AuthPolicyForce"    = "🔒 Critical 风险命令：强制人工授权（覆盖 auto_execute）";
+            "AuthPolicyUserOpt"  = "🔒 用户标记需授权（auto_execute=false）";
+            "AuthPolicyReentry"  = "✅ 用户已通过 GUI 逐条授权本命令（授权重入，不再二次索权）";
+            "AuthPolicyNeedAuth" = "🔒 策略元组判定需人工授权：risk={0} × reversible={1} × post_check={2}";
+            "AuthPolicyAuto"     = "✅ 策略元组判定可自动执行：risk={0} × reversible={1} × post_check={2}";
             "Executing"   = "⚙️ 正在执行...";
             "Success"     = "✅ 执行成功";
             "Fail"        = "❌ 执行失败";
@@ -465,6 +475,11 @@ if (-not (Get-Command Create-BackupSnapshot -ErrorAction SilentlyContinue)) {
             "PreCheckPass"= "✅ Pre-check passed";
             "PreCheckFail"= "❌ Pre-check failed, aborting";
             "RiskConfirm" = "⚠️ This operation requires your authorization to proceed";
+            "AuthPolicyForce"    = "🔒 Critical risk command: forced manual authorization (overrides auto_execute)";
+            "AuthPolicyUserOpt"  = "🔒 User-flagged for authorization (auto_execute=false)";
+            "AuthPolicyReentry"  = "✅ User already authorized this command via GUI (authorized re-entry, no second prompt)";
+            "AuthPolicyNeedAuth" = "🔒 Policy tuple mandates authorization: risk={0} × reversible={1} × post_check={2}";
+            "AuthPolicyAuto"     = "✅ Policy tuple approves auto-execution: risk={0} × reversible={1} × post_check={2}";
             "Executing"   = "⚙️ Executing...";
             "Success"     = "✅ Execution successful";
             "Fail"        = "❌ Execution failed";
@@ -607,9 +622,62 @@ if (-not (Get-Command Create-BackupSnapshot -ErrorAction SilentlyContinue)) {
     $global:syncHash.CurrentPipelineStatus = "Running"
     Start-Sleep -Milliseconds 200
     
-    $needsAuth = -not ($Command.auto_execute -eq $true)
+    # =========================================================
+    # Step 2: 风险评估与授权 (Risk Assessment) — 策略元组判定
+    # 策略元组：(risk_level × reversible × post_check 有无)
+    #   - Critical 风险命令始终需要人工授权，覆盖 auto_execute / reversible / post_check
+    #   - 用户在 KB 中显式标记 auto_execute=false 的命令始终需要授权（尊重用户意图）
+    #   - High 风险：必须同时具备 reversible=true 和非空 post_check 才能自动执行
+    #     （验证闭环 + 可回滚，二者缺一即升级人工，避免盲飞）
+    #   - Medium 风险：必须具备 reversible=true 才能自动执行
+    #   - Low 风险：reversible=true 即可自动执行
+    #   - 未知风险等级：保守升级人工
+    # =========================================================
+    $riskLevel = if ($Command.risk_level) { $Command.risk_level } else { "Low" }
+    $isReversible = ($Command.reversible -eq $true)
+    $hasPostCheck = (-not [string]::IsNullOrWhiteSpace($Command.post_check))
+    $userOptedManual = -not ($Command.auto_execute -eq $true)
+
+    # [2026-09-03 授权重入豁免·双轮授权 bug 修复] user_authorized=true 仅由分支1 克隆设置，
+    # 表示 GUI 授权模态已就本条命令获得用户逐条授权（M-2 协议的授权重入）。
+    # 策略元组不得对同一条已授权命令二次索权——否则 Medium∧irreversible 类命令在
+    # 用户点"允许"后会发起第二轮授权请求，GUI 状态机不弹窗 → 30s 超时悬挂（实测 2026-09-03 #11）。
+    if ($Command.user_authorized -eq $true) {
+        $needsAuth = $false
+        Write-SmartLog $lang["AuthPolicyReentry"]
+    } elseif ($riskLevel -eq "Critical") {
+        $needsAuth = $true
+        Write-SmartLog $lang["AuthPolicyForce"]
+    } elseif ($userOptedManual) {
+        $needsAuth = $true
+        Write-SmartLog $lang["AuthPolicyUserOpt"]
+    } else {
+        switch ($riskLevel) {
+            "High" {
+                # High 风险：必须同时有 reversible + post_check 才能自动（验证闭环+可回滚）
+                $needsAuth = -not ($isReversible -and $hasPostCheck)
+            }
+            "Medium" {
+                # Medium 风险：reversible=true 才能自动（post_check 缺失仍可，但属弱验证）
+                $needsAuth = -not $isReversible
+            }
+            "Low" {
+                # Low 风险：reversible=true 即可自动
+                $needsAuth = -not $isReversible
+            }
+            default {
+                # 未知风险等级，保守升级人工
+                $needsAuth = $true
+            }
+        }
+        if ($needsAuth) {
+            Write-SmartLog ($lang["AuthPolicyNeedAuth"] -f $riskLevel, $isReversible, $hasPostCheck)
+        } else {
+            Write-SmartLog ($lang["AuthPolicyAuto"] -f $riskLevel, $isReversible, $hasPostCheck)
+        }
+    }
     if ($needsAuth) {
-        # 非 auto_execute 的命令需要授权
+        # 需要授权的命令
         Write-SmartLog ($lang["RiskConfirm"])
         
         # 在设置新请求之前，先重置所有相关状态
@@ -668,6 +736,12 @@ if (-not (Get-Command Create-BackupSnapshot -ErrorAction SilentlyContinue)) {
             Write-SmartLog ($L["GUI_Responded"] -f [int]$elapsedMs)
         } else {
             Write-SmartLog $L["GUI_Timeout"]
+            # [2026-09-03 fail-closed 修复] 超时=未授权：清理悬挂授权态（RequiresAuthorization/PendingCommand
+            # 残留会阻塞后续菜单交互），命令绝不执行（下方统一 return PendingAuthorization，调用方按未执行处理）
+            $global:syncHash.RequiresAuthorization = $false
+            $global:syncHash.PendingCommand = $null
+            $global:syncHash.Authorized = $null
+            $global:syncHash.ResetAuthorizationModal = $true
         }
         
         # 清理事件句柄
@@ -1067,10 +1141,82 @@ if (-not (Get-Command Create-BackupSnapshot -ErrorAction SilentlyContinue)) {
             $rollbackSuccess = $false
         }
     } else {
-        # 💥 核心修复：推送成功文案，并强制挂起 1.2 秒，让 GUI 有充足时间点亮第四个绿灯并播放滑入动画
-        $global:syncHash.CurrentPipelineStatus = "Success"
-        $global:syncHash.CurrentPipelineDetail = if ($Language -eq "CHS") { "验证通过已修复" } else { "Verification Passed" }
-        Start-Sleep -Milliseconds 1200 
+        # [P0-2 KB v4.1] Step5 真实 post_check 验证（替换"验证通过已修复"假文案，绝不伪造验证）
+        if (-not $executionSuccess) {
+            # 执行失败但无回滚命令：如实报告失败，不谎报成功（修正原 else 对失败也无脑报"验证通过"的 bug）
+            $global:syncHash.CurrentPipelineStatus = "Error"
+            $global:syncHash.CurrentPipelineDetail = if ($Language -eq "CHS") { "执行失败（无回滚策略）" } else { "Failed (no rollback)" }
+            Start-Sleep -Milliseconds 1200
+        } elseif ($Command.post_check -and $Command.post_check -ne "") {
+            # 有 post_check 断言：输出真值=通过，空输出=未过（"不知道"≠"通过"，绝不伪造验证）
+            try {
+                $postCheckResult = Invoke-AuroraSafeCommand -CommandStr $Command.post_check
+                if ($postCheckResult) {
+                    $global:syncHash.CurrentPipelineStatus = "Success"
+                    $global:syncHash.CurrentPipelineDetail = if ($Language -eq "CHS") { "post_check 验证通过" } else { "post_check Passed" }
+                } else {
+                    # [P1-2 引擎侧收尾 2026-09-03] post_check 未过 → 先试 alternate_of 备选自恢复 → 仍败 → rollback → 标记失败
+                    #   与 C# FixExecutionService 语义对齐：仅 reversible 命令尝试；备选无 post_check 保守计未恢复；
+                    #   仅一层重试（备选不再嵌套 alternate_of）；alternate_of 按 name_en 匹配（KB 37/37 存 name_en）。
+                    $altRecovered = $false
+                    $ownNameEn = if ($Command.name_en) { $Command.name_en } else { $Command.name }
+                    if ($Command.reversible -eq $true -and $Command.alternate_of -and $Command.alternate_of -ne "" -and $RuleCommands) {
+                        foreach ($rc in @($RuleCommands)) {
+                            if (-not $rc -or -not $rc.command) { continue }
+                            $rcEn = if ($rc.name_en) { $rc.name_en } else { $rc.name }
+                            $isTarget = ($rcEn -and $rcEn -ieq $Command.alternate_of) -or
+                                        ($rc.name -and $rc.name -ieq $Command.alternate_of)
+                            # 防自指：备选不能是当前命令自身
+                            if ($isTarget -and -not ($rcEn -eq $ownNameEn -and $rc.command -eq $Command.command)) {
+                                $global:syncHash.CurrentPipelineDetail = if ($Language -eq "CHS") { "post_check 未过，尝试备选 [$rcEn] 自恢复..." } else { "post_check failed, trying alternate [$rcEn]..." }
+                                try {
+                                    $null = Invoke-AuroraSafeCommand -CommandStr $rc.command
+                                    # 备选执行成功且带 post_check：验证备选效果；无断言保守计未恢复（不撒谎）
+                                    if ($rc.post_check -and $rc.post_check -ne "") {
+                                        $altPost = Invoke-AuroraSafeCommand -CommandStr $rc.post_check
+                                        if ($altPost) { $altRecovered = $true }
+                                    }
+                                } catch {
+                                    # 备选执行异常：计未恢复，走回滚链
+                                }
+                                break
+                            }
+                        }
+                    }
+
+                    if ($altRecovered) {
+                        $global:syncHash.CurrentPipelineStatus = "Success"
+                        $global:syncHash.CurrentPipelineDetail = if ($Language -eq "CHS") { "备选命令自恢复成功（post_check 通过）" } else { "Recovered via alternate (post_check passed)" }
+                        Start-Sleep -Milliseconds 1200
+                    } elseif ($Command.rollback_command -and $Command.rollback_command -ne "") {
+                        $global:syncHash.CurrentPipelineDetail = if ($Language -eq "CHS") { "post_check 未过，执行回滚..." } else { "post_check failed, rolling back..." }
+                        try {
+                            Invoke-AuroraSafeCommand -CommandStr $Command.rollback_command -CaptureError | Out-Null
+                            $global:syncHash.CurrentPipelineDetail = if ($Language -eq "CHS") { "已回滚（post_check 未过）" } else { "Rolled back" }
+                        } catch {
+                            $global:syncHash.CurrentPipelineDetail = if ($Language -eq "CHS") { "回滚失败（post_check 未过）" } else { "Rollback failed" }
+                        }
+                        $global:syncHash.CurrentPipelineStatus = "Error"
+                        $executionSuccess = $false
+                    } else {
+                        $global:syncHash.CurrentPipelineDetail = if ($Language -eq "CHS") { "post_check 未过（无回滚策略，升级人工）" } else { "post_check failed (no rollback)" }
+                        $global:syncHash.CurrentPipelineStatus = "Error"
+                        $executionSuccess = $false
+                    }
+                }
+                Start-Sleep -Milliseconds 1200
+            } catch {
+                $global:syncHash.CurrentPipelineStatus = "Error"
+                $global:syncHash.CurrentPipelineDetail = if ($Language -eq "CHS") { "post_check 执行异常" } else { "post_check Error" }
+                $executionSuccess = $false
+                Start-Sleep -Milliseconds 1200
+            }
+        } else {
+            # 无 post_check 断言：如实报告已执行但无验证（不谎报"验证通过"）
+            $global:syncHash.CurrentPipelineStatus = "Success"
+            $global:syncHash.CurrentPipelineDetail = if ($Language -eq "CHS") { "已执行（无验证断言）" } else { "Executed (no assertion)" }
+            Start-Sleep -Milliseconds 1200
+        }
     }
 
     return $executionSuccess
@@ -1140,7 +1286,14 @@ $langDict = @{
         "PRO_LiveExtract" = "🔍 正在从系统实时提取日志...";
         "Minidump_Warning" = "🚨 警告：在系统中侦测到未分析的 Minidump 蓝屏内存转储文件！";
         "GUI_Responded" = "✅ GUI 已响应授权请求（等待了 {0}ms）";
-        "GUI_Timeout" = "⚠️ GUI 响应超时（等待了 30 秒），继续执行...";
+        "GUI_Timeout" = "⚠️ GUI 响应超时（30 秒），已按未授权处理（fail-closed，本次未执行），请重试或直接在面板点击执行";
+        "GUI_Auth_Pending" = "⏸️ 授权仍在等待中（命令未执行），请完成授权弹窗操作";
+        "Watchdog_Init"        = "🐕 看门狗已启用（总超时 {0}s，阶段软超时 P1={1}s/P2={2}s/P3={3}s）";
+        "Watchdog_Disabled"    = "🐕 看门狗已通过 AURORA_WATCHDOG_DISABLED 环境变量关闭";
+        "Watchdog_PhaseStart"  = "⏱️ 阶段 {0} 开始计时";
+        "Watchdog_PhaseDone"   = "✅ 阶段 {0} 完成（耗时 {1}s）";
+        "Watchdog_PhaseOverrun"= "⚠️ 阶段 {0} 耗时 {1}s 超过软超时阈值 {2}s（继续执行）";
+        "Watchdog_TotalExceeded" = "❌ 总分析耗时 {0}s 超过硬超时 {1}s，跳过后续分析阶段，直接进入交互菜单";
     };
     "ENG" = @{
         "Phase1"        = "[1/4] Detecting System Vitals";
@@ -1202,7 +1355,14 @@ $langDict = @{
         "PRO_LiveExtract" = "🔍 Extracting live logs from system...";
         "Minidump_Warning" = "🚨 WARNING: Unanalyzed Minidump blue screen crash dump files detected on system!";
         "GUI_Responded" = "✅ GUI responded to authorization request (waited {0}ms)";
-        "GUI_Timeout" = "⚠️ GUI response timeout (waited 30 seconds), continuing...";
+        "GUI_Timeout" = "⚠️ GUI response timeout (30s), treated as NOT authorized (fail-closed, command NOT executed); retry or click the panel item again";
+        "GUI_Auth_Pending" = "⏸️ Authorization still pending (command not executed); please complete the authorization dialog";
+        "Watchdog_Init"        = "🐕 Watchdog enabled (total timeout {0}s, phase soft timeouts P1={1}s/P2={2}s/P3={3}s)";
+        "Watchdog_Disabled"    = "🐕 Watchdog disabled via AURORA_WATCHDOG_DISABLED environment variable";
+        "Watchdog_PhaseStart"  = "⏱️ Phase {0} timer started";
+        "Watchdog_PhaseDone"   = "✅ Phase {0} completed ({1}s)";
+        "Watchdog_PhaseOverrun"= "⚠️ Phase {0} took {1}s exceeding soft timeout {2}s (continuing)";
+        "Watchdog_TotalExceeded" = "❌ Total analysis {0}s exceeded hard timeout {1}s, skipping remaining analysis phases, jumping to interactive menu";
     }
 }
 $L = $langDict[$Language]
@@ -1264,6 +1424,81 @@ function Write-SmartLog {
     if ($Status) { $global:syncHash.CurrentStatus = $Status }
 }
 
+# =========================================================
+# 看门狗 (Watchdog)：阶段级软超时 + 总分析硬超时
+# ---------------------------------------------------------
+# 设计要点：
+#   - 阶段级软超时：每个 Phase 结束时检查耗时，超阈值仅记录 Warn，不打断
+#     （分析阶段为同步执行，无法被外部中断；软超时用于可观测性）
+#   - 总分析硬超时：在每个 Phase 之间检查总耗时，超过则记录 Error
+#     并跳过后续 Phase 1-3，直接进入 Phase 4 用户交互菜单
+#   - Phase 4 用户交互循环不受总超时限制（用户操作不能被打断）
+#   - 通过环境变量 AURORA_WATCHDOG_DISABLED=1 可整体关闭看门狗
+# =========================================================
+$script:watchdog = $null
+
+function Initialize-AuroraWatchdog {
+    # 阶段软超时阈值（秒）；可按机器性能通过环境变量覆盖
+    $p1 = if ($env:AURORA_WD_P1) { [int]$env:AURORA_WD_P1 } else { 60 }
+    $p2 = if ($env:AURORA_WD_P2) { [int]$env:AURORA_WD_P2 } else { 180 }
+    $p3 = if ($env:AURORA_WD_P3) { [int]$env:AURORA_WD_P3 } else { 120 }
+    $total = if ($env:AURORA_WD_TOTAL) { [int]$env:AURORA_WD_TOTAL } else { 600 }
+    $script:watchdog = @{
+        StartTime = [System.Diagnostics.Stopwatch]::StartNew()
+        PhaseStartTime = $null
+        CurrentPhase = $null
+        PhaseElapsed = @{}
+        PhaseSoftTimeouts = @{
+            'Phase1_EnvDetect'  = $p1
+            'Phase2_LogExtract' = $p2
+            'Phase3_KBMatch'    = $p3
+        }
+        TotalHardTimeout = $total
+        Enabled = ($env:AURORA_WATCHDOG_DISABLED -ne '1')
+    }
+    if ($script:watchdog.Enabled) {
+        Write-SmartLog ($L["Watchdog_Init"] -f $total, $p1, $p2, $p3) "Watchdog"
+    } else {
+        Write-SmartLog $L["Watchdog_Disabled"] "Watchdog"
+    }
+}
+
+function Start-AuroraWatchdogPhase {
+    param([string]$PhaseName)
+    if (-not $script:watchdog -or -not $script:watchdog.Enabled) { return }
+    $script:watchdog.PhaseStartTime = [System.Diagnostics.Stopwatch]::StartNew()
+    $script:watchdog.CurrentPhase = $PhaseName
+    Write-SmartLog ($L["Watchdog_PhaseStart"] -f $PhaseName) ""
+}
+
+function Stop-AuroraWatchdogPhase {
+    param([string]$PhaseName)
+    if (-not $script:watchdog -or -not $script:watchdog.Enabled) { return }
+    if (-not $script:watchdog.PhaseStartTime) { return }
+    $elapsedSec = $script:watchdog.PhaseStartTime.Elapsed.TotalSeconds
+    $script:watchdog.PhaseStartTime.Stop()
+    $script:watchdog.PhaseStartTime = $null
+    $script:watchdog.PhaseElapsed[$PhaseName] = $elapsedSec
+    $script:watchdog.CurrentPhase = $null
+    $threshold = $script:watchdog.PhaseSoftTimeouts[$PhaseName]
+    if ($threshold -and $elapsedSec -gt $threshold) {
+        Write-SmartLog ($L["Watchdog_PhaseOverrun"] -f $PhaseName, [int]$elapsedSec, $threshold) "Warn"
+    } else {
+        Write-SmartLog ($L["Watchdog_PhaseDone"] -f $PhaseName, [int]$elapsedSec) ""
+    }
+}
+
+function Test-AuroraWatchdogTotalTimeout {
+    # 返回 $true 表示总分析硬超时已触发
+    if (-not $script:watchdog -or -not $script:watchdog.Enabled) { return $false }
+    $elapsedSec = $script:watchdog.StartTime.Elapsed.TotalSeconds
+    if ($elapsedSec -gt $script:watchdog.TotalHardTimeout) {
+        Write-SmartLog ($L["Watchdog_TotalExceeded"] -f [int]$elapsedSec, $script:watchdog.TotalHardTimeout) "Error"
+        return $true
+    }
+    return $false
+}
+
 try {
     $global:syncHash.IsRunning = $true
     $global:syncHash.Progress = 5
@@ -1272,11 +1507,16 @@ try {
     $global:syncHash.EngineError = $false
     $global:syncHash.EngineErrorMessage = $null
 
+    # 看门狗初始化（阶段级软超时 + 总分析硬超时）
+    Initialize-AuroraWatchdog
+    $analysisAborted = $false
+
     # =========================================================
     # Phase 1: 智能环境感知 (Auto-Detect) - 重构版
     # =========================================================
     $global:syncHash.CurrentActivity = $L["Phase1"]
     Write-SmartLog $L["Init"] "Initializing Engine..."
+    Start-AuroraWatchdogPhase -PhaseName 'Phase1_EnvDetect'
     Start-Sleep -Milliseconds 600
     
     $osInfo = Get-CimInstance Win32_OperatingSystem
@@ -1381,11 +1621,16 @@ try {
         }
     }
 
+    # [Watchdog] Phase 1 结束：记录阶段耗时 + 总超时告警
+    Stop-AuroraWatchdogPhase -PhaseName 'Phase1_EnvDetect'
+    [void](Test-AuroraWatchdogTotalTimeout)
+
     # =========================================================
     # Phase 2: 并发提取与轻量化 (Auto-Read)
     # =========================================================
     $global:syncHash.Progress = 30
     $global:syncHash.CurrentActivity = $L["Phase2"]
+    Start-AuroraWatchdogPhase -PhaseName 'Phase2_LogExtract'
     Write-SmartLog $L["Read_Start"] "Extracting Logs..."
     
     # Phase 3.2 核心优化：支持更多日志类型，自动检测可访问的日志
@@ -1617,11 +1862,16 @@ try {
         Write-SmartLog ($L["Read_Done"] -f $lightEvents.Count) "Logs Extracted"
     }
 
+    # [Watchdog] Phase 2 结束：记录阶段耗时 + 总超时告警
+    Stop-AuroraWatchdogPhase -PhaseName 'Phase2_LogExtract'
+    [void](Test-AuroraWatchdogTotalTimeout)
+
     # =========================================================
     # Phase 3: 正则预编译图谱匹配 (Auto-Check)
     # =========================================================
     $global:syncHash.Progress = 50
     $global:syncHash.CurrentActivity = $L["Phase3"]
+    Start-AuroraWatchdogPhase -PhaseName 'Phase3_KBMatch'
     Write-SmartLog $L["KB_Load"] "Compiling Knowledge Base..."
     
     $kbPath = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\..\Data\AURORA-TechData.json"))
@@ -1852,6 +2102,11 @@ try {
     #   PS 5.1 下 $null.Count 返回 $null（不是 0），导致"发现 {0} 类"格式化输出缺失数字。
     Write-SmartLog ($L["Check_Done"] -f $matchedRules.Count) "Analysis Complete"
 
+    # [Watchdog] Phase 3 结束：记录阶段耗时 + 总超时告警
+    # 注意：Phase 4 为用户交互循环，不受总超时限制（用户操作不能被打断）
+    Stop-AuroraWatchdogPhase -PhaseName 'Phase3_KBMatch'
+    [void](Test-AuroraWatchdogTotalTimeout)
+
     # =========================================================
     # Phase 4: 安全沙箱自主修复模式终端 (Auto-Repair Sandbox)
     # =========================================================
@@ -1867,6 +2122,8 @@ try {
         # 1. 预先构建完整的交互菜单文本（缓存起来以便后续重复打印）
         $fullMenuText = ""
         $commandMap = @{}
+        # [P1-2 引擎侧收尾 2026-09-03] 序号 → 所属规则完整命令列表（alternate_of 备选查找上下文）
+        $commandRuleMap = @{}
         $cmdIndex = 1
         # [智能模式菜单面板化] 结构化菜单数据，供 WPF SmartMenuPanel 绑定
         $smartMenuItems = @()
@@ -1885,6 +2142,7 @@ try {
                     
                     $fullMenuText += "   [ $cmdIndex ] $cmdName $riskTag $adminTag $autoTag`n"
                     $commandMap[$cmdIndex.ToString()] = $cmd
+                    $commandRuleMap[$cmdIndex.ToString()] = $rule.Commands
                     
                     # 构建结构化菜单项（供 WPF 面板绑定）
                     $smartMenuItems += [PSCustomObject]@{
@@ -1937,9 +2195,26 @@ try {
                 #         后续相同序号命令再次执行时会跳过授权
                 $execCmd = $targetCmd.PSObject.Copy()
                 $execCmd | Add-Member -MemberType NoteProperty -Name "auto_execute" -Value $true -Force
-                $rawResult = Invoke-AuroraSafeAction -Command $execCmd -Language $Language
+                # [2026-09-03 双轮授权修复] user_authorized=true 标记本条命令已获用户逐条授权，
+                # 策略元组据此豁免第二轮索权（否则 Medium∧irreversible 命令授权通过后会再次
+                # 发起授权请求，GUI 不弹窗 → 30s 超时悬挂，实测 2026-09-03 #11）
+                $execCmd | Add-Member -MemberType NoteProperty -Name "user_authorized" -Value $true -Force
+                # [P1-2] 按菜单序号取同规则命令列表，供 alternate_of 备选自恢复
+                $pendingRuleCmds = $null
+                if ($global:syncHash.PendingCommandIndex) {
+                    $pendingRuleCmds = $commandRuleMap[[string]$global:syncHash.PendingCommandIndex]
+                }
+                $rawResult = Invoke-AuroraSafeAction -Command $execCmd -Language $Language -RuleCommands $pendingRuleCmds
+                # [2026-09-03 修复] PendingAuthorization 必须先判再转 bool——
+                # [bool]"PendingAuthorization" 为 $true，曾导致授权等待被谎报为"指令下发成功"并打勾
+                if ("PendingAuthorization" -eq $rawResult) {
+                    Write-SmartLog $L["GUI_Auth_Pending"]
+                    $global:syncHash.PendingCommandIndex = $null
+                    Start-Sleep -Milliseconds 1000
+                    continue
+                }
                 # [修复] 同分支3：归一化返回值为单个 bool，避免函数体内其他调用的返回值泄漏成 Object[] 数组
-                $result = if ($rawResult -is [System.Array]) { [bool]$rawResult[-1] } else { [bool]$rawResult }
+                $result = if ($rawResult -is [System.Array]) { [bool]$rawResult[-1] } elseif ($rawResult -is [bool]) { [bool]$rawResult } else { $false }
 
                 # [修复] 仅在执行成功时才标记 executed，避免命令失败/出错仍打勾
                 #   原缺陷：无条件标记，导致执行失败也显示 ✓ 误导用户
@@ -2001,19 +2276,22 @@ try {
                     
                     # [智能模式菜单面板化] 记录当前执行序号，供授权通过后标记 IsExecuted
                     $global:syncHash.PendingCommandIndex = $inputRaw
-                    
-                    $rawResult = Invoke-AuroraSafeAction -Command $targetCmd -Language $Language
+
+                    $rawResult = Invoke-AuroraSafeAction -Command $targetCmd -Language $Language -RuleCommands $commandRuleMap[$inputRaw]
+
+                    # [2026-09-03 收紧] PendingAuthorization 先判再转 bool（[bool]"PendingAuthorization"=$true）
+                    if ("PendingAuthorization" -eq $rawResult) {
+                        continue # 处于授权等待（或超时未授权），跳过
+                    }
 
                     # [修复] Invoke-AuroraSafeAction 函数体内某些被调用函数（如 Initialize-UndoManager、
                     #   Complete-RepairSession）的返回值会泄漏到管道，与真正的 return 值组合成 Object[] 数组。
                     #   例如提权拒绝时返回 [True, False]（Initialize-UndoManager 的 $true + return $false），
                     #   而 Object[] -eq $true 会返回非空数组，在 if 条件中被当作 $true，导致错误标记 IsExecuted。
                     #   这里强制取最后一个元素（真正的 return 值）并转 bool。
-                    $result = if ($rawResult -is [System.Array]) { [bool]$rawResult[-1] } else { [bool]$rawResult }
+                    $result = if ($rawResult -is [System.Array]) { [bool]$rawResult[-1] } elseif ($rawResult -is [bool]) { [bool]$rawResult } else { $false }
 
-                    if ("PendingAuthorization" -eq $rawResult) {
-                        continue # 处于授权等待，跳过
-                    } elseif ($result -eq $true) {
+                    if ($result -eq $true) {
                         Write-SmartLog $L["Exec_Success"]
                         # [智能模式菜单面板化] 标记已执行索引
                         $executedIndices += $inputRaw

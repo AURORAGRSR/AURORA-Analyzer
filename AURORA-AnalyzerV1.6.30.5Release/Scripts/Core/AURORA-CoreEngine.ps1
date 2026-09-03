@@ -5,7 +5,7 @@
     CHSPRO 和 ENGPRO 共享的核心功能模块
     包含：配置参数、工具函数、日志处理、权限管理、会话管理
 .NOTES
-    版本：V1.6.30.5Release | 构建时间：2026.09.02
+    版本：V1.6.30.5Release | 构建时间：2026.09.03
     作者：AURORA VelociRaptor-GR Dev PRJ.
 #>
 
